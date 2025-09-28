@@ -8,6 +8,8 @@ export interface Task {
   createdAt: Date
   completedAt?: Date
   aiInsight?: string
+  deleted?: boolean
+  deletedAt?: Date
 }
 
 export interface Goal {

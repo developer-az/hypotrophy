@@ -6,6 +6,7 @@ import TaskList from '@/components/TaskList'
 import TaskForm from '@/components/TaskForm'
 import AIInsights from '@/components/AIInsights'
 import ProgressDashboard from '@/components/ProgressDashboard'
+import BiscuitConversation from '@/components/BiscuitConversation'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { aiService } from '@/lib/aiService'
 
@@ -14,6 +15,7 @@ export default function Home() {
   const [goals, setGoals, isGoalsClient] = useLocalStorage<Goal[]>('hypotrophy-goals', [])
   const [insights, setInsights, isInsightsClient] = useLocalStorage<AIInsight[]>('hypotrophy-insights', [])
   const [activeTab, setActiveTab] = useState<'tasks' | 'goals' | 'insights'>('tasks')
+  const [latestInsight, setLatestInsight] = useState<string>('')
 
   // Generate welcome insight if no data exists (client-side only)
   useEffect(() => {
@@ -47,6 +49,20 @@ export default function Home() {
   }
 
   const toggleTask = (id: string) => {
+    const task = tasks.find(t => t.id === id)
+    if (task && !task.completed) {
+      // Task is being completed
+      const completionMessages = [
+        `🎉 Fantastic work completing "${task.title}"! I'm so proud of your progress!`,
+        `✨ Way to go! You've just completed "${task.title}". Every small step counts towards your growth!`,
+        `🚀 Amazing! "${task.title}" is done! You're building such great momentum!`,
+        `💪 Yes! "${task.title}" is complete! I love seeing you crushing your goals!`,
+        `🌟 Wonderful! You've finished "${task.title}". Keep up this incredible energy!`
+      ]
+      const randomMessage = completionMessages[Math.floor(Math.random() * completionMessages.length)]
+      setLatestInsight(randomMessage)
+    }
+
     setTasks(prev => prev.map(task =>
       task.id === id
         ? { ...task, completed: !task.completed, completedAt: !task.completed ? new Date() : undefined }
@@ -54,10 +70,22 @@ export default function Home() {
     ))
   }
 
+  const deleteTask = (id: string) => {
+    const taskToDelete = tasks.find(t => t.id === id)
+    setTasks(prev => prev.filter(task => task.id !== id))
+
+    // Add a personalized message from Biscuit
+    if (taskToDelete) {
+      const deleteMessage = `I've removed "${taskToDelete.title}" from your list. Sometimes letting go of tasks is just as important as completing them! 🗑️✨`
+      setLatestInsight(deleteMessage)
+    }
+  }
+
   const generateTaskInsight = async (task: Task) => {
     try {
       const newInsight = await aiService.generateTaskInsight(task, tasks)
       setInsights(prev => [newInsight, ...prev])
+      setLatestInsight(newInsight.content)
     } catch (error) {
       console.error('Error generating AI insight:', error)
       // Fallback to a simple insight if AI fails
@@ -71,6 +99,7 @@ export default function Home() {
         relevantTasks: [task.id]
       }
       setInsights(prev => [fallbackInsight, ...prev])
+      setLatestInsight(fallbackInsight.content)
     }
   }
 
@@ -82,18 +111,35 @@ export default function Home() {
       const newInsight = await aiService.generateProgressInsight(tasks)
       console.log('Generated insight:', newInsight)
       setInsights(prev => [newInsight, ...prev])
+      setLatestInsight(newInsight.content)
     } catch (error) {
       console.error('Error generating progress insight:', error)
       // Add fallback insight if AI fails
+      const completedCount = tasks.filter(t => t.completed).length
+      const totalCount = tasks.length
+      const progressPercentage = Math.round((completedCount / totalCount) * 100)
+
+      let motivationalMessage = ''
+      if (progressPercentage >= 80) {
+        motivationalMessage = `🎉 Wow! You've completed ${completedCount} out of ${totalCount} tasks (${progressPercentage}%)! You're absolutely crushing it! I'm so proud of your dedication and progress!`
+      } else if (progressPercentage >= 50) {
+        motivationalMessage = `💪 Great progress! You've completed ${completedCount} out of ${totalCount} tasks (${progressPercentage}%). You're over halfway there - keep up this amazing momentum!`
+      } else if (progressPercentage >= 25) {
+        motivationalMessage = `🌱 You've completed ${completedCount} out of ${totalCount} tasks (${progressPercentage}%). Every step counts! You're building great habits and making real progress!`
+      } else {
+        motivationalMessage = `✨ You've got ${totalCount} tasks to work with! Remember, every journey starts with a single step. I believe in you - let's tackle these goals together!`
+      }
+
       const fallbackInsight: AIInsight = {
         id: Date.now().toString(),
         type: 'encouragement',
         title: 'Progress Analysis',
-        content: `You've completed ${tasks.filter(t => t.completed).length} out of ${tasks.length} tasks. Keep up the great work!`,
+        content: motivationalMessage,
         createdAt: new Date(),
         relevantTasks: tasks.slice(0, 3).map(t => t.id)
       }
       setInsights(prev => [fallbackInsight, ...prev])
+      setLatestInsight(motivationalMessage)
     }
   }
 
@@ -123,10 +169,19 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <header className="text-center mb-12">
         <div className="animate-fade-in">
-          <h1 className="text-6xl font-black hypotrophy-gradient mb-4 tracking-tight">
-            Hypotrophy
-          </h1>
-          <p className="text-xl text-neutral-600 font-medium mb-2">Your AI-Powered Personal Growth Assistant</p>
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <img
+              src="/biscuit.png"
+              alt="Biscuit the Hamster"
+              className="w-16 h-16 rounded-full border-4 border-primary-200 animate-float"
+            />
+            <h1 className="text-6xl font-black hypotrophy-gradient tracking-tight">
+              Hypotrophy
+            </h1>
+          </div>
+          <p className="text-xl text-neutral-600 font-medium mb-2">
+            Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
+          </p>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"></div>
         </div>
       </header>
@@ -185,7 +240,7 @@ export default function Home() {
                     <TaskForm onAddTask={addTask} userTasks={tasks} />
                   </div>
               <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <TaskList tasks={tasks} onToggleTask={toggleTask} />
+                <TaskList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
               </div>
             </>
           )}
@@ -209,10 +264,16 @@ export default function Home() {
           )}
         </div>
 
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-6">
+          <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            <BiscuitConversation
+              aiResponse={latestInsight}
+              onResponseComplete={() => setLatestInsight('')}
+            />
+          </div>
           {activeTab !== 'insights' && (
-            <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <AIInsights insights={insights.slice(0, 3)} compact />
+            <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
+              <AIInsights insights={insights.slice(0, 2)} compact />
             </div>
           )}
         </div>
