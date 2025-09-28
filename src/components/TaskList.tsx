@@ -31,6 +31,15 @@ export default function TaskList({ tasks, onToggleTask }: TaskListProps) {
     }
   }
 
+  const getPriorityBorderColor = (priority: Task['priority']) => {
+    switch (priority) {
+      case 'high': return 'border-l-red-400'
+      case 'medium': return 'border-l-yellow-400'
+      case 'low': return 'border-l-green-400'
+      default: return 'border-l-gray-400'
+    }
+  }
+
   const getCategoryIcon = (category: string) => {
     const icons: Record<string, string> = {
       personal: '👤',
@@ -47,89 +56,106 @@ export default function TaskList({ tasks, onToggleTask }: TaskListProps) {
 
   if (tasks.length === 0) {
     return (
-      <div className="premium-card p-8 text-center">
-        <div className="text-6xl mb-4 animate-float">🌱</div>
-        <h3 className="text-2xl font-bold text-neutral-800 mb-4">Ready to Grow?</h3>
-        <p className="text-neutral-600 text-lg mb-6">Add your first task above and let AI help you achieve your goals!</p>
-        <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
-          <span>✨</span>
-          <span>Start your transformation journey</span>
+      <div className="premium-card p-12 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+        <div className="relative z-10">
+          <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-lg rounded-3xl flex items-center justify-center border border-white/20 animate-pulse-glow">
+            <span className="text-5xl animate-float">🌱</span>
+          </div>
+          <h3 className="text-3xl font-bold text-white mb-6">Ready to Grow?</h3>
+          <p className="text-xl text-white/80 mb-8 max-w-md mx-auto leading-relaxed">Add your first task above and let AI help you achieve your goals!</p>
+          <div className="inline-flex items-center space-x-3 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+            <span className="text-2xl">✨</span>
+            <span className="text-white font-semibold">Start your transformation journey</span>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-          <span className="text-white text-sm">📋</span>
+    <div className="space-y-8">
+      <div className="flex items-center space-x-4">
+        <div className="w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center border border-white/20">
+          <span className="text-white text-xl">📋</span>
         </div>
-        <h2 className="text-2xl font-bold text-neutral-800">Your Tasks</h2>
-        <span className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-semibold">
-          {tasks.length}
-        </span>
+        <div>
+          <h2 className="text-3xl font-bold text-white">Your Tasks</h2>
+          <p className="text-white/70 text-lg">{tasks.length} task{tasks.length !== 1 ? 's' : ''} on your journey</p>
+        </div>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className={`task-card ${task.completed ? 'task-card-completed opacity-75' : ''} ${getPriorityColor(task.priority)}`}
+            className={`premium-card p-6 relative overflow-hidden border-l-4 transition-all duration-300 ${
+              task.completed 
+                ? 'opacity-75 border-l-green-400' 
+                : getPriorityBorderColor(task.priority)
+            }`}
           >
-            <div className="flex items-start space-x-4">
-              <button
-                onClick={() => onToggleTask(task.id)}
-                className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 hover:scale-110 ${
-                  task.completed
-                    ? 'bg-accent-500 border-accent-500 text-white shadow-glow'
-                    : 'border-neutral-300 hover:border-primary-500 hover:shadow-glow'
-                }`}
-              >
-                {task.completed && (
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                )}
-              </button>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-start space-x-4">
+                <button
+                  onClick={() => onToggleTask(task.id)}
+                  className={`mt-1 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 ${
+                    task.completed
+                      ? 'bg-green-500 border-green-500 text-white shadow-lg'
+                      : 'border-white/30 hover:border-white/60 hover:bg-white/10'
+                  }`}
+                >
+                  {task.completed && (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </button>
 
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <span className="text-2xl">{getCategoryIcon(task.category)}</span>
-                  <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-neutral-500' : 'text-neutral-800'}`}>
-                    {task.title}
-                  </h3>
-                  <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                    task.priority === 'high' ? 'bg-red-100 text-red-700 border border-red-200' :
-                    task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                    'bg-green-100 text-green-700 border border-green-200'
-                  }`}>
-                    {task.priority.toUpperCase()}
-                  </span>
-                </div>
-
-                {task.description && (
-                  <p className={`text-sm mb-3 ${task.completed ? 'text-neutral-400' : 'text-neutral-600'}`}>
-                    {task.description}
-                  </p>
-                )}
-
-                <div className="flex items-center justify-between text-xs">
-                  <span className="capitalize bg-neutral-100 text-neutral-700 px-3 py-1 rounded-lg font-medium">
-                    {task.category}
-                  </span>
-                  <span className="text-neutral-500 font-medium">
-                    {task.completed && task.completedAt
-                      ? `✅ Completed ${new Date(task.completedAt).toLocaleDateString()}`
-                      : `📅 Created ${new Date(task.createdAt).toLocaleDateString()}`
-                    }
-                  </span>
-                </div>
-
-                {task.aiInsight && (
-                  <div className="mt-4 p-4 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-xl border border-primary-200">
-                    <p className="text-sm text-primary-800 font-medium">💡 {task.aiInsight}</p>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-3">
+                    <span className="text-3xl">{getCategoryIcon(task.category)}</span>
+                    <h3 className={`text-xl font-semibold ${task.completed ? 'line-through text-white/60' : 'text-white'}`}>
+                      {task.title}
+                    </h3>
+                    <span className={`px-3 py-1 text-sm font-bold rounded-full ${
+                      task.priority === 'high' 
+                        ? 'bg-red-500/20 text-red-300 border border-red-400/30'
+                        : task.priority === 'medium'
+                        ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'
+                        : 'bg-green-500/20 text-green-300 border border-green-400/30'
+                    }`}>
+                      {task.priority.toUpperCase()}
+                    </span>
                   </div>
-                )}
+
+                  {task.description && (
+                    <p className={`text-lg mb-4 ${task.completed ? 'text-white/50' : 'text-white/80'}`}>
+                      {task.description}
+                    </p>
+                  )}
+
+                  <div className="flex items-center justify-between text-sm">
+                    <span className={`capitalize px-3 py-1 rounded-lg font-medium ${task.completed ? 'bg-white/5 text-white/60' : 'bg-white/10 text-white/80'}`}>
+                      {task.category}
+                    </span>
+                    <span className={`font-medium ${task.completed ? 'text-white/40' : 'text-white/60'}`}>
+                      {task.completed && task.completedAt
+                        ? `✅ Completed ${new Date(task.completedAt).toLocaleDateString()}`
+                        : `📅 Created ${new Date(task.createdAt).toLocaleDateString()}`
+                      }
+                    </span>
+                  </div>
+
+                  {task.aiInsight && (
+                    <div className="mt-4 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-sm rounded-xl border border-blue-400/20">
+                      <div className="flex items-start space-x-3">
+                        <span className="text-2xl">💡</span>
+                        <p className="text-white/90 font-medium">{task.aiInsight}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

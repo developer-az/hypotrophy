@@ -77,19 +77,26 @@ export default function Home() {
   // Show loading state during hydration
   if (!isTasksClient || !isGoalsClient || !isInsightsClient) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <header className="text-center mb-12">
+      <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+        <header className="text-center mb-16">
           <div className="animate-float">
-            <h1 className="text-6xl font-black hypotrophy-gradient mb-4 tracking-tight">
-              Hypotrophy
+            <div className="inline-block mb-6">
+              <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-lg rounded-3xl flex items-center justify-center border border-white/20 animate-pulse-glow">
+                <span className="text-4xl animate-bounce-gentle">🚀</span>
+              </div>
+            </div>
+            <h1 className="text-7xl md:text-8xl font-black mb-6 tracking-tight">
+              <span className="hypotrophy-gradient animate-gradient">
+                Hypotrophy
+              </span>
             </h1>
-            <p className="text-xl text-neutral-600 font-medium">Your AI-Powered Personal Growth Assistant</p>
+            <p className="text-2xl md:text-3xl font-light text-white/90">Your AI-Powered Personal Growth Assistant</p>
           </div>
         </header>
         <div className="flex justify-center items-center h-64">
           <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-200"></div>
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent absolute top-0 left-0"></div>
+            <div className="w-16 h-16 border-4 border-white/20 rounded-full"></div>
+            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
           </div>
         </div>
       </div>
@@ -97,21 +104,35 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="text-center mb-12">
-        <div className="animate-fade-in">
-          <h1 className="text-6xl font-black hypotrophy-gradient mb-4 tracking-tight">
-            Hypotrophy
+    <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+      <header className="text-center mb-16">
+        <div className="animate-slide-in-up">
+          <div className="inline-block mb-6">
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-lg rounded-3xl flex items-center justify-center border border-white/20 animate-pulse-glow">
+              <span className="text-4xl animate-bounce-gentle">🚀</span>
+            </div>
+          </div>
+          <h1 className="text-7xl md:text-8xl font-black mb-6 tracking-tight">
+            <span className="hypotrophy-gradient animate-gradient">
+              Hypotrophy
+            </span>
           </h1>
-          <p className="text-xl text-neutral-600 font-medium mb-2">Your AI-Powered Personal Growth Assistant</p>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"></div>
+          <p className="text-2xl md:text-3xl font-light mb-6 text-white/90 max-w-3xl mx-auto leading-relaxed">
+            Your AI-Powered Personal Growth Assistant
+          </p>
+          <p className="text-lg text-white/70 max-w-2xl mx-auto mb-8">
+            Transform your basic to-do lists into intelligent self-improvement tracking with personalized AI insights
+          </p>
+          <div className="w-32 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent mx-auto rounded-full animate-pulse"></div>
         </div>
       </header>
 
-      <ProgressDashboard tasks={tasks} />
+      <div className="animate-fade-in-delay">
+        <ProgressDashboard tasks={tasks} />
+      </div>
 
-      <div className="flex justify-center mb-8">
-        <div className="premium-card p-2 inline-flex">
+      <div className="flex justify-center mb-12 animate-slide-in-up" style={{ animationDelay: '0.2s' }}>
+        <div className="premium-card p-3 inline-flex space-x-2">
           <button
             onClick={() => setActiveTab('tasks')}
             className={`nav-tab ${
@@ -155,7 +176,7 @@ export default function Home() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-8">
           {activeTab === 'tasks' && (
             <>
               <div className="animate-slide-up">
@@ -167,15 +188,17 @@ export default function Home() {
             </>
           )}
           {activeTab === 'goals' && (
-            <div className="premium-card p-8 text-center animate-fade-in">
-              <div className="text-6xl mb-4">🎯</div>
-              <h2 className="text-2xl font-bold text-neutral-800 mb-4">Goals (Coming Soon)</h2>
-              <p className="text-neutral-600 text-lg">Advanced goal tracking and management features will be available soon!</p>
-              <div className="mt-6">
-                <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
-                  <span>✨</span>
-                  <span>SMART Goals, Milestones & Dependencies</span>
-                </div>
+            <div className="premium-card p-12 text-center animate-fade-in">
+              <div className="w-24 h-24 mx-auto mb-8 bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-lg rounded-3xl flex items-center justify-center border border-white/20">
+                <span className="text-5xl">🎯</span>
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-6">Goals (Coming Soon)</h2>
+              <p className="text-xl text-white/80 mb-8 max-w-md mx-auto leading-relaxed">
+                Advanced goal tracking and management features will be available soon!
+              </p>
+              <div className="inline-flex items-center space-x-3 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                <span className="text-2xl">✨</span>
+                <span className="text-white font-semibold">SMART Goals, Milestones & Dependencies</span>
               </div>
             </div>
           )}
@@ -188,7 +211,7 @@ export default function Home() {
 
         <div className="lg:col-span-1">
           {activeTab !== 'insights' && (
-            <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+            <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <AIInsights insights={insights.slice(0, 3)} compact />
             </div>
           )}
