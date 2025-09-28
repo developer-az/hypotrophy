@@ -7,6 +7,7 @@ import TaskForm from '@/components/TaskForm'
 import AIInsights from '@/components/AIInsights'
 import ProgressDashboard from '@/components/ProgressDashboard'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { aiService } from '@/lib/aiService'
 
 export default function Home() {
   const [tasks, setTasks, isTasksClient] = useLocalStorage<Task[]>('hypotrophy-tasks', [])
@@ -53,25 +54,47 @@ export default function Home() {
     ))
   }
 
-  const generateTaskInsight = (task: Task) => {
-    const insights = [
-      `Great choice adding "${task.title}" to your ${task.category} goals! Breaking big objectives into small, actionable tasks is key to success.`,
-      `I notice you're focusing on ${task.category}. Consider setting a specific time of day to work on this consistently.`,
-      `"${task.title}" is a smart step forward. Once you complete this, I can suggest related tasks to build momentum.`,
-      `Adding ${task.priority} priority tasks like "${task.title}" shows good planning. Remember to celebrate small wins!`
-    ]
-
-    const newInsight: AIInsight = {
-      id: Date.now().toString(),
-      type: 'suggestion',
-      title: 'Task Added Successfully',
-      content: insights[Math.floor(Math.random() * insights.length)],
-      category: task.category,
-      createdAt: new Date(),
-      relevantTasks: [task.id]
+  const generateTaskInsight = async (task: Task) => {
+    try {
+      const newInsight = await aiService.generateTaskInsight(task, tasks)
+      setInsights(prev => [newInsight, ...prev])
+    } catch (error) {
+      console.error('Error generating AI insight:', error)
+      // Fallback to a simple insight if AI fails
+      const fallbackInsight: AIInsight = {
+        id: Date.now().toString(),
+        type: 'suggestion',
+        title: 'Task Added Successfully',
+        content: `Great choice adding "${task.title}" to your ${task.category} goals! Breaking big objectives into small, actionable tasks is key to success.`,
+        category: task.category,
+        createdAt: new Date(),
+        relevantTasks: [task.id]
+      }
+      setInsights(prev => [fallbackInsight, ...prev])
     }
+  }
 
-    setInsights(prev => [newInsight, ...prev])
+  const generateProgressInsight = async () => {
+    if (tasks.length === 0) return
+
+    try {
+      console.log('Generating progress insight for tasks:', tasks.length)
+      const newInsight = await aiService.generateProgressInsight(tasks)
+      console.log('Generated insight:', newInsight)
+      setInsights(prev => [newInsight, ...prev])
+    } catch (error) {
+      console.error('Error generating progress insight:', error)
+      // Add fallback insight if AI fails
+      const fallbackInsight: AIInsight = {
+        id: Date.now().toString(),
+        type: 'encouragement',
+        title: 'Progress Analysis',
+        content: `You've completed ${tasks.filter(t => t.completed).length} out of ${tasks.length} tasks. Keep up the great work!`,
+        createdAt: new Date(),
+        relevantTasks: tasks.slice(0, 3).map(t => t.id)
+      }
+      setInsights(prev => [fallbackInsight, ...prev])
+    }
   }
 
   // Show loading state during hydration
@@ -108,7 +131,7 @@ export default function Home() {
         </div>
       </header>
 
-      <ProgressDashboard tasks={tasks} />
+      <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} />
 
       <div className="flex justify-center mb-8">
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-2 inline-flex hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200">
@@ -158,9 +181,9 @@ export default function Home() {
         <div className="lg:col-span-2 space-y-6">
           {activeTab === 'tasks' && (
             <>
-              <div className="animate-slide-up">
-                <TaskForm onAddTask={addTask} />
-              </div>
+                  <div className="animate-slide-up">
+                    <TaskForm onAddTask={addTask} userTasks={tasks} />
+                  </div>
               <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
                 <TaskList tasks={tasks} onToggleTask={toggleTask} />
               </div>

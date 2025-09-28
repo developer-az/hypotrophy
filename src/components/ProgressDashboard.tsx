@@ -4,9 +4,10 @@ import { Task } from '@/types'
 
 interface ProgressDashboardProps {
   tasks: Task[]
+  onGenerateInsight?: () => void
 }
 
-export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
+export default function ProgressDashboard({ tasks, onGenerateInsight }: ProgressDashboardProps) {
   const completedTasks = tasks.filter(task => task.completed).length
   const totalTasks = tasks.length
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
@@ -77,8 +78,19 @@ export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
         <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center">
           <span className="text-white text-lg">📊</span>
         </div>
-        <h2 className="text-2xl font-bold text-neutral-800">Your Progress Dashboard</h2>
-      </div>
+          <h2 className="text-2xl font-bold text-neutral-800">Your Progress Dashboard</h2>
+          {onGenerateInsight && totalTasks > 0 && (
+            <button
+              onClick={onGenerateInsight}
+              className="ml-auto bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary-200"
+            >
+              <span className="flex items-center space-x-2">
+                <span>🤖</span>
+                <span>Get AI Analysis</span>
+              </span>
+            </button>
+          )}
+        </div>
 
       {/* Main stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
