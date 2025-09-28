@@ -8,9 +8,14 @@ const API_KEY = process.env.GEMINI_API_KEY
 export async function GET() {
   try {
     const hasApiKey = !!API_KEY
+    const envKeys = Object.keys(process.env).filter(key => key.includes('GEMINI')).length
+
     return NextResponse.json({
       status: 'ok',
       apiConfigured: hasApiKey,
+      envKeysFound: envKeys,
+      keyLength: API_KEY ? API_KEY.length : 0,
+      nodeEnv: process.env.NODE_ENV,
       timestamp: new Date().toISOString()
     })
   } catch (error) {
@@ -26,8 +31,15 @@ export async function POST(request: NextRequest) {
     // Validate API key is configured
     if (!API_KEY) {
       console.error('GEMINI_API_KEY environment variable is not set')
+      console.error('Available env keys:', Object.keys(process.env).filter(key => key.includes('GEMINI')))
+      console.error('NODE_ENV:', process.env.NODE_ENV)
+
       return NextResponse.json({
-        error: 'AI service not configured. Please check environment variables.'
+        error: 'AI service not configured. Please check environment variables.',
+        debug: {
+          nodeEnv: process.env.NODE_ENV,
+          geminiKeysFound: Object.keys(process.env).filter(key => key.includes('GEMINI')).length
+        }
       }, { status: 500 })
     }
 
