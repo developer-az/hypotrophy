@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Task, Goal, AIInsight } from '@/types'
 import TaskList from '@/components/TaskList'
 import TaskForm from '@/components/TaskForm'
+import GoalList from '@/components/GoalList'
+import GoalForm from '@/components/GoalForm'
 import AIInsights from '@/components/AIInsights'
 import ProgressDashboard from '@/components/ProgressDashboard'
 import BiscuitConversation from '@/components/BiscuitConversation'
@@ -16,6 +18,7 @@ export default function Home() {
   const [insights, setInsights, isInsightsClient] = useLocalStorage<AIInsight[]>('hypotrophy-insights', [])
   const [activeTab, setActiveTab] = useState<'tasks' | 'goals' | 'insights'>('tasks')
   const [latestInsight, setLatestInsight] = useState<string>('')
+  const [isBiscuitTyping, setIsBiscuitTyping] = useState(false)
 
   // Generate welcome insight if no data exists (client-side only)
   useEffect(() => {
@@ -25,8 +28,8 @@ export default function Home() {
       const welcomeInsight: AIInsight = {
         id: 'welcome',
         type: 'encouragement',
-        title: 'Welcome to Hypotrophy! 🚀',
-        content: 'Start by adding your first task or goal. I\'ll analyze your patterns and provide personalized insights to help you grow. Remember, small consistent actions lead to big transformations!',
+        title: 'Welcome to Hypotrophy! 🐹',
+        content: 'Hi! I\'m Biscuit, and I\'m thrilled you\'re here! Start by adding your first task or goal, and I\'ll be right here to cheer you on, celebrate your wins, and help you stay motivated. Let\'s achieve amazing things together!',
         createdAt: new Date()
       }
       setInsights([welcomeInsight])
@@ -81,6 +84,66 @@ export default function Home() {
     }
   }
 
+  const addGoal = (goalData: Omit<Goal, 'id' | 'progress' | 'createdAt' | 'tasks'>) => {
+    const newGoal: Goal = {
+      ...goalData,
+      id: Date.now().toString(),
+      progress: 0,
+      createdAt: new Date(),
+      tasks: []
+    }
+    setGoals(prev => [...prev, newGoal])
+
+    // Generate encouraging message from Biscuit
+    const goalMessages = [
+      `🎯 Amazing! You've set a new goal: "${newGoal.title}". Having clear goals is the first step to achieving them!`,
+      `✨ I love your ambition! "${newGoal.title}" is a fantastic goal. Let's break it down and make it happen!`,
+      `🚀 Incredible! You're taking charge of your future with "${newGoal.title}". I'm excited to support you on this journey!`,
+      `💪 Yes! Setting "${newGoal.title}" as your goal shows real commitment. Every big achievement starts with a clear target!`
+    ]
+    const randomMessage = goalMessages[Math.floor(Math.random() * goalMessages.length)]
+    setLatestInsight(randomMessage)
+  }
+
+  const updateGoalProgress = (id: string, progress: number) => {
+    setGoals(prev => prev.map(goal =>
+      goal.id === id
+        ? { ...goal, progress, completedAt: progress >= 100 ? new Date() : undefined }
+        : goal
+    ))
+
+    const goal = goals.find(g => g.id === id)
+    if (goal && progress >= 100) {
+      const completionMessage = `🎉🎯 INCREDIBLE! You've completed your goal "${goal.title}"! This is a huge achievement - you should be so proud of yourself! Time to celebrate! 🥳✨`
+      setLatestInsight(completionMessage)
+    } else if (goal && progress > goal.progress) {
+      const progressMessages = [
+        `🌟 Great progress on "${goal.title}"! You're at ${progress}% - keep up the momentum!`,
+        `💪 Nice work! You've pushed "${goal.title}" to ${progress}%. Every step forward counts!`,
+        `🚀 Awesome! "${goal.title}" is now at ${progress}%. You're getting closer to your target!`
+      ]
+      const randomMessage = progressMessages[Math.floor(Math.random() * progressMessages.length)]
+      setLatestInsight(randomMessage)
+    }
+  }
+
+  const deleteGoal = (id: string) => {
+    const goalToDelete = goals.find(g => g.id === id)
+    setGoals(prev => prev.filter(goal => goal.id !== id))
+
+    if (goalToDelete) {
+      const deleteMessage = `I've removed "${goalToDelete.title}" from your goals. Sometimes priorities change, and that's perfectly okay! 🎯✨`
+      setLatestInsight(deleteMessage)
+    }
+  }
+
+  const toggleGoalComplete = (id: string) => {
+    const goal = goals.find(g => g.id === id)
+    if (goal) {
+      updateGoalProgress(id, 100)
+    }
+  }
+
   const generateTaskInsight = async (task: Task) => {
     try {
       const newInsight = await aiService.generateTaskInsight(task, tasks)
@@ -93,7 +156,7 @@ export default function Home() {
         id: Date.now().toString(),
         type: 'suggestion',
         title: 'Task Added Successfully',
-        content: `Great choice adding "${task.title}" to your ${task.category} goals! Breaking big objectives into small, actionable tasks is key to success.`,
+        content: `Great choice adding "${task.title}" to your ${task.category} goals! Breaking big objectives into small, actionable tasks is key to success. I'm excited to see you tackle this!`,
         category: task.category,
         createdAt: new Date(),
         relevantTasks: [task.id]
@@ -105,6 +168,7 @@ export default function Home() {
 
   const generateProgressInsight = async () => {
     if (tasks.length === 0) return
+    if (isBiscuitTyping) return // Don't generate insight if Biscuit is currently typing
 
     try {
       console.log('Generating progress insight for tasks:', tasks.length)
@@ -186,7 +250,7 @@ export default function Home() {
         </div>
       </header>
 
-      <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} />
+      <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
 
       <div className="flex justify-center mb-8">
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-2 inline-flex hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200">
@@ -225,8 +289,8 @@ export default function Home() {
             }`}
           >
             <span className="flex items-center space-x-2">
-              <span>🤖</span>
-              <span>AI Insights</span>
+              <span>🐹</span>
+              <span>Biscuit's Insights</span>
             </span>
           </button>
         </div>
@@ -245,17 +309,19 @@ export default function Home() {
             </>
           )}
           {activeTab === 'goals' && (
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8 text-center animate-fade-in">
-              <div className="text-6xl mb-4">🎯</div>
-              <h2 className="text-2xl font-bold text-neutral-800 mb-4">Goals (Coming Soon)</h2>
-              <p className="text-neutral-600 text-lg">Advanced goal tracking and management features will be available soon!</p>
-              <div className="mt-6">
-                <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
-                  <span>✨</span>
-                  <span>SMART Goals, Milestones & Dependencies</span>
-                </div>
+            <>
+              <div className="animate-slide-up">
+                <GoalForm onAddGoal={addGoal} />
               </div>
-            </div>
+              <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                <GoalList
+                  goals={goals}
+                  onUpdateProgress={updateGoalProgress}
+                  onDeleteGoal={deleteGoal}
+                  onToggleComplete={toggleGoalComplete}
+                />
+              </div>
+            </>
           )}
           {activeTab === 'insights' && (
             <div className="animate-fade-in">
@@ -269,6 +335,8 @@ export default function Home() {
             <BiscuitConversation
               aiResponse={latestInsight}
               onResponseComplete={() => setLatestInsight('')}
+              onTypingStart={() => setIsBiscuitTyping(true)}
+              onTypingEnd={() => setIsBiscuitTyping(false)}
             />
           </div>
           {activeTab !== 'insights' && (

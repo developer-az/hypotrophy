@@ -15,12 +15,14 @@ export interface Task {
 export interface Goal {
   id: string
   title: string
-  description: string
+  description?: string
   category: string
   targetDate: Date
   progress: number
-  tasks: Task[]
+  tasks?: Task[]
   aiRecommendations?: string[]
+  createdAt: Date
+  completedAt?: Date
 }
 
 export interface UserProgress {

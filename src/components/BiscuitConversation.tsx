@@ -14,11 +14,15 @@ interface Message {
 interface BiscuitConversationProps {
   aiResponse?: string
   onResponseComplete?: () => void
+  onTypingStart?: () => void
+  onTypingEnd?: () => void
 }
 
 export default function BiscuitConversation({
   aiResponse,
-  onResponseComplete
+  onResponseComplete,
+  onTypingStart,
+  onTypingEnd
 }: BiscuitConversationProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -42,6 +46,7 @@ export default function BiscuitConversation({
   useEffect(() => {
     if (aiResponse && !currentlyTyping) {
       setCurrentlyTyping(true)
+      onTypingStart?.()
       const newMessage: Message = {
         id: Date.now().toString(),
         text: aiResponse,
@@ -50,10 +55,11 @@ export default function BiscuitConversation({
       }
       setMessages(prev => [...prev, newMessage])
     }
-  }, [aiResponse, currentlyTyping])
+  }, [aiResponse, currentlyTyping, onTypingStart])
 
   const handleTypingComplete = () => {
     setCurrentlyTyping(false)
+    onTypingEnd?.()
     onResponseComplete?.()
   }
 

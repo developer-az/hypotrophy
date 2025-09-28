@@ -5,9 +5,10 @@ import { Task } from '@/types'
 interface ProgressDashboardProps {
   tasks: Task[]
   onGenerateInsight?: () => void
+  isAnalyzing?: boolean
 }
 
-export default function ProgressDashboard({ tasks, onGenerateInsight }: ProgressDashboardProps) {
+export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzing = false }: ProgressDashboardProps) {
   const completedTasks = tasks.filter(task => task.completed).length
   const totalTasks = tasks.length
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
@@ -81,12 +82,17 @@ export default function ProgressDashboard({ tasks, onGenerateInsight }: Progress
           <h2 className="text-2xl font-bold text-neutral-800">Your Progress Dashboard</h2>
           {onGenerateInsight && totalTasks > 0 && (
             <button
-              onClick={onGenerateInsight}
-              className="ml-auto bg-gradient-to-r from-primary-500 to-primary-600 text-white px-4 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary-200"
+              onClick={isAnalyzing ? undefined : onGenerateInsight}
+              disabled={isAnalyzing}
+              className={`ml-auto px-4 py-2 rounded-lg font-semibold shadow-lg transition-all duration-300 ease-out focus:outline-none focus:ring-4 ${
+                isAnalyzing
+                  ? 'bg-neutral-400 text-neutral-600 cursor-not-allowed opacity-75'
+                  : 'bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-primary-200'
+              }`}
             >
               <span className="flex items-center space-x-2">
-                <span>🤖</span>
-                <span>Get AI Analysis</span>
+                <span>{isAnalyzing ? '💭' : '🐹'}</span>
+                <span>{isAnalyzing ? 'Biscuit is thinking...' : 'Ask Biscuit for Analysis'}</span>
               </span>
             </button>
           )}

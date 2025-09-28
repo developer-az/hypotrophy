@@ -72,7 +72,7 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400"
             placeholder="What do you want to accomplish?"
             required
           />
@@ -86,7 +86,7 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 resize-none"
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 resize-none"
             placeholder="Add more details..."
             rows={3}
           />
@@ -111,7 +111,7 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
                 id="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 appearance-none cursor-pointer"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 placeholder-gray-400 appearance-none cursor-pointer"
               >
               <option value="personal">👤 Personal</option>
               <option value="health">💪 Health & Fitness</option>
@@ -132,7 +132,7 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
               id="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-primary-200 focus:border-primary-400 transition-all duration-200 ease-out placeholder-neutral-400 focus:shadow-lg appearance-none cursor-pointer"
+              className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white/80 backdrop-blur-sm text-neutral-800 focus:outline-none focus:ring-4 focus:ring-primary-200 focus:border-primary-400 transition-all duration-200 ease-out placeholder-neutral-400 focus:shadow-lg appearance-none cursor-pointer"
             >
               <option value="low">🟢 Low</option>
               <option value="medium">🟡 Medium</option>
