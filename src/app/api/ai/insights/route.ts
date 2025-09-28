@@ -2,7 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { Task } from '@/types'
 
-const API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyAr3TOUeP5yQhccvXGnaem5pkH1EJhCVVo'
+const API_KEY = process.env.GEMINI_API_KEY
+
+if (!API_KEY) {
+  throw new Error('GEMINI_API_KEY environment variable is not set')
+}
+
 const genAI = new GoogleGenerativeAI(API_KEY)
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
