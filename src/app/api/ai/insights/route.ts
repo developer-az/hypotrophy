@@ -4,15 +4,37 @@ import { Task } from '@/types'
 
 const API_KEY = process.env.GEMINI_API_KEY
 
-if (!API_KEY) {
-  throw new Error('GEMINI_API_KEY environment variable is not set')
+// Health check endpoint
+export async function GET() {
+  try {
+    const hasApiKey = !!API_KEY
+    return NextResponse.json({
+      status: 'ok',
+      apiConfigured: hasApiKey,
+      timestamp: new Date().toISOString()
+    })
+  } catch (error) {
+    return NextResponse.json({
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
+  }
 }
-
-const genAI = new GoogleGenerativeAI(API_KEY)
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
 export async function POST(request: NextRequest) {
   try {
+    // Validate API key is configured
+    if (!API_KEY) {
+      console.error('GEMINI_API_KEY environment variable is not set')
+      return NextResponse.json({
+        error: 'AI service not configured. Please check environment variables.'
+      }, { status: 500 })
+    }
+
+    // Initialize AI service with validated key
+    const genAI = new GoogleGenerativeAI(API_KEY)
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+
     const { type, tasks, task, category, userHistory } = await request.json()
 
     if (type === 'progress') {
@@ -102,6 +124,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid request type' }, { status: 400 })
   } catch (error) {
     console.error('AI API Error:', error)
-    return NextResponse.json({ error: 'Failed to generate AI insight' }, { status: 500 })
+
+    // Provide more specific error information
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+
+    return NextResponse.json({
+      error: 'Failed to generate AI insight',
+      details: errorMessage,
+      timestamp: new Date().toISOString()
+    }, { status: 500 })
   }
 }
