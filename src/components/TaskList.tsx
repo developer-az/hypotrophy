@@ -74,7 +74,7 @@ export default function TaskList({ tasks, onToggleTask }: TaskListProps) {
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className={`task-card ${task.completed ? 'task-card-completed opacity-75' : ''} ${getPriorityColor(task.priority)}`}
+            className={`task-card ${task.completed ? 'task-card-completed' : ''} ${getPriorityColor(task.priority)}`}
           >
             <div className="flex items-start space-x-4">
               <button
