@@ -31,11 +31,16 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-      <h2 className="text-xl font-semibold mb-4">Add New Task</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="premium-card p-8">
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
+          <span className="text-white text-lg">✨</span>
+        </div>
+        <h2 className="text-2xl font-bold text-neutral-800">Add New Task</h2>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="title" className="block text-sm font-semibold text-neutral-700 mb-2">
             Task Title *
           </label>
           <input
@@ -43,70 +48,73 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="form-input"
             placeholder="What do you want to accomplish?"
             required
           />
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="description" className="block text-sm font-semibold text-neutral-700 mb-2">
             Description (Optional)
           </label>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="form-textarea"
             placeholder="Add more details..."
-            rows={2}
+            rows={3}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="category" className="block text-sm font-semibold text-neutral-700 mb-2">
               Category
             </label>
             <select
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="form-select"
             >
-              <option value="personal">Personal</option>
-              <option value="health">Health & Fitness</option>
-              <option value="career">Career</option>
-              <option value="learning">Learning</option>
-              <option value="relationships">Relationships</option>
-              <option value="finance">Finance</option>
-              <option value="creativity">Creativity</option>
-              <option value="home">Home & Environment</option>
+              <option value="personal">👤 Personal</option>
+              <option value="health">💪 Health & Fitness</option>
+              <option value="career">💼 Career</option>
+              <option value="learning">📚 Learning</option>
+              <option value="relationships">❤️ Relationships</option>
+              <option value="finance">💰 Finance</option>
+              <option value="creativity">🎨 Creativity</option>
+              <option value="home">🏠 Home & Environment</option>
             </select>
           </div>
 
           <div>
-            <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="priority" className="block text-sm font-semibold text-neutral-700 mb-2">
               Priority
             </label>
             <select
               id="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="form-select"
             >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
+              <option value="low">🟢 Low</option>
+              <option value="medium">🟡 Medium</option>
+              <option value="high">🔴 High</option>
             </select>
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          className="btn-primary w-full text-lg py-4"
         >
-          Add Task
+          <span className="flex items-center justify-center space-x-2">
+            <span>✨</span>
+            <span>Add Task</span>
+          </span>
         </button>
       </form>
     </div>

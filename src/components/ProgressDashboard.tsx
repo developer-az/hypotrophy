@@ -37,7 +37,7 @@ export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
       const date = new Date(task.completedAt!)
       return date.toDateString()
     })
-  
+
   const uniqueCompletedDates = [...new Set(completedDates)]
   const streak = uniqueCompletedDates.length
 
@@ -57,48 +57,58 @@ export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
 
   if (totalTasks === 0) {
     return (
-      <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-        <h2 className="text-xl font-semibold mb-4">Your Progress</h2>
-        <div className="text-center py-4">
-          <p className="text-gray-500">Add some tasks to see your progress!</p>
+      <div className="premium-card p-8 text-center">
+        <div className="text-6xl mb-4 animate-float">📊</div>
+        <h2 className="text-2xl font-bold text-neutral-800 mb-4">Your Progress Dashboard</h2>
+        <p className="text-neutral-600 text-lg">Add some tasks to see your amazing progress!</p>
+        <div className="mt-6">
+          <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
+            <span>🚀</span>
+            <span>Start your growth journey today</span>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-      <h2 className="text-xl font-semibold mb-4">Your Progress</h2>
-      
+    <div className="premium-card p-8">
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center">
+          <span className="text-white text-lg">📊</span>
+        </div>
+        <h2 className="text-2xl font-bold text-neutral-800">Your Progress Dashboard</h2>
+      </div>
+
       {/* Main stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="text-center">
-          <div className="text-3xl font-bold text-primary-600">{completedTasks}</div>
-          <div className="text-sm text-gray-600">Completed</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+        <div className="text-center p-4 bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl">
+          <div className="text-4xl font-black text-primary-600 mb-1">{completedTasks}</div>
+          <div className="text-sm font-semibold text-primary-700">Completed</div>
         </div>
-        <div className="text-center">
-          <div className="text-3xl font-bold text-gray-700">{totalTasks}</div>
-          <div className="text-sm text-gray-600">Total Tasks</div>
+        <div className="text-center p-4 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-2xl">
+          <div className="text-4xl font-black text-neutral-700 mb-1">{totalTasks}</div>
+          <div className="text-sm font-semibold text-neutral-600">Total Tasks</div>
         </div>
-        <div className="text-center">
-          <div className="text-3xl font-bold text-green-600">{completionRate}%</div>
-          <div className="text-sm text-gray-600">Completion Rate</div>
+        <div className="text-center p-4 bg-gradient-to-br from-accent-50 to-accent-100 rounded-2xl">
+          <div className="text-4xl font-black text-accent-600 mb-1">{completionRate}%</div>
+          <div className="text-sm font-semibold text-accent-700">Success Rate</div>
         </div>
-        <div className="text-center">
-          <div className="text-3xl font-bold text-purple-600">{streak}</div>
-          <div className="text-sm text-gray-600">Active Days</div>
+        <div className="text-center p-4 bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-2xl">
+          <div className="text-4xl font-black text-secondary-600 mb-1">{streak}</div>
+          <div className="text-sm font-semibold text-secondary-700">Active Days</div>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="mb-6">
-        <div className="flex justify-between text-sm text-gray-600 mb-2">
-          <span>Overall Progress</span>
-          <span>{completionRate}%</span>
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-sm font-semibold text-neutral-700">Overall Progress</span>
+          <span className="text-lg font-bold text-primary-600">{completionRate}%</span>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
-          <div 
-            className="bg-gradient-to-r from-primary-500 to-purple-500 h-3 rounded-full transition-all duration-500"
+        <div className="progress-bar">
+          <div
+            className="progress-fill"
             style={{ width: `${completionRate}%` }}
           ></div>
         </div>
@@ -107,23 +117,24 @@ export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
       {/* Category breakdown */}
       {categoryCompletion.length > 0 && (
         <div>
-          <h3 className="font-medium text-gray-900 mb-3">Progress by Category</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <h3 className="text-lg font-bold text-neutral-800 mb-4">Progress by Category</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {categoryCompletion.map(({ category, total, completed, rate }) => (
-              <div key={category} className="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg">
-                <span className="text-xl">{getCategoryIcon(category)}</span>
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium capitalize">{category}</span>
-                    <span className="text-xs text-gray-600">{completed}/{total}</span>
+              <div key={category} className="premium-card p-4 hover:scale-105 transition-transform duration-200">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-2xl">{getCategoryIcon(category)}</span>
+                    <span className="font-semibold text-neutral-700 capitalize">{category}</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                    <div 
-                      className="bg-primary-500 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${rate}%` }}
-                    ></div>
-                  </div>
+                  <span className="text-sm font-bold text-primary-600">{completed}/{total}</span>
                 </div>
+                <div className="progress-bar h-2">
+                  <div
+                    className="progress-fill h-2"
+                    style={{ width: `${rate}%` }}
+                  ></div>
+                </div>
+                <div className="text-xs font-medium text-neutral-500 mt-2">{rate}% complete</div>
               </div>
             ))}
           </div>

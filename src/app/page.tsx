@@ -77,88 +77,120 @@ export default function Home() {
   // Show loading state during hydration
   if (!isTasksClient || !isGoalsClient || !isInsightsClient) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold hypotrophy-gradient bg-clip-text text-transparent mb-2">
-            Hypotrophy
-          </h1>
-          <p className="text-gray-600 text-lg">Your AI-Powered Personal Growth Assistant</p>
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <header className="text-center mb-12">
+          <div className="animate-float">
+            <h1 className="text-6xl font-black hypotrophy-gradient mb-4 tracking-tight">
+              Hypotrophy
+            </h1>
+            <p className="text-xl text-neutral-600 font-medium">Your AI-Powered Personal Growth Assistant</p>
+          </div>
         </header>
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+          <div className="relative">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-200"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent absolute top-0 left-0"></div>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold hypotrophy-gradient bg-clip-text text-transparent mb-2">
-          Hypotrophy
-        </h1>
-        <p className="text-gray-600 text-lg">Your AI-Powered Personal Growth Assistant</p>
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <header className="text-center mb-12">
+        <div className="animate-fade-in">
+          <h1 className="text-6xl font-black hypotrophy-gradient mb-4 tracking-tight">
+            Hypotrophy
+          </h1>
+          <p className="text-xl text-neutral-600 font-medium mb-2">Your AI-Powered Personal Growth Assistant</p>
+          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"></div>
+        </div>
       </header>
 
       <ProgressDashboard tasks={tasks} />
 
-      <div className="flex justify-center mb-6">
-        <div className="bg-white rounded-lg p-1 shadow-md">
+      <div className="flex justify-center mb-8">
+        <div className="premium-card p-2 inline-flex">
           <button
             onClick={() => setActiveTab('tasks')}
-            className={`px-6 py-2 rounded-md transition-colors ${
+            className={`nav-tab ${
               activeTab === 'tasks'
-                ? 'bg-primary-500 text-white'
-                : 'text-gray-600 hover:text-primary-500'
+                ? 'nav-tab-active'
+                : 'nav-tab-inactive'
             }`}
           >
-            Tasks
+            <span className="flex items-center space-x-2">
+              <span>📋</span>
+              <span>Tasks</span>
+            </span>
           </button>
           <button
             onClick={() => setActiveTab('goals')}
-            className={`px-6 py-2 rounded-md transition-colors ${
+            className={`nav-tab ${
               activeTab === 'goals'
-                ? 'bg-primary-500 text-white'
-                : 'text-gray-600 hover:text-primary-500'
+                ? 'nav-tab-active'
+                : 'nav-tab-inactive'
             }`}
           >
-            Goals
+            <span className="flex items-center space-x-2">
+              <span>🎯</span>
+              <span>Goals</span>
+            </span>
           </button>
           <button
             onClick={() => setActiveTab('insights')}
-            className={`px-6 py-2 rounded-md transition-colors ${
+            className={`nav-tab ${
               activeTab === 'insights'
-                ? 'bg-primary-500 text-white'
-                : 'text-gray-600 hover:text-primary-500'
+                ? 'nav-tab-active'
+                : 'nav-tab-inactive'
             }`}
           >
-            AI Insights
+            <span className="flex items-center space-x-2">
+              <span>🤖</span>
+              <span>AI Insights</span>
+            </span>
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
           {activeTab === 'tasks' && (
             <>
-              <TaskForm onAddTask={addTask} />
-              <TaskList tasks={tasks} onToggleTask={toggleTask} />
+              <div className="animate-slide-up">
+                <TaskForm onAddTask={addTask} />
+              </div>
+              <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                <TaskList tasks={tasks} onToggleTask={toggleTask} />
+              </div>
             </>
           )}
           {activeTab === 'goals' && (
-            <div className="bg-white rounded-lg p-6 shadow-md">
-              <h2 className="text-xl font-semibold mb-4">Goals (Coming Soon)</h2>
-              <p className="text-gray-600">Goal tracking and management features will be available soon!</p>
+            <div className="premium-card p-8 text-center animate-fade-in">
+              <div className="text-6xl mb-4">🎯</div>
+              <h2 className="text-2xl font-bold text-neutral-800 mb-4">Goals (Coming Soon)</h2>
+              <p className="text-neutral-600 text-lg">Advanced goal tracking and management features will be available soon!</p>
+              <div className="mt-6">
+                <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
+                  <span>✨</span>
+                  <span>SMART Goals, Milestones & Dependencies</span>
+                </div>
+              </div>
             </div>
           )}
           {activeTab === 'insights' && (
-            <AIInsights insights={insights} />
+            <div className="animate-fade-in">
+              <AIInsights insights={insights} />
+            </div>
           )}
         </div>
 
         <div className="lg:col-span-1">
           {activeTab !== 'insights' && (
-            <AIInsights insights={insights.slice(0, 3)} compact />
+            <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <AIInsights insights={insights.slice(0, 3)} compact />
+            </div>
           )}
         </div>
       </div>
