@@ -31,7 +31,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
   }
 
   return (
-    <div className="premium-card p-8">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8">
       <div className="flex items-center space-x-3 mb-6">
         <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl flex items-center justify-center">
           <span className="text-white text-lg">✨</span>
@@ -48,7 +48,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="form-input"
+            className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-primary-200 focus:border-primary-400 transition-all duration-200 ease-out placeholder-neutral-400 focus:shadow-lg"
             placeholder="What do you want to accomplish?"
             required
           />
@@ -62,7 +62,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="form-textarea"
+            className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-primary-200 focus:border-primary-400 transition-all duration-200 ease-out placeholder-neutral-400 focus:shadow-lg resize-none"
             placeholder="Add more details..."
             rows={3}
           />
@@ -77,7 +77,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="form-select"
+              className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-primary-200 focus:border-primary-400 transition-all duration-200 ease-out placeholder-neutral-400 focus:shadow-lg appearance-none cursor-pointer"
             >
               <option value="personal">👤 Personal</option>
               <option value="health">💪 Health & Fitness</option>
@@ -98,7 +98,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
               id="priority"
               value={priority}
               onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="form-select"
+              className="w-full px-4 py-3 rounded-xl border border-neutral-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-4 focus:ring-primary-200 focus:border-primary-400 transition-all duration-200 ease-out placeholder-neutral-400 focus:shadow-lg appearance-none cursor-pointer"
             >
               <option value="low">🟢 Low</option>
               <option value="medium">🟡 Medium</option>
@@ -109,7 +109,7 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
 
         <button
           type="submit"
-          className="btn-primary w-full text-lg py-4"
+          className="bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-2xl transition-all duration-300 ease-out hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-primary-200 w-full text-lg"
         >
           <span className="flex items-center justify-center space-x-2">
             <span>✨</span>

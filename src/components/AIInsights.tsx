@@ -30,7 +30,7 @@ export default function AIInsights({ insights, compact = false }: AIInsightsProp
 
   if (insights.length === 0) {
     return (
-      <div className="bg-white rounded-lg p-6 shadow-md">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300 ease-out">
         <h2 className="text-xl font-semibold mb-4">AI Insights</h2>
         <div className="text-center py-8">
           <div className="text-4xl mb-2">🤖</div>
@@ -41,16 +41,16 @@ export default function AIInsights({ insights, compact = false }: AIInsightsProp
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300 ease-out">
       <h2 className="text-xl font-semibold mb-4">
         {compact ? 'Recent Insights' : 'AI Insights'}
       </h2>
-      
+
       <div className="space-y-4">
         {insights.map((insight) => (
           <div
             key={insight.id}
-            className={`insight-card border-l-4 ${getInsightColor(insight.type)}`}
+            className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out animate-slide-up p-6 bg-gradient-to-br from-primary-50/50 to-secondary-50/50 border-l-4 border-primary-400 hover:border-secondary-400 ${getInsightColor(insight.type)}`}
           >
             <div className="flex items-start space-x-3">
               <span className="text-2xl">{getInsightIcon(insight.type)}</span>

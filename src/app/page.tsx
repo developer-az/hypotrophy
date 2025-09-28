@@ -111,13 +111,13 @@ export default function Home() {
       <ProgressDashboard tasks={tasks} />
 
       <div className="flex justify-center mb-8">
-        <div className="premium-card p-2 inline-flex">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-2 inline-flex hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200">
           <button
             onClick={() => setActiveTab('tasks')}
-            className={`nav-tab ${
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'tasks'
-                ? 'nav-tab-active'
-                : 'nav-tab-inactive'
+                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
             }`}
           >
             <span className="flex items-center space-x-2">
@@ -127,10 +127,10 @@ export default function Home() {
           </button>
           <button
             onClick={() => setActiveTab('goals')}
-            className={`nav-tab ${
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'goals'
-                ? 'nav-tab-active'
-                : 'nav-tab-inactive'
+                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
             }`}
           >
             <span className="flex items-center space-x-2">
@@ -140,10 +140,10 @@ export default function Home() {
           </button>
           <button
             onClick={() => setActiveTab('insights')}
-            className={`nav-tab ${
+            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'insights'
-                ? 'nav-tab-active'
-                : 'nav-tab-inactive'
+                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
+                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
             }`}
           >
             <span className="flex items-center space-x-2">
@@ -167,7 +167,7 @@ export default function Home() {
             </>
           )}
           {activeTab === 'goals' && (
-            <div className="premium-card p-8 text-center animate-fade-in">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8 text-center animate-fade-in">
               <div className="text-6xl mb-4">🎯</div>
               <h2 className="text-2xl font-bold text-neutral-800 mb-4">Goals (Coming Soon)</h2>
               <p className="text-neutral-600 text-lg">Advanced goal tracking and management features will be available soon!</p>

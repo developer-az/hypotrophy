@@ -47,7 +47,7 @@ export default function TaskList({ tasks, onToggleTask }: TaskListProps) {
 
   if (tasks.length === 0) {
     return (
-      <div className="premium-card p-8 text-center">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8 text-center">
         <div className="text-6xl mb-4 animate-float">🌱</div>
         <h3 className="text-2xl font-bold text-neutral-800 mb-4">Ready to Grow?</h3>
         <p className="text-neutral-600 text-lg mb-6">Add your first task above and let AI help you achieve your goals!</p>
@@ -74,15 +74,15 @@ export default function TaskList({ tasks, onToggleTask }: TaskListProps) {
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className={`task-card ${task.completed ? 'task-card-completed' : ''} ${getPriorityColor(task.priority)}`}
+            className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-l-4 border-primary-500 hover:shadow-xl hover:border-primary-400 transition-all duration-300 ease-out animate-slide-up p-6 ${task.completed ? 'border-accent-500 bg-accent-50/50' : ''} ${getPriorityColor(task.priority)}`}
           >
             <div className="flex items-start space-x-4">
               <button
                 onClick={() => onToggleTask(task.id)}
                 className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 hover:scale-110 ${
                   task.completed
-                    ? 'bg-accent-500 border-accent-500 text-white shadow-glow'
-                    : 'border-neutral-300 hover:border-primary-500 hover:shadow-glow'
+                    ? 'bg-accent-500 border-accent-500 text-white shadow-lg'
+                    : 'border-neutral-300 hover:border-primary-500 hover:shadow-lg'
                 }`}
               >
                 {task.completed && (

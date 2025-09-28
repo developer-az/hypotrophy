@@ -57,7 +57,7 @@ export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
 
   if (totalTasks === 0) {
     return (
-      <div className="premium-card p-8 text-center">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8 text-center">
         <div className="text-6xl mb-4 animate-float">📊</div>
         <h2 className="text-2xl font-bold text-neutral-800 mb-4">Your Progress Dashboard</h2>
         <p className="text-neutral-600 text-lg">Add some tasks to see your amazing progress!</p>
@@ -72,7 +72,7 @@ export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
   }
 
   return (
-    <div className="premium-card p-8">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8">
       <div className="flex items-center space-x-3 mb-6">
         <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center">
           <span className="text-white text-lg">📊</span>
@@ -120,7 +120,7 @@ export default function ProgressDashboard({ tasks }: ProgressDashboardProps) {
           <h3 className="text-lg font-bold text-neutral-800 mb-4">Progress by Category</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {categoryCompletion.map(({ category, total, completed, rate }) => (
-              <div key={category} className="premium-card p-4 hover:scale-105 transition-transform duration-200">
+              <div key={category} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl">{getCategoryIcon(category)}</span>
