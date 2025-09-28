@@ -418,6 +418,16 @@ body {
   background: rgba(255, 255, 255, 0.5);
 }
 
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Luxury Button Styles */
 .btn-luxury {
   @apply px-8 py-4 rounded-2xl font-semibold text-white;

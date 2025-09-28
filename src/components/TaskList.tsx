@@ -64,62 +64,82 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   if (tasks.length === 0) {
     return (
-      <div className="bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-xl border border-blue-200/50 hover:shadow-2xl transition-all duration-500 ease-out p-12 text-center">
-        <div className="relative mb-6">
-          <div className="text-7xl animate-float">🌱</div>
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full animate-pulse"></div>
+      <div className="card-luxury hover-lift-luxury text-center animate-fade-in-scale">
+        <div className="relative mb-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-accent-500/20 to-primary-500/20 rounded-full blur-3xl scale-150 animate-pulse-luxury"></div>
+          <div className="relative text-8xl animate-float-gentle">🌱</div>
+          <div className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full animate-pulse-luxury flex items-center justify-center">
+            <span className="text-white text-sm">✨</span>
+          </div>
         </div>
-        <h3 className="text-3xl font-bold bg-gradient-to-r from-neutral-800 to-blue-600 bg-clip-text text-transparent mb-4">
+        <h3 className="text-4xl font-black text-gradient-luxury mb-6">
           Ready to Transform Your Life?
         </h3>
-        <p className="text-neutral-600 text-lg mb-8 max-w-md mx-auto leading-relaxed">
+        <p className="text-xl text-neutral-600 font-medium mb-8 max-w-lg mx-auto leading-relaxed">
           Describe any goal naturally above, and watch as Biscuit helps you break it down and achieve it step by step!
         </p>
-        <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-100 to-purple-100 px-6 py-3 rounded-2xl text-blue-700 font-semibold">
-          <span>✨</span>
-          <span>Your growth journey starts with one task</span>
-          <span>🚀</span>
+        <div className="inline-flex items-center space-x-4 glass-card px-8 py-4 rounded-2xl hover-lift-gentle">
+          <span className="text-2xl animate-bounce-gentle">✨</span>
+          <span className="text-lg font-bold text-gradient-luxury">Your growth journey starts with one task</span>
+          <span className="text-2xl animate-bounce-gentle" style={{ animationDelay: '0.3s' }}>🚀</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-3">
-        <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-          <span className="text-white text-sm">📋</span>
+    <div className="space-y-8 animate-fade-in-scale">
+      <div className="flex items-center space-x-4">
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-2xl blur-lg opacity-50"></div>
+          <div className="relative w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-2xl flex items-center justify-center shadow-luxury">
+            <span className="text-white text-lg animate-float-gentle">📋</span>
+          </div>
         </div>
-        <h2 className="text-2xl font-bold text-neutral-800">Your Tasks</h2>
-        <span className="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-sm font-semibold">
-          {tasks.length}
-        </span>
+        <h2 className="text-3xl font-black text-gradient-luxury">Your Tasks</h2>
+        <div className="glass-card px-4 py-2 rounded-2xl shadow-soft">
+          <span className="text-lg font-bold text-gradient-luxury">
+            {tasks.length}
+          </span>
+        </div>
       </div>
-      <div className="space-y-4">
-        {sortedTasks.map((task) => (
+      <div className="space-y-6">
+        {sortedTasks.map((task, index) => (
           <div
             key={task.id}
-            className={`group bg-gradient-to-br from-white to-neutral-50/50 rounded-3xl shadow-lg border-2 hover:shadow-2xl transition-all duration-500 ease-out animate-slide-up p-6 hover:scale-[1.01] ${
+            className={`group card-luxury hover-lift-luxury animate-slide-up relative overflow-hidden ${
               task.completed
-                ? 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50'
+                ? 'border-green-300/50 bg-gradient-to-br from-green-50/80 to-emerald-50/80'
                 : getPriorityColor(task.priority) === 'border-red-500'
-                ? 'border-red-300 bg-gradient-to-br from-red-50 to-pink-50'
+                ? 'border-red-300/50 bg-gradient-to-br from-red-50/80 to-pink-50/80'
                 : getPriorityColor(task.priority) === 'border-yellow-500'
-                ? 'border-yellow-300 bg-gradient-to-br from-yellow-50 to-amber-50'
-                : 'border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50'
+                ? 'border-yellow-300/50 bg-gradient-to-br from-yellow-50/80 to-amber-50/80'
+                : 'border-primary-300/50 bg-gradient-to-br from-primary-50/80 to-indigo-50/80'
             }`}
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <div className="flex items-start space-x-4">
+            {/* Priority indicator */}
+            <div className={`absolute top-0 right-0 w-24 h-24 opacity-10 ${
+              task.completed
+                ? 'bg-green-500'
+                : getPriorityColor(task.priority) === 'border-red-500'
+                ? 'bg-red-500'
+                : getPriorityColor(task.priority) === 'border-yellow-500'
+                ? 'bg-yellow-500'
+                : 'bg-primary-500'
+            } rounded-full blur-2xl`}></div>
+            
+            <div className="relative flex items-start space-x-6">
               <button
                 onClick={() => onToggleTask(task.id)}
-                className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                className={`mt-2 w-8 h-8 rounded-2xl border-3 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-soft hover:shadow-elegant ${
                   task.completed
-                    ? 'bg-accent-500 border-accent-500 text-white shadow-lg'
-                    : 'border-neutral-300 hover:border-primary-500 hover:shadow-lg'
+                    ? 'bg-gradient-to-br from-accent-500 to-accent-600 border-accent-500 text-white shadow-luxury'
+                    : 'border-neutral-300 hover:border-primary-500 bg-white/80 backdrop-blur-sm hover:bg-primary-100'
                 }`}
               >
                 {task.completed && (
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 )}
@@ -127,46 +147,50 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
               <div className="flex-1">
                 {deleteConfirm === task.id && (
-                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
-                    <div className="flex items-center space-x-2 mb-3">
-                      <span className="text-red-500">⚠️</span>
-                      <p className="text-sm font-medium text-red-800">
+                  <div className="mb-6 glass-card p-6 border border-red-300/50 rounded-2xl animate-fade-in-scale">
+                    <div className="flex items-center space-x-3 mb-4">
+                      <span className="text-2xl">⚠️</span>
+                      <p className="text-lg font-semibold text-red-800">
                         Are you sure you want to delete this task?
                       </p>
                     </div>
-                    <div className="flex space-x-3">
+                    <div className="flex space-x-4">
                       <button
                         onClick={() => confirmDelete(task.id)}
-                        className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors"
+                        className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-2xl hover:shadow-luxury transition-all duration-300 hover:scale-105"
                       >
                         Yes, Delete
                       </button>
                       <button
                         onClick={cancelDelete}
-                        className="px-4 py-2 bg-neutral-200 text-neutral-700 text-sm font-medium rounded-lg hover:bg-neutral-300 transition-colors"
+                        className="px-6 py-3 glass-card text-neutral-700 font-semibold rounded-2xl hover:shadow-elegant transition-all duration-300 hover:scale-105"
                       >
                         Cancel
                       </button>
                     </div>
                   </div>
                 )}
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{getCategoryIcon(task.category)}</span>
-                    <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-neutral-500' : 'text-neutral-800'}`}>
-                      {task.title}
-                    </h3>
-                    <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                      task.priority === 'high' ? 'bg-red-100 text-red-700 border border-red-200' :
-                      task.priority === 'medium' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                      'bg-green-100 text-green-700 border border-green-200'
-                    }`}>
-                      {task.priority.toUpperCase()}
-                    </span>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-2xl flex items-center justify-center shadow-soft">
+                      <span className="text-lg">{getCategoryIcon(task.category)}</span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className={`text-xl font-bold ${task.completed ? 'line-through text-neutral-500' : 'text-neutral-800'}`}>
+                        {task.title}
+                      </h3>
+                      <span className={`inline-flex items-center px-3 py-1 text-sm font-bold rounded-2xl mt-1 ${
+                        task.priority === 'high' ? 'bg-gradient-to-r from-red-100 to-red-200 text-red-700 shadow-soft' :
+                        task.priority === 'medium' ? 'bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 shadow-soft' :
+                        'bg-gradient-to-r from-green-100 to-green-200 text-green-700 shadow-soft'
+                      }`}>
+                        {task.priority.toUpperCase()}
+                      </span>
+                    </div>
                   </div>
                   <button
                     onClick={() => handleDeleteClick(task.id)}
-                    className="text-neutral-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
+                    className="text-neutral-400 hover:text-red-500 transition-all duration-300 p-3 rounded-2xl hover:bg-red-50 hover:shadow-elegant group"
                     title="Delete task"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
