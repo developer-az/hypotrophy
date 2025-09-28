@@ -59,62 +59,62 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
 
   if (totalTasks === 0) {
     return (
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8 text-center">
-        <div className="text-6xl mb-4 animate-float">📊</div>
-        <h2 className="text-2xl font-bold text-neutral-800 mb-4">Your Progress Dashboard</h2>
-        <p className="text-neutral-600 text-lg">Add some tasks to see your amazing progress!</p>
-        <div className="mt-6">
-          <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
-            <span>🚀</span>
-            <span>Start your growth journey today</span>
-          </div>
+      <div className="modern-card p-12 text-center hover-lift">
+        <div className="text-8xl mb-6 animate-float">📊</div>
+        <h2 className="text-4xl font-black bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent mb-6">Your Progress Dashboard</h2>
+        <p className="text-neutral-600 text-xl mb-8">Add some tasks to see your amazing progress!</p>
+        <div className="inline-flex items-center space-x-3 text-primary-600 font-bold text-lg bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-3 rounded-2xl shadow-soft">
+          <span className="text-2xl">🚀</span>
+          <span>Start your growth journey today</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center">
-          <span className="text-white text-lg">📊</span>
+    <div className="modern-card p-10 hover-lift">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center space-x-4">
+          <div className="w-14 h-14 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-3xl flex items-center justify-center shadow-xl animate-pulse-rainbow">
+            <span className="text-white text-2xl">📊</span>
+          </div>
+          <h2 className="text-3xl font-black bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent">Your Progress Dashboard</h2>
         </div>
-          <h2 className="text-2xl font-bold text-neutral-800">Your Progress Dashboard</h2>
-          {onGenerateInsight && totalTasks > 0 && (
-            <button
-              onClick={isAnalyzing ? undefined : onGenerateInsight}
-              disabled={isAnalyzing}
-              className={`ml-auto px-4 py-2 rounded-lg font-semibold shadow-lg transition-all duration-300 ease-out focus:outline-none focus:ring-4 ${
-                isAnalyzing
-                  ? 'bg-neutral-400 text-neutral-600 cursor-not-allowed opacity-75'
-                  : 'bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-primary-200'
-              }`}
-            >
-              <span className="flex items-center space-x-2">
-                <span>{isAnalyzing ? '💭' : '🐹'}</span>
-                <span>{isAnalyzing ? 'Biscuit is thinking...' : 'Ask Biscuit for Analysis'}</span>
-              </span>
-            </button>
-          )}
-        </div>
+        {onGenerateInsight && totalTasks > 0 && (
+          <button
+            onClick={isAnalyzing ? undefined : onGenerateInsight}
+            disabled={isAnalyzing}
+            className={`px-6 py-3 rounded-2xl font-bold shadow-xl transition-all duration-500 ease-out focus:outline-none focus:ring-4 ${
+              isAnalyzing
+                ? 'bg-neutral-400 text-neutral-600 cursor-not-allowed opacity-75'
+                : 'bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 text-white hover:shadow-2xl hover:scale-105 active:scale-95 focus:ring-primary-200/50 animate-glow'
+            }`}
+          >
+            <span className="flex items-center space-x-3">
+              <span className="text-xl">{isAnalyzing ? '💭' : '🐹'}</span>
+              <span>{isAnalyzing ? 'Biscuit is thinking...' : 'Ask Biscuit for Analysis'}</span>
+            </span>
+          </button>
+        )}
+      </div>
 
       {/* Main stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-        <div className="text-center p-4 bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl">
-          <div className="text-4xl font-black text-primary-600 mb-1">{completedTasks}</div>
-          <div className="text-sm font-semibold text-primary-700">Completed</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+        <div className="text-center p-6 bg-gradient-to-br from-primary-50 via-primary-100 to-primary-200 rounded-3xl shadow-soft hover-scale">
+          <div className="text-5xl font-black text-primary-600 mb-2">{completedTasks}</div>
+          <div className="text-sm font-bold text-primary-700 uppercase tracking-wide">Completed</div>
         </div>
-        <div className="text-center p-4 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-2xl">
-          <div className="text-4xl font-black text-neutral-700 mb-1">{totalTasks}</div>
-          <div className="text-sm font-semibold text-neutral-600">Total Tasks</div>
+        <div className="text-center p-6 bg-gradient-to-br from-neutral-50 via-neutral-100 to-neutral-200 rounded-3xl shadow-soft hover-scale">
+          <div className="text-5xl font-black text-neutral-700 mb-2">{totalTasks}</div>
+          <div className="text-sm font-bold text-neutral-600 uppercase tracking-wide">Total Tasks</div>
         </div>
-        <div className="text-center p-4 bg-gradient-to-br from-accent-50 to-accent-100 rounded-2xl">
-          <div className="text-4xl font-black text-accent-600 mb-1">{completionRate}%</div>
-          <div className="text-sm font-semibold text-accent-700">Success Rate</div>
+        <div className="text-center p-6 bg-gradient-to-br from-accent-50 via-accent-100 to-accent-200 rounded-3xl shadow-soft hover-scale">
+          <div className="text-5xl font-black text-accent-600 mb-2">{completionRate}%</div>
+          <div className="text-sm font-bold text-accent-700 uppercase tracking-wide">Success Rate</div>
         </div>
-        <div className="text-center p-4 bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-2xl">
-          <div className="text-4xl font-black text-secondary-600 mb-1">{streak}</div>
-          <div className="text-sm font-semibold text-secondary-700">Active Days</div>
+        <div className="text-center p-6 bg-gradient-to-br from-secondary-50 via-secondary-100 to-secondary-200 rounded-3xl shadow-soft hover-scale">
+          <div className="text-5xl font-black text-secondary-600 mb-2">{streak}</div>
+          <div className="text-sm font-bold text-secondary-700 uppercase tracking-wide">Active Days</div>
         </div>
       </div>
 

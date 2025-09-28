@@ -166,38 +166,38 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
   return (
     <div className="relative">
       {/* Modern Task Input */}
-      <div className="bg-gradient-to-br from-white to-neutral-50 rounded-3xl shadow-xl border border-neutral-200/50 hover:shadow-2xl transition-all duration-500 ease-out p-8 backdrop-blur-sm">
-        <div className="flex items-center space-x-4 mb-8">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-xl">🎯</span>
+      <div className="modern-card p-10 hover-lift">
+        <div className="flex items-center space-x-6 mb-10">
+          <div className="w-16 h-16 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-3xl flex items-center justify-center shadow-xl animate-pulse-rainbow">
+            <span className="text-white text-2xl">🎯</span>
           </div>
           <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl font-black bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent">
               What would you like to accomplish?
             </h2>
-            <p className="text-neutral-500 text-sm">Just describe it naturally - I'll figure out the details!</p>
+            <p className="text-neutral-500 text-lg">Just describe it naturally - I'll figure out the details!</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Smart Input Field */}
           <div className="relative">
             <textarea
               value={input}
               onChange={(e) => handleInputChange(e.target.value)}
               placeholder="E.g., 'I need to go for a 30-minute run today' or 'Call mom to catch up this weekend' or 'Finish the presentation for Monday's meeting'"
-              className="w-full px-6 py-5 text-lg rounded-2xl border-2 border-neutral-200 bg-white/80 text-neutral-800 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all duration-300 placeholder-neutral-400 resize-none shadow-sm"
-              rows={3}
+              className="w-full px-8 py-6 text-xl rounded-3xl border-2 border-neutral-200/50 bg-white/90 text-neutral-800 focus:outline-none focus:ring-4 focus:ring-primary-200/50 focus:border-primary-400 transition-all duration-500 placeholder-neutral-400 resize-none shadow-soft hover:shadow-medium backdrop-blur-sm"
+              rows={4}
               disabled={isProcessing}
             />
 
             {/* Real-time Detection Preview */}
             {detectedCategory && input.length > 3 && (
-              <div className="absolute top-4 right-4 flex items-center space-x-2">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(detectedPriority)}`}>
+              <div className="absolute top-6 right-6 flex items-center space-x-3">
+                <span className={`px-4 py-2 rounded-full text-sm font-bold shadow-soft ${getPriorityColor(detectedPriority)}`}>
                   {detectedPriority}
                 </span>
-                <span className="flex items-center space-x-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                <span className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 rounded-full text-sm font-bold shadow-soft">
                   <span>{getCategoryIcon(detectedCategory)}</span>
                   <span className="capitalize">{detectedCategory}</span>
                 </span>
@@ -209,19 +209,19 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
           <button
             type="submit"
             disabled={!input.trim() || isProcessing}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-5 rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-200"
+            className="w-full bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 text-white px-10 py-6 rounded-3xl font-bold text-xl shadow-xl hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all duration-500 ease-out focus:outline-none focus:ring-4 focus:ring-primary-200/50 animate-glow"
           >
-            <span className="flex items-center justify-center space-x-3">
+            <span className="flex items-center justify-center space-x-4">
               {isProcessing ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <span>Processing...</span>
+                  <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Processing magic...</span>
                 </>
               ) : (
                 <>
-                  <span>✨</span>
+                  <span className="text-2xl">✨</span>
                   <span>Add to My Goals</span>
-                  <span>🚀</span>
+                  <span className="text-2xl">🚀</span>
                 </>
               )}
             </span>
@@ -229,15 +229,24 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
         </form>
 
         {/* Help Text */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200/50">
-          <div className="flex items-start space-x-3">
-            <span className="text-blue-500 mt-0.5">💡</span>
-            <div className="text-sm text-blue-700">
-              <p className="font-medium mb-1">Smart Detection Examples:</p>
-              <ul className="space-y-1 text-blue-600">
-                <li>• "Exercise for 30 minutes" → 💪 Health, Medium priority</li>
-                <li>• "Urgent: Finish project deadline tomorrow" → 💼 Career, High priority</li>
-                <li>• "Maybe read a book when I have time" → 📚 Learning, Low priority</li>
+        <div className="mt-8 p-6 bg-gradient-to-r from-primary-50 via-secondary-50 to-accent-50 rounded-2xl border border-primary-200/30 shadow-soft">
+          <div className="flex items-start space-x-4">
+            <span className="text-primary-500 mt-1 text-2xl">💡</span>
+            <div className="text-sm text-primary-700">
+              <p className="font-bold mb-3 text-lg">Smart Detection Examples:</p>
+              <ul className="space-y-2 text-primary-600">
+                <li className="flex items-center space-x-2">
+                  <span>•</span>
+                  <span>"Exercise for 30 minutes" → 💪 Health, Medium priority</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span>•</span>
+                  <span>"Urgent: Finish project deadline tomorrow" → 💼 Career, High priority</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span>•</span>
+                  <span>"Maybe read a book when I have time" → 📚 Learning, Low priority</span>
+                </li>
               </ul>
             </div>
           </div>

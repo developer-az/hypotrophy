@@ -84,47 +84,50 @@ export default function BiscuitConversation({
   }
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/30 p-6 max-h-96 overflow-hidden flex flex-col hover-lift">
-      <div className="flex items-center space-x-3 mb-4 pb-3 border-b border-neutral-200">
+    <div className="modern-card p-8 max-h-[500px] overflow-hidden flex flex-col hover-lift">
+      <div className="flex items-center space-x-4 mb-6 pb-4 border-b border-gradient-to-r from-primary-200 to-secondary-200">
         <div className="relative">
           <Image
             src="/biscuit.png"
             alt="Biscuit the Hamster"
-            width={48}
-            height={48}
-            className={`rounded-full border-2 border-primary-200 ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
+            width={56}
+            height={56}
+            className={`rounded-full border-4 border-white/40 shadow-xl ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
           />
-          <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${currentlyTyping ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'} rounded-full border-2 border-white`}></div>
+          <div className={`absolute -bottom-1 -right-1 w-5 h-5 ${currentlyTyping ? 'bg-gradient-to-r from-yellow-400 to-orange-500 animate-pulse' : 'bg-gradient-to-r from-green-400 to-emerald-500'} rounded-full border-3 border-white shadow-soft`}></div>
         </div>
         <div>
-          <h3 className="font-bold text-neutral-800 flex items-center">
+          <h3 className="font-black text-xl bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent flex items-center">
             Biscuit {getBiscuitExpression()}
           </h3>
-          <p className="text-xs text-neutral-500">
+          <p className="text-sm text-neutral-500 font-medium">
             {currentlyTyping ? 'Typing...' : 'Your AI Growth Assistant'}
           </p>
+          <div className="text-xs text-neutral-400 mt-1">
+            Biscuit is powered by AI and here to help you grow! 🌱
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-4 mb-4 max-h-64">
+      <div className="flex-1 overflow-y-auto space-y-6 mb-6 max-h-80 pr-2">
         {messages.map((message, index) => (
-          <div key={message.id} className="flex items-start space-x-3">
+          <div key={message.id} className="flex items-start space-x-4">
             <div className="flex-shrink-0">
               {!message.isUser && (
                 <Image
                   src="/biscuit.png"
                   alt="Biscuit"
-                  width={32}
-                  height={32}
-                  className="rounded-full"
+                  width={40}
+                  height={40}
+                  className="rounded-full border-2 border-white/30 shadow-soft"
                 />
               )}
             </div>
             <div
-              className={`max-w-[80%] p-3 rounded-2xl ${
+              className={`max-w-[85%] p-4 rounded-3xl shadow-soft ${
                 message.isUser
-                  ? 'bg-primary-500 text-white ml-auto rounded-br-md'
-                  : 'bg-neutral-100 text-neutral-800 rounded-bl-md'
+                  ? 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white ml-auto rounded-br-lg shadow-glow'
+                  : 'bg-gradient-to-r from-neutral-50 to-neutral-100 text-neutral-800 rounded-bl-lg'
               }`}
             >
               {index === messages.length - 1 && !message.isUser && currentlyTyping ? (

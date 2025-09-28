@@ -177,52 +177,52 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="text-center mb-12">
+      <header className="text-center mb-16">
         <div className="animate-fade-in">
-          <div className="flex items-center justify-center space-x-4 mb-4">
+          <div className="flex items-center justify-center space-x-6 mb-6">
             <img
               src="/biscuit.png"
               alt="Biscuit the Hamster"
-              className="w-16 h-16 rounded-full border-4 border-primary-200 animate-float"
+              className="w-20 h-20 rounded-full border-4 border-white/30 animate-float shadow-xl hover-glow"
             />
-            <h1 className="text-6xl font-black hypotrophy-gradient tracking-tight">
+            <h1 className="text-7xl font-black hypotrophy-gradient tracking-tight">
               Hypotrophy
             </h1>
           </div>
-          <p className="text-xl text-neutral-600 font-medium mb-2">
+          <p className="text-2xl text-neutral-600 font-medium mb-4">
             Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
           </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"></div>
+          <div className="w-32 h-1.5 bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 mx-auto rounded-full animate-shimmer"></div>
         </div>
       </header>
 
       <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
 
-      <div className="flex justify-center mb-8">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-2 inline-flex hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200">
+      <div className="flex justify-center mb-10">
+        <div className="modern-card p-3 inline-flex hover-lift">
           <button
             onClick={() => setActiveTab('tasks')}
-            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
+            className={`px-10 py-4 rounded-2xl font-bold transition-all duration-500 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'tasks'
-                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
+                ? 'bg-gradient-to-r from-primary-500 via-primary-600 to-secondary-500 text-white shadow-glow animate-glow'
+                : 'text-neutral-600 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50'
             }`}
           >
-            <span className="flex items-center space-x-2">
-              <span>🎯</span>
+            <span className="flex items-center space-x-3">
+              <span className="text-xl">🎯</span>
               <span>My Goals</span>
             </span>
           </button>
           <button
             onClick={() => setActiveTab('insights')}
-            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
+            className={`px-10 py-4 rounded-2xl font-bold transition-all duration-500 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'insights'
-                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
+                ? 'bg-gradient-to-r from-primary-500 via-primary-600 to-secondary-500 text-white shadow-glow animate-glow'
+                : 'text-neutral-600 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50'
             }`}
           >
-            <span className="flex items-center space-x-2">
-              <span>🐹</span>
+            <span className="flex items-center space-x-3">
+              <span className="text-xl">🐹</span>
               <span>Biscuit's Insights</span>
             </span>
           </button>
