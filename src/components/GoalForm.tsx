@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Goal } from '@/types'
 
 interface GoalFormProps {
-  onAddGoal: (goal: Omit<Goal, 'id' | 'progress' | 'tasks'>) => void
+  onAddGoal: (goal: Omit<Goal, 'id' | 'progress' | 'tasks' | 'createdAt'>) => void
 }
 
 export default function GoalForm({ onAddGoal }: GoalFormProps) {
