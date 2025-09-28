@@ -6,25 +6,19 @@ import TaskList from '@/components/TaskList'
 import TaskForm from '@/components/TaskForm'
 import AIInsights from '@/components/AIInsights'
 import ProgressDashboard from '@/components/ProgressDashboard'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [goals, setGoals] = useState<Goal[]>([])
-  const [insights, setInsights] = useState<AIInsight[]>([])
+  const [tasks, setTasks, isTasksClient] = useLocalStorage<Task[]>('hypotrophy-tasks', [])
+  const [goals, setGoals, isGoalsClient] = useLocalStorage<Goal[]>('hypotrophy-goals', [])
+  const [insights, setInsights, isInsightsClient] = useLocalStorage<AIInsight[]>('hypotrophy-insights', [])
   const [activeTab, setActiveTab] = useState<'tasks' | 'goals' | 'insights'>('tasks')
 
-  // Load data from localStorage on mount
+  // Generate welcome insight if no data exists (client-side only)
   useEffect(() => {
-    const savedTasks = localStorage.getItem('hypotrophy-tasks')
-    const savedGoals = localStorage.getItem('hypotrophy-goals') 
-    const savedInsights = localStorage.getItem('hypotrophy-insights')
+    if (!isInsightsClient) return
 
-    if (savedTasks) setTasks(JSON.parse(savedTasks))
-    if (savedGoals) setGoals(JSON.parse(savedGoals))
-    if (savedInsights) setInsights(JSON.parse(savedInsights))
-
-    // Generate welcome insight if no data exists
-    if (!savedTasks && !savedGoals && !savedInsights) {
+    if (tasks.length === 0 && goals.length === 0 && insights.length === 0) {
       const welcomeInsight: AIInsight = {
         id: 'welcome',
         type: 'encouragement',
@@ -34,20 +28,7 @@ export default function Home() {
       }
       setInsights([welcomeInsight])
     }
-  }, [])
-
-  // Save data to localStorage whenever state changes
-  useEffect(() => {
-    localStorage.setItem('hypotrophy-tasks', JSON.stringify(tasks))
-  }, [tasks])
-
-  useEffect(() => {
-    localStorage.setItem('hypotrophy-goals', JSON.stringify(goals))
-  }, [goals])
-
-  useEffect(() => {
-    localStorage.setItem('hypotrophy-insights', JSON.stringify(insights))
-  }, [insights])
+  }, [isInsightsClient, tasks.length, goals.length, insights.length, setInsights])
 
   const addTask = (taskData: Omit<Task, 'id' | 'createdAt' | 'completed'>) => {
     const newTask: Task = {
@@ -57,7 +38,7 @@ export default function Home() {
       completed: false
     }
     setTasks(prev => [...prev, newTask])
-    
+
     // Generate AI insight for new task
     setTimeout(() => {
       generateTaskInsight(newTask)
@@ -65,8 +46,8 @@ export default function Home() {
   }
 
   const toggleTask = (id: string) => {
-    setTasks(prev => prev.map(task => 
-      task.id === id 
+    setTasks(prev => prev.map(task =>
+      task.id === id
         ? { ...task, completed: !task.completed, completedAt: !task.completed ? new Date() : undefined }
         : task
     ))
@@ -79,7 +60,7 @@ export default function Home() {
       `"${task.title}" is a smart step forward. Once you complete this, I can suggest related tasks to build momentum.`,
       `Adding ${task.priority} priority tasks like "${task.title}" shows good planning. Remember to celebrate small wins!`
     ]
-    
+
     const newInsight: AIInsight = {
       id: Date.now().toString(),
       type: 'suggestion',
@@ -89,8 +70,25 @@ export default function Home() {
       createdAt: new Date(),
       relevantTasks: [task.id]
     }
-    
+
     setInsights(prev => [newInsight, ...prev])
+  }
+
+  // Show loading state during hydration
+  if (!isTasksClient || !isGoalsClient || !isInsightsClient) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <header className="text-center mb-8">
+          <h1 className="text-4xl font-bold hypotrophy-gradient bg-clip-text text-transparent mb-2">
+            Hypotrophy
+          </h1>
+          <p className="text-gray-600 text-lg">Your AI-Powered Personal Growth Assistant</p>
+        </header>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -109,8 +107,8 @@ export default function Home() {
           <button
             onClick={() => setActiveTab('tasks')}
             className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'tasks' 
-                ? 'bg-primary-500 text-white' 
+              activeTab === 'tasks'
+                ? 'bg-primary-500 text-white'
                 : 'text-gray-600 hover:text-primary-500'
             }`}
           >
@@ -119,8 +117,8 @@ export default function Home() {
           <button
             onClick={() => setActiveTab('goals')}
             className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'goals' 
-                ? 'bg-primary-500 text-white' 
+              activeTab === 'goals'
+                ? 'bg-primary-500 text-white'
                 : 'text-gray-600 hover:text-primary-500'
             }`}
           >
@@ -129,8 +127,8 @@ export default function Home() {
           <button
             onClick={() => setActiveTab('insights')}
             className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'insights' 
-                ? 'bg-primary-500 text-white' 
+              activeTab === 'insights'
+                ? 'bg-primary-500 text-white'
                 : 'text-gray-600 hover:text-primary-500'
             }`}
           >
