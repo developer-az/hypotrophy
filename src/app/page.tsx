@@ -156,19 +156,28 @@ export default function Home() {
   // Show loading state during hydration
   if (!isTasksClient || !isInsightsClient) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <header className="text-center mb-12">
-          <div className="animate-float">
-            <h1 className="text-6xl font-black hypotrophy-gradient mb-4 tracking-tight">
-              Hypotrophy
-            </h1>
-            <p className="text-xl text-neutral-600 font-medium">Your AI-Powered Personal Growth Assistant</p>
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
+        <header className="text-center mb-16">
+          <div className="animate-fade-in-scale">
+            <div className="relative inline-block mb-6">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-full blur-2xl scale-150 animate-pulse-luxury"></div>
+              <h1 className="relative text-7xl font-black text-gradient-luxury mb-4 tracking-tight">
+                Hypotrophy
+              </h1>
+            </div>
+            <p className="text-2xl text-neutral-700 font-medium mb-4 max-w-2xl mx-auto leading-relaxed">
+              Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
+            </p>
+            <div className="w-32 h-1 bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 mx-auto rounded-full animate-shimmer-luxury"></div>
           </div>
         </header>
         <div className="flex justify-center items-center h-64">
           <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-200"></div>
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent absolute top-0 left-0"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary-200/30"></div>
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary-500 border-t-transparent absolute top-0 left-0" style={{ animationDirection: 'reverse' }}></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <span className="text-2xl animate-pulse-luxury">🐹</span>
+            </div>
           </div>
         </div>
       </div>
@@ -176,53 +185,59 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="text-center mb-12">
-        <div className="animate-fade-in">
-          <div className="flex items-center justify-center space-x-4 mb-4">
-            <img
-              src="/biscuit.png"
-              alt="Biscuit the Hamster"
-              className="w-16 h-16 rounded-full border-4 border-primary-200 animate-float"
-            />
-            <h1 className="text-6xl font-black hypotrophy-gradient tracking-tight">
-              Hypotrophy
-            </h1>
+    <div className="container mx-auto px-4 py-12 max-w-7xl">
+      <header className="text-center mb-16">
+        <div className="animate-fade-in-scale">
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-full blur-3xl scale-150 animate-pulse-luxury"></div>
+            <div className="flex items-center justify-center space-x-4 relative">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full blur-lg opacity-75 animate-glow-luxury"></div>
+                <img
+                  src="/biscuit.png"
+                  alt="Biscuit the Hamster"
+                  className="relative w-20 h-20 rounded-full border-4 border-white/50 shadow-luxury animate-float-gentle"
+                />
+              </div>
+              <h1 className="text-7xl font-black text-gradient-luxury tracking-tight">
+                Hypotrophy
+              </h1>
+            </div>
           </div>
-          <p className="text-xl text-neutral-600 font-medium mb-2">
+          <p className="text-2xl text-neutral-700 font-medium mb-4 max-w-2xl mx-auto leading-relaxed">
             Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
           </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"></div>
+          <div className="w-32 h-1 bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 mx-auto rounded-full animate-shimmer-luxury"></div>
         </div>
       </header>
 
       <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
 
-      <div className="flex justify-center mb-8">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-2 inline-flex hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200">
+      <div className="flex justify-center mb-12">
+        <div className="glass-card rounded-3xl p-2 inline-flex shadow-luxury hover:shadow-premium transition-all duration-500 ease-out hover:scale-105 hover-lift-gentle">
           <button
             onClick={() => setActiveTab('tasks')}
-            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
+            className={`px-10 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'tasks'
-                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
+                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-elegant'
+                : 'text-neutral-700 hover:text-primary-600 hover:bg-white/20'
             }`}
           >
-            <span className="flex items-center space-x-2">
-              <span>🎯</span>
+            <span className="flex items-center space-x-3">
+              <span className="text-xl">🎯</span>
               <span>My Goals</span>
             </span>
           </button>
           <button
             onClick={() => setActiveTab('insights')}
-            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
+            className={`px-10 py-4 rounded-2xl font-semibold text-lg transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'insights'
-                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
+                ? 'bg-gradient-to-r from-secondary-500 to-secondary-600 text-white shadow-elegant'
+                : 'text-neutral-700 hover:text-secondary-600 hover:bg-white/20'
             }`}
           >
-            <span className="flex items-center space-x-2">
-              <span>🐹</span>
+            <span className="flex items-center space-x-3">
+              <span className="text-xl">🐹</span>
               <span>Biscuit's Insights</span>
             </span>
           </button>

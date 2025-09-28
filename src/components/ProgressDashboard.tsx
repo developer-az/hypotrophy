@@ -59,100 +59,125 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
 
   if (totalTasks === 0) {
     return (
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8 text-center">
-        <div className="text-6xl mb-4 animate-float">📊</div>
-        <h2 className="text-2xl font-bold text-neutral-800 mb-4">Your Progress Dashboard</h2>
-        <p className="text-neutral-600 text-lg">Add some tasks to see your amazing progress!</p>
-        <div className="mt-6">
-          <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
-            <span>🚀</span>
-            <span>Start your growth journey today</span>
-          </div>
+      <div className="card-luxury hover-lift-luxury text-center mb-12 animate-fade-in-scale">
+        <div className="relative mb-8">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-secondary-500/20 rounded-full blur-3xl scale-150 animate-pulse-luxury"></div>
+          <div className="relative text-8xl animate-float-gentle">📊</div>
+        </div>
+        <h2 className="text-4xl font-black text-gradient-luxury mb-6">Your Progress Dashboard</h2>
+        <p className="text-xl text-neutral-600 font-medium mb-8 max-w-md mx-auto leading-relaxed">
+          Add some tasks to see your amazing progress!
+        </p>
+        <div className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-primary-100 to-secondary-100 rounded-2xl shadow-soft">
+          <span className="text-2xl animate-bounce-gentle">🚀</span>
+          <span className="text-lg font-semibold text-primary-700">Start your growth journey today</span>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-10 h-10 bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl flex items-center justify-center">
-          <span className="text-white text-lg">📊</span>
+    <div className="card-luxury hover-lift-luxury mb-12 animate-fade-in-scale">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-400 to-accent-600 rounded-2xl blur-lg opacity-50"></div>
+            <div className="relative w-14 h-14 bg-gradient-to-br from-accent-500 to-accent-600 rounded-2xl flex items-center justify-center shadow-luxury">
+              <span className="text-white text-2xl animate-float-gentle">📊</span>
+            </div>
+          </div>
+          <h2 className="text-3xl font-black text-gradient-luxury">Your Progress Dashboard</h2>
         </div>
-          <h2 className="text-2xl font-bold text-neutral-800">Your Progress Dashboard</h2>
-          {onGenerateInsight && totalTasks > 0 && (
-            <button
-              onClick={isAnalyzing ? undefined : onGenerateInsight}
-              disabled={isAnalyzing}
-              className={`ml-auto px-4 py-2 rounded-lg font-semibold shadow-lg transition-all duration-300 ease-out focus:outline-none focus:ring-4 ${
-                isAnalyzing
-                  ? 'bg-neutral-400 text-neutral-600 cursor-not-allowed opacity-75'
-                  : 'bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-primary-200'
-              }`}
-            >
-              <span className="flex items-center space-x-2">
-                <span>{isAnalyzing ? '💭' : '🐹'}</span>
-                <span>{isAnalyzing ? 'Biscuit is thinking...' : 'Ask Biscuit for Analysis'}</span>
-              </span>
-            </button>
-          )}
-        </div>
+        {onGenerateInsight && totalTasks > 0 && (
+          <button
+            onClick={isAnalyzing ? undefined : onGenerateInsight}
+            disabled={isAnalyzing}
+            className={`px-6 py-3 rounded-2xl font-bold text-lg shadow-luxury transition-all duration-300 ease-out focus:outline-none focus:ring-4 ${
+              isAnalyzing
+                ? 'bg-neutral-400 text-neutral-600 cursor-not-allowed opacity-75'
+                : 'btn-luxury hover-lift-gentle focus:ring-primary-200/50'
+            }`}
+          >
+            <span className="flex items-center space-x-3">
+              <span className="text-xl">{isAnalyzing ? '💭' : '🐹'}</span>
+              <span>{isAnalyzing ? 'Biscuit is thinking...' : 'Ask Biscuit for Analysis'}</span>
+            </span>
+          </button>
+        )}
+      </div>
 
-      {/* Main stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-        <div className="text-center p-4 bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl">
-          <div className="text-4xl font-black text-primary-600 mb-1">{completedTasks}</div>
-          <div className="text-sm font-semibold text-primary-700">Completed</div>
+      {/* Luxury Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+        <div className="glass-card text-center p-6 hover-lift-gentle group">
+          <div className="relative mb-3">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-primary-600/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative text-5xl font-black text-gradient-gold mb-2">{completedTasks}</div>
+          </div>
+          <div className="text-sm font-bold text-primary-700 uppercase tracking-wider">Completed</div>
         </div>
-        <div className="text-center p-4 bg-gradient-to-br from-neutral-50 to-neutral-100 rounded-2xl">
-          <div className="text-4xl font-black text-neutral-700 mb-1">{totalTasks}</div>
-          <div className="text-sm font-semibold text-neutral-600">Total Tasks</div>
+        <div className="glass-card text-center p-6 hover-lift-gentle group">
+          <div className="relative mb-3">
+            <div className="absolute inset-0 bg-gradient-to-r from-neutral-500/20 to-neutral-600/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative text-5xl font-black text-gradient-platinum mb-2">{totalTasks}</div>
+          </div>
+          <div className="text-sm font-bold text-neutral-700 uppercase tracking-wider">Total Tasks</div>
         </div>
-        <div className="text-center p-4 bg-gradient-to-br from-accent-50 to-accent-100 rounded-2xl">
-          <div className="text-4xl font-black text-accent-600 mb-1">{completionRate}%</div>
-          <div className="text-sm font-semibold text-accent-700">Success Rate</div>
+        <div className="glass-card text-center p-6 hover-lift-gentle group">
+          <div className="relative mb-3">
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-500/20 to-accent-600/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative text-5xl font-black text-gradient-luxury mb-2">{completionRate}%</div>
+          </div>
+          <div className="text-sm font-bold text-accent-700 uppercase tracking-wider">Success Rate</div>
         </div>
-        <div className="text-center p-4 bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-2xl">
-          <div className="text-4xl font-black text-secondary-600 mb-1">{streak}</div>
-          <div className="text-sm font-semibold text-secondary-700">Active Days</div>
+        <div className="glass-card text-center p-6 hover-lift-gentle group">
+          <div className="relative mb-3">
+            <div className="absolute inset-0 bg-gradient-to-r from-secondary-500/20 to-secondary-600/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="relative text-5xl font-black text-gradient-luxury mb-2">{streak}</div>
+          </div>
+          <div className="text-sm font-bold text-secondary-700 uppercase tracking-wider">Active Days</div>
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-sm font-semibold text-neutral-700">Overall Progress</span>
-          <span className="text-lg font-bold text-primary-600">{completionRate}%</span>
+      {/* Luxury Progress Bar */}
+      <div className="mb-10">
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-lg font-bold text-neutral-800">Overall Progress</span>
+          <span className="text-2xl font-black text-gradient-luxury">{completionRate}%</span>
         </div>
-        <div className="progress-bar">
+        <div className="progress-bar-luxury">
           <div
-            className="progress-fill"
+            className="progress-fill-luxury animate-gradient-shift"
             style={{ width: `${completionRate}%` }}
           ></div>
         </div>
       </div>
 
-      {/* Category breakdown */}
+      {/* Luxury Category Breakdown */}
       {categoryCompletion.length > 0 && (
         <div>
-          <h3 className="text-lg font-bold text-neutral-800 mb-4">Progress by Category</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-2xl font-black text-gradient-luxury mb-6">Progress by Category</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {categoryCompletion.map(({ category, total, completed, rate }) => (
-              <div key={category} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{getCategoryIcon(category)}</span>
-                    <span className="font-semibold text-neutral-700 capitalize">{category}</span>
+              <div key={category} className="glass-card hover-lift-gentle group">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-2xl flex items-center justify-center shadow-elegant group-hover:shadow-luxury transition-shadow duration-300">
+                      <span className="text-xl">{getCategoryIcon(category)}</span>
+                    </div>
+                    <span className="font-bold text-neutral-800 capitalize text-lg">{category}</span>
                   </div>
-                  <span className="text-sm font-bold text-primary-600">{completed}/{total}</span>
+                  <div className="text-right">
+                    <div className="text-lg font-black text-gradient-luxury">{completed}/{total}</div>
+                    <div className="text-sm font-medium text-neutral-600">tasks</div>
+                  </div>
                 </div>
-                <div className="progress-bar h-2">
+                <div className="progress-bar-luxury mb-3">
                   <div
-                    className="progress-fill h-2"
+                    className="progress-fill-luxury"
                     style={{ width: `${rate}%` }}
                   ></div>
                 </div>
-                <div className="text-xs font-medium text-neutral-500 mt-2">{rate}% complete</div>
+                <div className="text-sm font-bold text-primary-600">{rate}% complete</div>
               </div>
             ))}
           </div>
