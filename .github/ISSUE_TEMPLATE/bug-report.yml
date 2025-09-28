@@ -1,0 +1,130 @@
+name: 🐛 Bug Report
+description: Report a bug with context optimized for AI-assisted debugging
+title: "[BUG] "
+labels: ["bug", "ai-assisted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## AI-Optimized Bug Report
+        Provide detailed context to help AI agents quickly identify and fix the issue.
+        
+  - type: input
+    id: bug-summary
+    attributes:
+      label: Bug Summary
+      description: Concise description of the bug
+      placeholder: "User authentication fails with 500 error on login"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the bug
+      placeholder: |
+        1. Navigate to /login page
+        2. Enter valid email: user@example.com
+        3. Enter valid password: password123
+        4. Click "Sign In" button
+        5. Observe 500 error response
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: "User should be successfully authenticated and redirected to dashboard"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happens?
+      placeholder: "Server returns 500 Internal Server Error, user sees error message"
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-logs
+    attributes:
+      label: Error Logs/Stack Traces
+      description: Paste relevant error logs or stack traces
+      placeholder: |
+        ```
+        Error: Cannot read property 'id' of undefined
+            at /src/auth/login.js:23:15
+            at async /src/middleware/auth.js:45:7
+        ```
+      render: shell
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Where does this occur?
+      options:
+        - Production
+        - Staging
+        - Development
+        - Local
+    validations:
+      required: true
+
+  - type: textarea
+    id: system-info
+    attributes:
+      label: System Information
+      description: Browser, OS, version info
+      placeholder: |
+        - Browser: Chrome 120.0.0
+        - OS: macOS 14.0
+        - Node.js: 18.17.0
+        - Application version: 1.2.3
+
+  - type: textarea
+    id: ai-debugging-context
+    attributes:
+      label: AI Debugging Context
+      description: Additional context for AI agents
+      placeholder: |
+        **Likely affected files**:
+        - /src/auth/login.js
+        - /src/middleware/auth.js
+        - /src/models/User.js
+        
+        **Recent changes**:
+        - Updated authentication middleware yesterday
+        - Added new user validation rules
+        
+        **Similar issues**:
+        - #123: Similar auth error last month
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Critical - System down
+        - High - Major feature broken
+        - Medium - Feature partially broken
+        - Low - Minor issue
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: investigation
+    attributes:
+      label: Investigation Checklist
+      description: Help AI agents understand what's been tried
+      options:
+        - label: Checked application logs
+        - label: Verified database connectivity
+        - label: Tested with different user accounts
+        - label: Reproduced in different environments
+        - label: Checked recent code changes

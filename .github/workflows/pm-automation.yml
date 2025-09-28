@@ -1,0 +1,265 @@
+name: Project Management Automation
+
+on:
+  issues:
+    types: [opened, edited, closed, reopened]
+  pull_request:
+    types: [opened, closed, merged]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  epic-management:
+    runs-on: ubuntu-latest
+    name: Epic and Task Management
+    if: github.event_name == 'issues'
+    
+    steps:
+      - name: Auto-label issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = [];
+            
+            // Auto-label based on title patterns
+            if (issue.title.includes('[SWE]')) {
+              labels.push('swe', 'ai-assisted');
+            }
+            if (issue.title.includes('[PM]')) {
+              labels.push('pm', 'epic', 'ai-assisted');
+            }
+            if (issue.title.includes('[BUG]')) {
+              labels.push('bug', 'ai-assisted');
+            }
+            
+            // Auto-label based on body content
+            const body = issue.body.toLowerCase();
+            if (body.includes('p0') || body.includes('critical')) {
+              labels.push('priority-critical');
+            } else if (body.includes('p1') || body.includes('high')) {
+              labels.push('priority-high');
+            } else if (body.includes('p2') || body.includes('medium')) {
+              labels.push('priority-medium');
+            } else if (body.includes('p3') || body.includes('low')) {
+              labels.push('priority-low');
+            }
+            
+            // Check for complexity indicators
+            if (body.includes('epic') || body.includes('1+ weeks') || body.includes('2+ quarters')) {
+              labels.push('epic', 'complexity-high');
+            } else if (body.includes('1-3 days') || body.includes('1 month')) {
+              labels.push('complexity-medium');
+            } else if (body.includes('1-2 hours') || body.includes('1-2 weeks')) {
+              labels.push('complexity-low');
+            }
+            
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labels
+              });
+            }
+
+      - name: Epic breakdown suggestions
+        if: contains(github.event.issue.labels.*.name, 'epic')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            
+            await github.rest.issues.createComment({
+              issue_number: issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🎯 **Epic Management Assistant**
+              
+              This epic has been detected! Here are AI-powered suggestions:
+              
+              **Next Steps:**
+              1. Break down into smaller, actionable tasks (2-8 hour chunks)
+              2. Create task issues using the SWE Task template
+              3. Set up project board for tracking
+              4. Define clear acceptance criteria for each task
+              
+              **AI Workflow Suggestions:**
+              - Use \`/copilot explain\` to break down complex requirements
+              - Leverage Copilot Chat for technical architecture planning  
+              - Create issue templates for repetitive task patterns
+              - Set up automated status tracking
+              
+              **Epic Tracking Checklist:**
+              - [ ] Epic broken into tasks (\`/copilot suggest breaking this epic into specific development tasks\`)
+              - [ ] Tasks estimated and prioritized
+              - [ ] Dependencies identified and documented
+              - [ ] Success metrics defined and measurable
+              - [ ] Stakeholders aligned on scope and timeline
+              
+              Would you like me to help generate specific task breakdowns? Reply with \`@copilot create development tasks for this epic\``
+            });
+
+  pr-project-tracking:
+    runs-on: ubuntu-latest
+    name: PR Project Tracking
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Link PR to issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || '';
+            
+            // Extract issue references
+            const issueMatches = body.match(/(fixes|closes|resolves)\s+#(\d+)/gi);
+            
+            if (issueMatches) {
+              const issueNumbers = issueMatches.map(match => {
+                const num = match.match(/#(\d+)/)[1];
+                return parseInt(num);
+              });
+              
+              await github.rest.issues.createComment({
+                issue_number: pr.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `🔗 **Project Tracking**: This PR is linked to issues: ${issueNumbers.map(n => `#${n}`).join(', ')}
+                
+                **AI Project Assistant Reminders:**
+                - [ ] Verify all linked issues are properly addressed
+                - [ ] Update epic progress if this closes sub-tasks
+                - [ ] Check if documentation needs updates
+                - [ ] Confirm tests cover the implemented functionality
+                - [ ] Review if additional stakeholder communication needed`
+              });
+            }
+
+      - name: PR merge automation
+        if: github.event.action == 'closed' && github.event.pull_request.merged
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            
+            // Check for epic completion
+            const body = pr.body || '';
+            const issueMatches = body.match(/(fixes|closes|resolves)\s+#(\d+)/gi);
+            
+            if (issueMatches) {
+              for (const match of issueMatches) {
+                const issueNum = parseInt(match.match(/#(\d+)/)[1]);
+                
+                try {
+                  const issue = await github.rest.issues.get({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issueNum
+                  });
+                  
+                  // If this was an epic, suggest next steps
+                  if (issue.data.labels.some(label => label.name === 'epic')) {
+                    await github.rest.issues.createComment({
+                      issue_number: issueNum,
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      body: `🎉 **Epic Completed!** 
+                      
+                      This epic has been completed through PR #${pr.number}.
+                      
+                      **AI Post-Completion Checklist:**
+                      - [ ] Verify all success metrics are met
+                      - [ ] Document lessons learned
+                      - [ ] Update project roadmap
+                      - [ ] Communicate completion to stakeholders
+                      - [ ] Archive related project artifacts
+                      
+                      **Next Steps Suggestions:**
+                      - Consider retrospective meeting
+                      - Identify follow-up improvements
+                      - Plan next sprint priorities`
+                    });
+                  }
+                } catch (error) {
+                  console.log(`Could not process issue #${issueNum}: ${error.message}`);
+                }
+              }
+            }
+
+  ai-insights:
+    runs-on: ubuntu-latest
+    name: AI Project Insights
+    if: github.event_name == 'issue_comment'
+    
+    steps:
+      - name: AI command processing
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = context.payload.comment;
+            const body = comment.body.toLowerCase();
+            
+            // Process AI assistant commands
+            if (body.includes('@copilot') || body.includes('/ai')) {
+              let response = '';
+              
+              if (body.includes('create tasks') || body.includes('break down')) {
+                response = `🤖 **AI Task Breakdown Assistant**
+                
+                I can help break down this epic/issue into manageable tasks:
+                
+                **Suggested Approach:**
+                1. Use GitHub Copilot Chat: \`/copilot break this down into development tasks\`
+                2. Create separate issues for each major component
+                3. Estimate each task (2-8 hours recommended)
+                4. Identify dependencies between tasks
+                
+                **Task Creation Template:**
+                \`\`\`
+                Title: [SWE] [Component Name] Implementation
+                
+                **Parent Epic:** #${context.issue.number}
+                **Estimated Time:** X hours
+                **Dependencies:** List any blockers
+                **Acceptance Criteria:** 
+                - [ ] Specific, testable criteria
+                \`\`\`
+                
+                Would you like me to analyze the technical requirements and suggest specific tasks?`;
+              
+              } else if (body.includes('status') || body.includes('progress')) {
+                response = `📊 **AI Progress Tracker**
+                
+                **Current Issue Analysis:**
+                - Status: ${context.payload.issue.state}
+                - Labels: ${context.payload.issue.labels.map(l => l.name).join(', ')}
+                - Comments: ${context.payload.issue.comments}
+                
+                **AI-Powered Insights:**
+                - Use project boards for visual progress tracking
+                - Set up automated status updates via PR links
+                - Monitor velocity with AI analytics
+                - Track blocker resolution time
+                
+                **Recommended Actions:**
+                - Link related PRs and issues
+                - Update progress regularly
+                - Document blockers and resolutions`;
+              }
+              
+              if (response) {
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: response
+                });
+              }
+            }

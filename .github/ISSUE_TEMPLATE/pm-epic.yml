@@ -1,0 +1,143 @@
+name: 📋 Product Management Epic
+description: Create a product management epic with AI-assisted planning and tracking
+title: "[PM] "
+labels: ["pm", "epic", "ai-assisted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Product Management Epic Template
+        This template helps structure large initiatives for AI-assisted project management.
+        
+  - type: input
+    id: epic-title
+    attributes:
+      label: Epic Title
+      description: Clear, descriptive title for the epic
+      placeholder: "User Onboarding Experience Redesign"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: Problem Statement
+      description: What problem are we solving and why?
+      placeholder: |
+        **Problem**: New users have a 60% drop-off rate during onboarding
+        **Impact**: Reduced user acquisition and growth
+        **Why Now**: Competitor analysis shows better onboarding experiences
+    validations:
+      required: true
+
+  - type: textarea
+    id: success-metrics
+    attributes:
+      label: Success Metrics
+      description: How will we measure success?
+      placeholder: |
+        - Reduce onboarding drop-off from 60% to 30%
+        - Increase time-to-first-value from 7 days to 2 days
+        - Achieve 4.5+ app store rating for onboarding flow
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-stories
+    attributes:
+      label: Key User Stories
+      description: High-level user stories that define this epic
+      placeholder: |
+        - As a new user, I want a guided setup process so I can quickly understand the product
+        - As a user, I want personalized onboarding so the experience is relevant to my needs
+        - As a user, I want to see immediate value so I continue using the product
+
+  - type: dropdown
+    id: timeline
+    attributes:
+      label: Timeline
+      description: Expected duration for this epic
+      options:
+        - 1-2 weeks
+        - 1 month
+        - 1 quarter
+        - 2+ quarters
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies & Risks
+      description: What might block or delay this epic?
+      placeholder: |
+        **Dependencies**:
+        - Design system updates
+        - Backend API changes
+        - Third-party integrations
+        
+        **Risks**:
+        - Technical complexity higher than estimated
+        - Resource availability
+        - Stakeholder alignment
+
+  - type: textarea
+    id: breakdown
+    attributes:
+      label: High-Level Task Breakdown
+      description: Major components or phases
+      placeholder: |
+        **Phase 1: Research & Design**
+        - [ ] User research and interviews
+        - [ ] Competitive analysis
+        - [ ] Design mockups and prototypes
+        
+        **Phase 2: Development**
+        - [ ] Frontend implementation
+        - [ ] Backend API updates
+        - [ ] Integration testing
+        
+        **Phase 3: Launch**
+        - [ ] A/B testing setup
+        - [ ] Gradual rollout
+        - [ ] Metrics monitoring
+
+  - type: checkboxes
+    id: stakeholders
+    attributes:
+      label: Stakeholder Alignment
+      description: Who needs to be involved?
+      options:
+        - label: Engineering team aligned
+        - label: Design team aligned
+        - label: Product marketing aligned
+        - label: Customer success aligned
+        - label: Executive sponsor identified
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Strategic Priority
+      options:
+        - P0 - Company Critical
+        - P1 - High Strategic Value
+        - P2 - Medium Strategic Value
+        - P3 - Nice to Have
+    validations:
+      required: true
+
+  - type: textarea
+    id: ai-context
+    attributes:
+      label: AI Assistant Context
+      description: Context for AI agents to help with planning and execution
+      placeholder: |
+        **Relevant Data Sources**:
+        - Analytics: /analytics/onboarding-funnel
+        - User Feedback: /research/user-interviews
+        - Competitive Analysis: /research/competitor-analysis
+        
+        **Key Repositories**:
+        - Frontend: /frontend/onboarding
+        - Backend: /api/user-management
+        - Analytics: /analytics/tracking

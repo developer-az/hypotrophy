@@ -1,0 +1,18 @@
+# Files to ignore for GitHub Copilot suggestions
+node_modules/
+dist/
+build/
+.git/
+*.log
+*.tmp
+.env*
+secrets/
+private/
+coverage/
+.nyc_output/
+*.min.js
+*.bundle.js
+vendor/
+bower_components/
+.DS_Store
+Thumbs.db
