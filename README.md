@@ -101,7 +101,7 @@ Transform your basic to-do lists into intelligent self-improvement tracking with
 
 ### Tips for Success
 - **Start Small**: Begin with achievable daily tasks
-- **Be Consistent**: Regular small actions lead to big transformations  
+- **Be Consistent**: Regular small actions lead to big transformations
 - **Use AI Insights**: Pay attention to patterns and recommendations
 - **Celebrate Wins**: Acknowledge every completed task, no matter how small
 - **Stay Flexible**: Adjust your goals based on what you learn about yourself
