@@ -1,39 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
+  --foreground-rgb: 30, 41, 59;
+  --background-start-rgb: 248, 250, 252;
   --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --foreground-rgb: 248, 250, 252;
+    --background-start-rgb: 15, 23, 42;
+    --background-end-rgb: 30, 41, 59;
   }
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.05) 0%,
+      rgba(139, 92, 246, 0.05) 25%,
+      transparent 50%,
+      rgba(236, 72, 153, 0.05) 75%,
+      rgba(245, 158, 11, 0.05) 100%
+    ),
+    linear-gradient(
       to bottom,
-      transparent,
+      rgb(var(--background-start-rgb)),
       rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    );
+  font-family: 'Inter', system-ui, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  font-variation-settings: 'opsz' 32;
+  scroll-behavior: smooth;
 }
 
+/* Modern gradient for branding */
 .hypotrophy-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #ec4899 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
 }
 
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Enhanced task card with modern design */
 .task-card {
-  @apply bg-white rounded-lg shadow-md p-4 border-l-4 border-primary-500 hover:shadow-lg transition-shadow;
+  @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-soft p-6 border border-gray-100/50 
+         hover:shadow-medium hover:border-primary-200/50 hover:-translate-y-0.5
+         transition-all duration-300 ease-out;
 }
 
+.task-card.completed {
+  @apply bg-gray-50/80 border-gray-200/50;
+}
+
+/* Modern insight cards */
 .insight-card {
-  @apply bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border border-purple-200;
+  @apply bg-gradient-to-br from-white/90 to-gray-50/50 backdrop-blur-sm rounded-xl p-5 
+         border border-gray-200/50 shadow-soft hover:shadow-medium
+         transition-all duration-300 ease-out;
+}
+
+/* Form elements with modern styling */
+.form-input {
+  @apply w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-200/80 rounded-lg 
+         focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500
+         transition-all duration-200 ease-out placeholder:text-gray-400;
+}
+
+.form-input:focus {
+  @apply shadow-soft;
+}
+
+.form-select {
+  @apply w-full px-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-200/80 rounded-lg 
+         focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500
+         transition-all duration-200 ease-out appearance-none;
+}
+
+/* Modern button styles */
+.btn-primary {
+  @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white px-6 py-3 rounded-lg
+         font-medium shadow-soft hover:shadow-medium hover:from-primary-600 hover:to-primary-700
+         transform hover:-translate-y-0.5 transition-all duration-200 ease-out
+         focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:ring-offset-2;
+}
+
+.btn-secondary {
+  @apply bg-white/80 backdrop-blur-sm text-gray-700 px-6 py-3 rounded-lg font-medium
+         border border-gray-200/80 shadow-soft hover:shadow-medium hover:bg-gray-50/80
+         transform hover:-translate-y-0.5 transition-all duration-200 ease-out
+         focus:outline-none focus:ring-2 focus:ring-gray-500/20 focus:ring-offset-2;
+}
+
+/* Tab button styling */
+.tab-button {
+  @apply px-6 py-3 rounded-lg font-medium transition-all duration-200 ease-out
+         hover:transform hover:-translate-y-0.5;
+}
+
+.tab-button.active {
+  @apply bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-soft;
+}
+
+.tab-button.inactive {
+  @apply text-gray-600 hover:text-primary-600 hover:bg-primary-50/50;
+}
+
+/* Progress elements */
+.progress-bar {
+  @apply bg-gradient-to-r from-primary-500 via-accent-500 to-primary-600 h-3 rounded-full 
+         transition-all duration-500 ease-out shadow-soft;
+}
+
+.progress-ring {
+  @apply transition-all duration-500 ease-out;
+}
+
+/* Card containers */
+.glass-card {
+  @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-soft border border-gray-100/50
+         hover:shadow-medium transition-all duration-300 ease-out;
+}
+
+.feature-card {
+  @apply glass-card p-6 hover:border-primary-200/50 hover:-translate-y-1
+         transform transition-all duration-300 ease-out;
+}
+
+/* Empty states */
+.empty-state {
+  @apply glass-card p-8 text-center animate-fade-in;
+}
+
+.empty-state-icon {
+  @apply text-6xl mb-4 animate-bounce-gentle;
+}
+
+/* Loading states */
+.loading-spinner {
+  @apply animate-spin rounded-full border-2 border-primary-200 border-t-primary-500;
+}
+
+/* Hover effects for interactive elements */
+.hover-lift {
+  @apply hover:transform hover:-translate-y-1 transition-all duration-200 ease-out;
+}
+
+.hover-glow {
+  @apply hover:shadow-medium hover:shadow-primary-500/10 transition-all duration-200 ease-out;
+}
+
+/* Priority indicators */
+.priority-high {
+  @apply border-l-red-500 bg-gradient-to-r from-red-50/80 to-white/80;
+}
+
+.priority-medium {
+  @apply border-l-yellow-500 bg-gradient-to-r from-yellow-50/80 to-white/80;
+}
+
+.priority-low {
+  @apply border-l-green-500 bg-gradient-to-r from-green-50/80 to-white/80;
+}
+
+/* Future hamster theme preparation */
+.hamster-theme {
+  --primary-color: theme('colors.hamster.500');
+  --accent-color: theme('colors.hamster.300');
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

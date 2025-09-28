@@ -31,82 +31,109 @@ export default function TaskForm({ onAddTask }: TaskFormProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md mb-6">
-      <h2 className="text-xl font-semibold mb-4">Add New Task</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="glass-card p-6 mb-6 animate-slide-up">
+      <div className="flex items-center space-x-3 mb-6">
+        <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-accent-500 rounded-lg flex items-center justify-center">
+          <span className="text-white text-lg">✨</span>
+        </div>
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-            Task Title *
+          <h2 className="text-xl font-semibold text-gray-800">Add New Task</h2>
+          <p className="text-gray-500 text-sm">What would you like to accomplish today?</p>
+        </div>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-2">
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            Task Title <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="form-input"
             placeholder="What do you want to accomplish?"
             required
           />
         </div>
 
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description (Optional)
+        <div className="space-y-2">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            Description
+            <span className="text-gray-400 font-normal ml-1">(Optional)</span>
           </label>
           <textarea
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            placeholder="Add more details..."
-            rows={2}
+            className="form-input resize-none"
+            placeholder="Add more details to help you stay focused..."
+            rows={3}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="space-y-2">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
               Category
             </label>
-            <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option value="personal">Personal</option>
-              <option value="health">Health & Fitness</option>
-              <option value="career">Career</option>
-              <option value="learning">Learning</option>
-              <option value="relationships">Relationships</option>
-              <option value="finance">Finance</option>
-              <option value="creativity">Creativity</option>
-              <option value="home">Home & Environment</option>
-            </select>
+            <div className="relative">
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="form-select"
+              >
+                <option value="personal">👤 Personal</option>
+                <option value="health">💪 Health & Fitness</option>
+                <option value="career">💼 Career</option>
+                <option value="learning">📚 Learning</option>
+                <option value="relationships">❤️ Relationships</option>
+                <option value="finance">💰 Finance</option>
+                <option value="creativity">🎨 Creativity</option>
+                <option value="home">🏠 Home & Environment</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
-              Priority
+          <div className="space-y-2">
+            <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
+              Priority Level
             </label>
-            <select
-              id="priority"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
+            <div className="relative">
+              <select
+                id="priority"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as 'low' | 'medium' | 'high')}
+                className="form-select"
+              >
+                <option value="low">🟢 Low Priority</option>
+                <option value="medium">🟡 Medium Priority</option>
+                <option value="high">🔴 High Priority</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          className="w-full btn-primary flex items-center justify-center space-x-2"
         >
-          Add Task
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span>Add Task</span>
         </button>
       </form>
     </div>

@@ -77,89 +77,120 @@ export default function Home() {
   // Show loading state during hydration
   if (!isTasksClient || !isGoalsClient || !isInsightsClient) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold hypotrophy-gradient bg-clip-text text-transparent mb-2">
-            Hypotrophy
-          </h1>
-          <p className="text-gray-600 text-lg">Your AI-Powered Personal Growth Assistant</p>
-        </header>
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="glass-card p-8 max-w-md mx-auto">
+            <h1 className="text-4xl font-bold hypotrophy-gradient bg-clip-text text-transparent mb-4">
+              Hypotrophy
+            </h1>
+            <p className="text-gray-600 text-lg mb-6">Your AI-Powered Personal Growth Assistant</p>
+            <div className="flex justify-center items-center">
+              <div className="loading-spinner h-8 w-8"></div>
+            </div>
+            <p className="text-gray-500 text-sm mt-4">Loading your growth journey...</p>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="text-center mb-8">
-        <h1 className="text-4xl font-bold hypotrophy-gradient bg-clip-text text-transparent mb-2">
-          Hypotrophy
-        </h1>
-        <p className="text-gray-600 text-lg">Your AI-Powered Personal Growth Assistant</p>
-      </header>
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Modern header with enhanced typography */}
+        <header className="text-center mb-12 animate-fade-in">
+          <div className="inline-block">
+            <h1 className="text-5xl lg:text-6xl font-bold hypotrophy-gradient bg-clip-text text-transparent mb-4 tracking-tight">
+              Hypotrophy
+            </h1>
+            <div className="h-1 w-24 hypotrophy-gradient rounded-full mx-auto mb-4"></div>
+          </div>
+          <p className="text-gray-600 text-xl font-light max-w-2xl mx-auto leading-relaxed">
+            Your AI-Powered Personal Growth Assistant
+          </p>
+          <p className="text-gray-500 text-sm mt-2 font-medium">
+            Transform daily tasks into meaningful growth journeys
+          </p>
+        </header>
 
-      <ProgressDashboard tasks={tasks} />
-
-      <div className="flex justify-center mb-6">
-        <div className="bg-white rounded-lg p-1 shadow-md">
-          <button
-            onClick={() => setActiveTab('tasks')}
-            className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'tasks'
-                ? 'bg-primary-500 text-white'
-                : 'text-gray-600 hover:text-primary-500'
-            }`}
-          >
-            Tasks
-          </button>
-          <button
-            onClick={() => setActiveTab('goals')}
-            className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'goals'
-                ? 'bg-primary-500 text-white'
-                : 'text-gray-600 hover:text-primary-500'
-            }`}
-          >
-            Goals
-          </button>
-          <button
-            onClick={() => setActiveTab('insights')}
-            className={`px-6 py-2 rounded-md transition-colors ${
-              activeTab === 'insights'
-                ? 'bg-primary-500 text-white'
-                : 'text-gray-600 hover:text-primary-500'
-            }`}
-          >
-            AI Insights
-          </button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          {activeTab === 'tasks' && (
-            <>
-              <TaskForm onAddTask={addTask} />
-              <TaskList tasks={tasks} onToggleTask={toggleTask} />
-            </>
-          )}
-          {activeTab === 'goals' && (
-            <div className="bg-white rounded-lg p-6 shadow-md">
-              <h2 className="text-xl font-semibold mb-4">Goals (Coming Soon)</h2>
-              <p className="text-gray-600">Goal tracking and management features will be available soon!</p>
-            </div>
-          )}
-          {activeTab === 'insights' && (
-            <AIInsights insights={insights} />
-          )}
+        <div className="mb-8 animate-slide-up">
+          <ProgressDashboard tasks={tasks} />
         </div>
 
-        <div className="lg:col-span-1">
-          {activeTab !== 'insights' && (
-            <AIInsights insights={insights.slice(0, 3)} compact />
-          )}
+        {/* Modern tab navigation */}
+        <div className="flex justify-center mb-8 animate-slide-up">
+          <div className="glass-card p-2 flex space-x-1">
+            <button
+              onClick={() => setActiveTab('tasks')}
+              className={`tab-button ${
+                activeTab === 'tasks' ? 'active' : 'inactive'
+              }`}
+            >
+              <span className="flex items-center space-x-2">
+                <span>📋</span>
+                <span>Tasks</span>
+              </span>
+            </button>
+            <button
+              onClick={() => setActiveTab('goals')}
+              className={`tab-button ${
+                activeTab === 'goals' ? 'active' : 'inactive'
+              }`}
+            >
+              <span className="flex items-center space-x-2">
+                <span>🎯</span>
+                <span>Goals</span>
+              </span>
+            </button>
+            <button
+              onClick={() => setActiveTab('insights')}
+              className={`tab-button ${
+                activeTab === 'insights' ? 'active' : 'inactive'
+              }`}
+            >
+              <span className="flex items-center space-x-2">
+                <span>🤖</span>
+                <span>AI Insights</span>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Enhanced grid layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+          <div className="lg:col-span-2 space-y-6">
+            {activeTab === 'tasks' && (
+              <>
+                <TaskForm onAddTask={addTask} />
+                <TaskList tasks={tasks} onToggleTask={toggleTask} />
+              </>
+            )}
+            {activeTab === 'goals' && (
+              <div className="glass-card p-8 text-center">
+                <div className="text-6xl mb-4 animate-bounce-gentle">🎯</div>
+                <h2 className="text-2xl font-semibold mb-4 text-gray-800">Goals (Coming Soon)</h2>
+                <p className="text-gray-600 leading-relaxed max-w-md mx-auto">
+                  Set and track long-term objectives with AI-powered milestone suggestions and progress insights.
+                </p>
+                <div className="mt-6">
+                  <div className="inline-flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-full text-sm font-medium">
+                    🚀 In Development
+                  </div>
+                </div>
+              </div>
+            )}
+            {activeTab === 'insights' && (
+              <AIInsights insights={insights} />
+            )}
+          </div>
+
+          <div className="lg:col-span-1">
+            {activeTab !== 'insights' && (
+              <div className="sticky top-8">
+                <AIInsights insights={insights.slice(0, 3)} compact />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
