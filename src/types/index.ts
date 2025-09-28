@@ -12,18 +12,6 @@ export interface Task {
   deletedAt?: Date
 }
 
-export interface Goal {
-  id: string
-  title: string
-  description?: string
-  category: string
-  targetDate: Date
-  progress: number
-  tasks?: Task[]
-  aiRecommendations?: string[]
-  createdAt: Date
-  completedAt?: Date
-}
 
 export interface UserProgress {
   totalTasks: number

@@ -1,34 +1,47 @@
-# Hypotrophy 🚀
+# 🐹 Hypotrophy - AI-Powered Personal Growth
 
-**AI-Powered Personal Growth App**
+> **Built for hackUMBC2025 🏆** - A 24-hour hackathon project
 
-Transform your basic to-do lists into intelligent self-improvement tracking with AI insights. Hypotrophy is your creative assistant for personal growth, making self-improvement feel insightful rather than like a chore.
+**Meet Biscuit, your friendly AI hamster companion for personal growth!**
 
-## ✨ Features
+Transform your basic to-do lists into engaging conversations with Biscuit, your AI hamster assistant! Hypotrophy makes personal growth fun and motivating through real-time encouragement, progress celebration, and intelligent insights.
 
-### 🎯 Smart Task Management
-- **Intelligent To-Do Lists**: Beyond basic task tracking with AI-enhanced insights
-- **Priority & Category System**: Organize tasks by importance and life areas
-- **Progress Tracking**: Visual dashboards showing your growth journey
-- **Completion Analytics**: Understand your patterns and productivity trends
+## 🏆 hackUMBC2025 Achievement
 
-### 🤖 AI-Powered Insights
-- **Personalized Recommendations**: AI suggests new areas for growth based on your patterns
-- **Task Analysis**: Get intelligent feedback on your goals and progress
-- **Pattern Recognition**: Identify what works best for your personal growth
-- **Motivational Support**: Encouraging insights to keep you moving forward
+This project was built during **hackUMBC2025**, a 24-hour hackathon, showcasing:
+- ⚡ **Rapid Development**: Full-featured app built in 24 hours
+- 🤖 **AI Integration**: Google Gemini API for intelligent insights
+- 🎨 **Creative UX**: Personality-driven design with Biscuit the hamster
+- 💻 **Modern Tech Stack**: Next.js 15, TypeScript, Tailwind CSS
+- 🚀 **Production Ready**: Deployed and fully functional
 
-### 📊 Growth Dashboard
-- **Visual Progress**: See your completion rates and streaks
-- **Category Breakdown**: Track progress across different life areas
-- **Achievement Metrics**: Celebrate your wins and milestones
-- **Trend Analysis**: Understand your productivity patterns over time
+**Timeline:** 24 hours | **Event:** hackUMBC2025 | **Result:** Complete AI companion app
 
-### 🎨 Intuitive Design
-- **Clean Interface**: Beautiful, distraction-free design
-- **Responsive**: Works seamlessly on all devices
-- **Accessibility**: Inclusive design for everyone
-- **User-Friendly**: Feels like a creative assistant, not a chore
+## 🌟 What Makes Hypotrophy Special
+
+### 🐹 Meet Biscuit - Your AI Companion
+- **Real-time Conversations**: Chat with Biscuit through typing animations
+- **Personalized Encouragement**: Celebrates every achievement with unique messages
+- **Intelligent Insights**: Provides contextual motivation and suggestions
+- **Emotional Support**: Makes personal growth feel like a friendship
+
+### 🎯 Smart Task & Goal Management
+- **Task Creation**: Add tasks with categories, priorities, and descriptions
+- **Goal Tracking**: Set long-term goals with progress visualization and deadlines
+- **Completion Celebration**: Biscuit cheers you on with every completed task
+- **Delete & Modify**: Full task management with confirmation dialogs
+
+### 📊 Visual Progress Tracking
+- **Progress Bars**: Beautiful visual indicators for goal completion
+- **Smart Analytics**: "Ask Biscuit for Analysis" button for progress insights
+- **Deadline Awareness**: Color-coded status for overdue, due today, or upcoming goals
+- **Category Organization**: Track progress across life areas (health, career, personal, etc.)
+
+### ✨ Delightful User Experience
+- **Smooth Animations**: Float, slide-up, fade-in, and wiggle effects
+- **Glassmorphism Design**: Modern backdrop-blur effects and transparency
+- **Responsive Layout**: Perfect experience on desktop, tablet, and mobile
+- **Accessibility First**: Keyboard navigation and screen reader friendly
 
 ## 🚀 Coming Soon
 

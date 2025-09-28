@@ -2,7 +2,7 @@
   "name": "hypotrophy",
   "version": "1.0.0",
   "private": true,
-  "description": "AI-powered personal growth app that transforms basic to-do lists into intelligent self-improvement tracking",
+  "description": "🐹 AI-powered personal growth app with Biscuit the hamster - Built for hackUMBC2025 24-hour hackathon",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,7 +14,14 @@
     "personal-growth",
     "todo",
     "self-improvement",
-    "gemini"
+    "gemini",
+    "hackathon",
+    "hackUMBC2025",
+    "conversational-ai",
+    "hamster",
+    "biscuit",
+    "nextjs",
+    "typescript"
   ],
   "author": "",
   "license": "ISC",

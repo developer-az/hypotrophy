@@ -64,13 +64,21 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   if (tasks.length === 0) {
     return (
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-8 text-center">
-        <div className="text-6xl mb-4 animate-float">🌱</div>
-        <h3 className="text-2xl font-bold text-neutral-800 mb-4">Ready to Grow?</h3>
-        <p className="text-neutral-600 text-lg mb-6">Add your first task above and let AI help you achieve your goals!</p>
-        <div className="inline-flex items-center space-x-2 text-primary-600 font-medium">
+      <div className="bg-gradient-to-br from-white to-blue-50 rounded-3xl shadow-xl border border-blue-200/50 hover:shadow-2xl transition-all duration-500 ease-out p-12 text-center">
+        <div className="relative mb-6">
+          <div className="text-7xl animate-float">🌱</div>
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full animate-pulse"></div>
+        </div>
+        <h3 className="text-3xl font-bold bg-gradient-to-r from-neutral-800 to-blue-600 bg-clip-text text-transparent mb-4">
+          Ready to Transform Your Life?
+        </h3>
+        <p className="text-neutral-600 text-lg mb-8 max-w-md mx-auto leading-relaxed">
+          Describe any goal naturally above, and watch as Biscuit helps you break it down and achieve it step by step!
+        </p>
+        <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-100 to-purple-100 px-6 py-3 rounded-2xl text-blue-700 font-semibold">
           <span>✨</span>
-          <span>Start your transformation journey</span>
+          <span>Your growth journey starts with one task</span>
+          <span>🚀</span>
         </div>
       </div>
     )
@@ -91,7 +99,15 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-l-4 border-primary-500 hover:shadow-xl hover:border-primary-400 transition-all duration-300 ease-out animate-slide-up p-6 ${task.completed ? 'border-accent-500 bg-accent-50/50' : ''} ${getPriorityColor(task.priority)}`}
+            className={`group bg-gradient-to-br from-white to-neutral-50/50 rounded-3xl shadow-lg border-2 hover:shadow-2xl transition-all duration-500 ease-out animate-slide-up p-6 hover:scale-[1.01] ${
+              task.completed
+                ? 'border-green-300 bg-gradient-to-br from-green-50 to-emerald-50'
+                : getPriorityColor(task.priority) === 'border-red-500'
+                ? 'border-red-300 bg-gradient-to-br from-red-50 to-pink-50'
+                : getPriorityColor(task.priority) === 'border-yellow-500'
+                ? 'border-yellow-300 bg-gradient-to-br from-yellow-50 to-amber-50'
+                : 'border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50'
+            }`}
           >
             <div className="flex items-start space-x-4">
               <button

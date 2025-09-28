@@ -1,11 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Task, Goal, AIInsight } from '@/types'
+import { Task, AIInsight } from '@/types'
 import TaskList from '@/components/TaskList'
 import TaskForm from '@/components/TaskForm'
-import GoalList from '@/components/GoalList'
-import GoalForm from '@/components/GoalForm'
 import AIInsights from '@/components/AIInsights'
 import ProgressDashboard from '@/components/ProgressDashboard'
 import BiscuitConversation from '@/components/BiscuitConversation'
@@ -14,9 +12,8 @@ import { aiService } from '@/lib/aiService'
 
 export default function Home() {
   const [tasks, setTasks, isTasksClient] = useLocalStorage<Task[]>('hypotrophy-tasks', [])
-  const [goals, setGoals, isGoalsClient] = useLocalStorage<Goal[]>('hypotrophy-goals', [])
   const [insights, setInsights, isInsightsClient] = useLocalStorage<AIInsight[]>('hypotrophy-insights', [])
-  const [activeTab, setActiveTab] = useState<'tasks' | 'goals' | 'insights'>('tasks')
+  const [activeTab, setActiveTab] = useState<'tasks' | 'insights'>('tasks')
   const [latestInsight, setLatestInsight] = useState<string>('')
   const [isBiscuitTyping, setIsBiscuitTyping] = useState(false)
 
@@ -24,7 +21,7 @@ export default function Home() {
   useEffect(() => {
     if (!isInsightsClient) return
 
-    if (tasks.length === 0 && goals.length === 0 && insights.length === 0) {
+    if (tasks.length === 0 && insights.length === 0) {
       const welcomeInsight: AIInsight = {
         id: 'welcome',
         type: 'encouragement',
@@ -34,7 +31,7 @@ export default function Home() {
       }
       setInsights([welcomeInsight])
     }
-  }, [isInsightsClient, tasks.length, goals.length, insights.length, setInsights])
+  }, [isInsightsClient, tasks.length, insights.length, setInsights])
 
   const addTask = (taskData: Omit<Task, 'id' | 'createdAt' | 'completed'>) => {
     const newTask: Task = {
@@ -56,11 +53,11 @@ export default function Home() {
     if (task && !task.completed) {
       // Task is being completed
       const completionMessages = [
-        `🎉 Fantastic work completing "${task.title}"! I'm so proud of your progress!`,
-        `✨ Way to go! You've just completed "${task.title}". Every small step counts towards your growth!`,
-        `🚀 Amazing! "${task.title}" is done! You're building such great momentum!`,
-        `💪 Yes! "${task.title}" is complete! I love seeing you crushing your goals!`,
-        `🌟 Wonderful! You've finished "${task.title}". Keep up this incredible energy!`
+        `🎉 Yes! You just finished "${task.title}"! I'm doing happy hamster dances over here - you're absolutely crushing it!`,
+        `✨ Woohoo! "${task.title}" is done! You know what I love about this? Every time you complete something, you're proving to yourself that you can trust your commitments!`,
+        `🚀 "${task.title}" - DONE! I can practically see your confidence growing with each goal you complete. You're on fire!`,
+        `💪 That's what I'm talking about! "${task.title}" is finished and I'm so proud of you! You're building some serious momentum here!`,
+        `🌟 Amazing work on "${task.title}"! You know what this tells me? You're someone who follows through. That's such a powerful quality!`
       ]
       const randomMessage = completionMessages[Math.floor(Math.random() * completionMessages.length)]
       setLatestInsight(randomMessage)
@@ -79,70 +76,11 @@ export default function Home() {
 
     // Add a personalized message from Biscuit
     if (taskToDelete) {
-      const deleteMessage = `I've removed "${taskToDelete.title}" from your list. Sometimes letting go of tasks is just as important as completing them! 🗑️✨`
+      const deleteMessage = `Got it! I've removed "${taskToDelete.title}" from your goals. You know what? Sometimes clearing out things that aren't serving you is just as important as adding new ones. Your list, your rules! 🗑️✨`
       setLatestInsight(deleteMessage)
     }
   }
 
-  const addGoal = (goalData: Omit<Goal, 'id' | 'progress' | 'createdAt' | 'tasks'>) => {
-    const newGoal: Goal = {
-      ...goalData,
-      id: Date.now().toString(),
-      progress: 0,
-      createdAt: new Date(),
-      tasks: []
-    }
-    setGoals(prev => [...prev, newGoal])
-
-    // Generate encouraging message from Biscuit
-    const goalMessages = [
-      `🎯 Amazing! You've set a new goal: "${newGoal.title}". Having clear goals is the first step to achieving them!`,
-      `✨ I love your ambition! "${newGoal.title}" is a fantastic goal. Let's break it down and make it happen!`,
-      `🚀 Incredible! You're taking charge of your future with "${newGoal.title}". I'm excited to support you on this journey!`,
-      `💪 Yes! Setting "${newGoal.title}" as your goal shows real commitment. Every big achievement starts with a clear target!`
-    ]
-    const randomMessage = goalMessages[Math.floor(Math.random() * goalMessages.length)]
-    setLatestInsight(randomMessage)
-  }
-
-  const updateGoalProgress = (id: string, progress: number) => {
-    setGoals(prev => prev.map(goal =>
-      goal.id === id
-        ? { ...goal, progress, completedAt: progress >= 100 ? new Date() : undefined }
-        : goal
-    ))
-
-    const goal = goals.find(g => g.id === id)
-    if (goal && progress >= 100) {
-      const completionMessage = `🎉🎯 INCREDIBLE! You've completed your goal "${goal.title}"! This is a huge achievement - you should be so proud of yourself! Time to celebrate! 🥳✨`
-      setLatestInsight(completionMessage)
-    } else if (goal && progress > goal.progress) {
-      const progressMessages = [
-        `🌟 Great progress on "${goal.title}"! You're at ${progress}% - keep up the momentum!`,
-        `💪 Nice work! You've pushed "${goal.title}" to ${progress}%. Every step forward counts!`,
-        `🚀 Awesome! "${goal.title}" is now at ${progress}%. You're getting closer to your target!`
-      ]
-      const randomMessage = progressMessages[Math.floor(Math.random() * progressMessages.length)]
-      setLatestInsight(randomMessage)
-    }
-  }
-
-  const deleteGoal = (id: string) => {
-    const goalToDelete = goals.find(g => g.id === id)
-    setGoals(prev => prev.filter(goal => goal.id !== id))
-
-    if (goalToDelete) {
-      const deleteMessage = `I've removed "${goalToDelete.title}" from your goals. Sometimes priorities change, and that's perfectly okay! 🎯✨`
-      setLatestInsight(deleteMessage)
-    }
-  }
-
-  const toggleGoalComplete = (id: string) => {
-    const goal = goals.find(g => g.id === id)
-    if (goal) {
-      updateGoalProgress(id, 100)
-    }
-  }
 
   const generateTaskInsight = async (task: Task) => {
     try {
@@ -152,14 +90,22 @@ export default function Home() {
     } catch (error) {
       console.error('Error generating AI insight:', error)
       // Fallback to a simple insight if AI fails
-      const fallbackInsight: AIInsight = {
-        id: Date.now().toString(),
-        type: 'suggestion',
-        title: 'Task Added Successfully',
-        content: `Great choice adding "${task.title}" to your ${task.category} goals! Breaking big objectives into small, actionable tasks is key to success. I'm excited to see you tackle this!`,
-        category: task.category,
-        createdAt: new Date(),
-        relevantTasks: [task.id]
+      // Use the enhanced AI service for better insights
+      const fallbackInsight = await aiService.generateTaskInsight(task, tasks)
+      // If that fails too, use a simple fallback
+      if (!fallbackInsight) {
+        const fallbackInsight: AIInsight = {
+          id: Date.now().toString(),
+          type: 'suggestion',
+          title: 'Task Added Successfully',
+          content: `Great choice adding "${task.title}" to your ${task.category} goals! Breaking big objectives into small, actionable tasks is key to success. I'm excited to see you tackle this!`,
+          category: task.category,
+          createdAt: new Date(),
+          relevantTasks: [task.id]
+        }
+        setInsights(prev => [fallbackInsight, ...prev])
+        setLatestInsight(fallbackInsight.content)
+        return
       }
       setInsights(prev => [fallbackInsight, ...prev])
       setLatestInsight(fallbackInsight.content)
@@ -208,7 +154,7 @@ export default function Home() {
   }
 
   // Show loading state during hydration
-  if (!isTasksClient || !isGoalsClient || !isInsightsClient) {
+  if (!isTasksClient || !isInsightsClient) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <header className="text-center mb-12">
@@ -256,33 +202,20 @@ export default function Home() {
         <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-2 inline-flex hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200">
           <button
             onClick={() => setActiveTab('tasks')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
+            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'tasks'
                 ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
                 : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
             }`}
           >
             <span className="flex items-center space-x-2">
-              <span>📋</span>
-              <span>Tasks</span>
-            </span>
-          </button>
-          <button
-            onClick={() => setActiveTab('goals')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
-              activeTab === 'goals'
-                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
-            }`}
-          >
-            <span className="flex items-center space-x-2">
               <span>🎯</span>
-              <span>Goals</span>
+              <span>My Goals</span>
             </span>
           </button>
           <button
             onClick={() => setActiveTab('insights')}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
+            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
               activeTab === 'insights'
                 ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
                 : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
@@ -308,21 +241,6 @@ export default function Home() {
               </div>
             </>
           )}
-          {activeTab === 'goals' && (
-            <>
-              <div className="animate-slide-up">
-                <GoalForm onAddGoal={addGoal} />
-              </div>
-              <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <GoalList
-                  goals={goals}
-                  onUpdateProgress={updateGoalProgress}
-                  onDeleteGoal={deleteGoal}
-                  onToggleComplete={toggleGoalComplete}
-                />
-              </div>
-            </>
-          )}
           {activeTab === 'insights' && (
             <div className="animate-fade-in">
               <AIInsights insights={insights} />
@@ -332,18 +250,13 @@ export default function Home() {
 
         <div className="lg:col-span-1 space-y-6">
           <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <BiscuitConversation
+            <BiscuitConversation 
               aiResponse={latestInsight}
               onResponseComplete={() => setLatestInsight('')}
               onTypingStart={() => setIsBiscuitTyping(true)}
               onTypingEnd={() => setIsBiscuitTyping(false)}
             />
           </div>
-          {activeTab !== 'insights' && (
-            <div className="animate-slide-up" style={{ animationDelay: '0.3s' }}>
-              <AIInsights insights={insights.slice(0, 2)} compact />
-            </div>
-          )}
         </div>
       </div>
     </div>
