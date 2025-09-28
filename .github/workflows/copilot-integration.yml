@@ -1,0 +1,279 @@
+name: GitHub Copilot Integration Support
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run weekly to maintain copilot optimization
+    - cron: '0 2 * * 1'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  copilot-context-optimization:
+    runs-on: ubuntu-latest
+    name: Optimize Copilot Context
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Generate project context
+        id: context
+        run: |
+          echo "Generating project context for GitHub Copilot..."
+          
+          # Create a comprehensive project overview
+          cat > .github/COPILOT_CONTEXT.md << 'EOF'
+          # GitHub Copilot Project Context
+          
+          ## Project Overview
+          Repository: hypotrophy
+          Purpose: AI-enhanced software development and project management
+          
+          ## Architecture & Patterns
+          - Follow established coding patterns in existing files
+          - Maintain consistent naming conventions
+          - Use descriptive variable and function names
+          - Include comprehensive error handling
+          
+          ## Code Style Guidelines
+          - Use modern JavaScript/TypeScript features
+          - Prefer async/await over callbacks
+          - Include JSDoc comments for functions
+          - Follow single responsibility principle
+          - Write self-documenting code
+          
+          ## Testing Approach
+          - Unit tests for all new functions
+          - Integration tests for API endpoints
+          - Mock external dependencies
+          - Test edge cases and error conditions
+          - Maintain high test coverage
+          
+          ## Security Considerations
+          - Validate all inputs
+          - Use parameterized queries
+          - Implement proper authentication
+          - Log security events
+          - Never hardcode secrets
+          
+          ## AI Assistant Guidelines
+          - Provide detailed code comments
+          - Include usage examples
+          - Explain complex algorithms
+          - Document API contracts
+          - Consider performance implications
+          EOF
+          
+          # Generate file index for better copilot suggestions
+          find . -type f -name "*.js" -o -name "*.ts" -o -name "*.py" -o -name "*.md" | 
+          grep -v node_modules | grep -v .git | sort > .github/PROJECT_FILES.txt
+          
+          echo "context-updated=true" >> $GITHUB_OUTPUT
+          
+      - name: Update copilot configuration
+        if: steps.context.outputs.context-updated == 'true'
+        run: |
+          # Create .copilotignore if it doesn't exist
+          if [ ! -f .copilotignore ]; then
+            cat > .copilotignore << 'EOF'
+          # Files to ignore for GitHub Copilot suggestions
+          node_modules/
+          dist/
+          build/
+          .git/
+          *.log
+          *.tmp
+          .env*
+          secrets/
+          private/
+          EOF
+          fi
+          
+          # Create copilot settings
+          mkdir -p .vscode
+          cat > .vscode/settings.json << 'EOF'
+          {
+            "github.copilot.enable": {
+              "*": true,
+              "yaml": true,
+              "plaintext": false,
+              "markdown": true,
+              "javascript": true,
+              "typescript": true,
+              "python": true
+            },
+            "github.copilot.advanced": {
+              "length": 500,
+              "temperature": 0.1,
+              "top_p": 1,
+              "indentationMode": {
+                "python": "spaces",
+                "javascript": "spaces",
+                "typescript": "spaces"
+              }
+            }
+          }
+          EOF
+          
+      - name: Generate AI coding guidelines
+        run: |
+          cat > AI_CODING_GUIDELINES.md << 'EOF'
+          # AI-Enhanced Coding Guidelines
+          
+          ## For GitHub Copilot Users
+          
+          ### Getting Better Suggestions
+          1. **Write descriptive comments** before code blocks
+          2. **Use meaningful variable names** that describe purpose
+          3. **Break complex functions** into smaller, focused functions
+          4. **Include type hints** where applicable
+          5. **Write clear function signatures** with parameter descriptions
+          
+          ### Comment Patterns for Better AI Assistance
+          ```javascript
+          // Calculate user's monthly subscription cost based on plan and discounts
+          function calculateMonthlyCost(user, plan, discounts) {
+            // Implementation here
+          }
+          
+          // Validate email format and check if domain is allowed
+          async function validateUserEmail(email) {
+            // Implementation here
+          }
+          ```
+          
+          ### Code Structure for AI Understanding
+          - Group related functions in modules
+          - Use consistent naming patterns
+          - Include usage examples in comments
+          - Document complex business logic
+          - Explain non-obvious implementation choices
+          
+          ### Testing with AI Assistance
+          ```javascript
+          // Test user authentication with valid credentials
+          describe('User Authentication', () => {
+            // Test successful login with email and password
+            it('should authenticate user with valid credentials', async () => {
+              // Test implementation
+            });
+            
+            // Test failed login with invalid password
+            it('should reject authentication with invalid password', async () => {
+              // Test implementation
+            });
+          });
+          ```
+          
+          ### Security Best Practices for AI-Assisted Development
+          - Always validate inputs in comments before implementation
+          - Document security assumptions
+          - Use descriptive names for security-related functions
+          - Comment on encryption/hashing choices
+          - Explain access control logic
+          
+          ## For AI Agents and Copilot Chat
+          
+          ### Context Providing
+          - Reference specific files and line numbers
+          - Explain the business context
+          - Mention related functions or modules
+          - Include error scenarios to handle
+          
+          ### Code Review Prompts
+          - "Review this code for security vulnerabilities"
+          - "Suggest performance improvements for this function"
+          - "Add comprehensive error handling"
+          - "Generate unit tests for this module"
+          - "Explain this algorithm step by step"
+          
+          ### Refactoring Assistance
+          - "Extract common patterns into reusable functions"
+          - "Improve code readability and maintainability"
+          - "Apply SOLID principles to this code"
+          - "Optimize database queries in this function"
+          EOF
+          
+      - name: Commit context updates
+        if: github.event_name == 'schedule'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .github/COPILOT_CONTEXT.md .github/PROJECT_FILES.txt .copilotignore .vscode/settings.json AI_CODING_GUIDELINES.md
+            git commit -m "Update Copilot context and AI coding guidelines"
+            # Note: In a real workflow, you'd push this back to the repo
+            echo "Context files updated for better AI assistance"
+          fi
+
+  validate-ai-patterns:
+    runs-on: ubuntu-latest
+    name: Validate AI-Friendly Patterns
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check for AI-friendly patterns
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { execSync } = require('child_process');
+            
+            try {
+              // Get changed files
+              const changedFiles = execSync('git diff --name-only HEAD~1').toString().split('\n').filter(f => f);
+              
+              const suggestions = [];
+              
+              for (const file of changedFiles) {
+                if (!file.match(/\.(js|ts|py|java|go)$/)) continue;
+                
+                try {
+                  const content = require('fs').readFileSync(file, 'utf8');
+                  
+                  // Check for descriptive function names
+                  const functions = content.match(/function\s+([a-zA-Z_][a-zA-Z0-9_]*)/g);
+                  if (functions) {
+                    const shortNames = functions.filter(f => f.split(' ')[1].length < 4);
+                    if (shortNames.length > 0) {
+                      suggestions.push(`📝 **${file}**: Consider more descriptive function names: ${shortNames.join(', ')}`);
+                    }
+                  }
+                  
+                  // Check for comments before complex functions
+                  const complexFunctions = content.match(/function\s+[^{]*\{[^}]{200,}/g);
+                  if (complexFunctions && complexFunctions.length > 0) {
+                    const hasComments = content.match(/\/\*\*[\s\S]*?\*\/\s*function|\/\/.*\n\s*function/g);
+                    if (!hasComments || hasComments.length < complexFunctions.length) {
+                      suggestions.push(`💭 **${file}**: Add descriptive comments before complex functions for better AI assistance`);
+                    }
+                  }
+                  
+                } catch (e) {
+                  // Skip files that can't be read
+                }
+              }
+              
+              if (suggestions.length > 0) {
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `🤖 **AI-Friendly Code Suggestions**:\n\n${suggestions.join('\n')}\n\nThese improvements will help GitHub Copilot and AI assistants provide better suggestions!`
+                });
+              }
+              
+            } catch (error) {
+              console.log('Error analyzing code patterns:', error.message);
+            }

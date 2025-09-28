@@ -1,0 +1,198 @@
+name: AI Code Review Assistant
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  ai-code-analysis:
+    runs-on: ubuntu-latest
+    name: AI Code Analysis
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files_yaml: |
+            code:
+              - '**/*.js'
+              - '**/*.ts'
+              - '**/*.jsx'
+              - '**/*.tsx'
+              - '**/*.py'
+              - '**/*.java'
+              - '**/*.go'
+              - '**/*.rs'
+              - '**/*.php'
+              - '**/*.rb'
+            config:
+              - '**/*.json'
+              - '**/*.yml'
+              - '**/*.yaml'
+              - '**/*.toml'
+            docs:
+              - '**/*.md'
+              - '**/*.rst'
+              - '**/*.txt'
+              
+      - name: Comment on code complexity
+        if: steps.changed-files.outputs.code_any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const changedFiles = `${{ steps.changed-files.outputs.code_all_changed_files }}`.split(' ');
+            
+            if (changedFiles.length > 10) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `🤖 **AI Assistant Notice**: This PR modifies ${changedFiles.length} code files. Consider:
+                
+                - Breaking this into smaller, focused PRs
+                - Ensuring comprehensive test coverage
+                - Documenting any breaking changes
+                - Performance impact of large changesets
+                
+                **Changed files**: ${changedFiles.slice(0, 5).join(', ')}${changedFiles.length > 5 ? ` and ${changedFiles.length - 5} more...` : ''}`
+              });
+            }
+            
+      - name: Security scan reminder
+        if: steps.changed-files.outputs.code_any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const securityPatterns = [
+              'password', 'token', 'secret', 'key', 'auth', 'login', 'session',
+              'crypto', 'hash', 'encrypt', 'decrypt', 'sign', 'verify'
+            ];
+            
+            const changedFiles = `${{ steps.changed-files.outputs.code_all_changed_files }}`;
+            const hasSecurityRelevantChanges = securityPatterns.some(pattern => 
+              changedFiles.toLowerCase().includes(pattern)
+            );
+            
+            if (hasSecurityRelevantChanges) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `🔒 **Security Review Needed**: This PR contains security-relevant changes.
+                
+                **AI Assistant Checklist**:
+                - [ ] Input validation implemented
+                - [ ] Authentication/authorization checked
+                - [ ] No hardcoded secrets
+                - [ ] Proper error handling (no information leakage)
+                - [ ] HTTPS/TLS considerations
+                - [ ] SQL injection prevention
+                - [ ] XSS protection
+                
+                Please ensure a security-focused review is conducted.`
+              });
+            }
+
+  ai-test-analysis:
+    runs-on: ubuntu-latest
+    name: AI Test Coverage Analysis
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Get test files
+        id: test-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files_yaml: |
+            tests:
+              - '**/*.test.*'
+              - '**/*.spec.*'
+              - '**/test/**'
+              - '**/tests/**'
+              - '**/__tests__/**'
+            code:
+              - '**/*.js'
+              - '**/*.ts'
+              - '**/*.py'
+              - '**/*.java'
+              
+      - name: Test coverage reminder
+        if: steps.test-files.outputs.code_any_changed == 'true' && steps.test-files.outputs.tests_any_changed == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🧪 **AI Testing Assistant**: Code changes detected without corresponding test updates.
+              
+              **Recommendations**:
+              - Add unit tests for new functionality
+              - Update existing tests if behavior changed
+              - Consider integration tests for complex features
+              - Verify edge cases are covered
+              
+              **Test files to consider updating**:
+              - Unit tests: \`src/**/*.test.js\`
+              - Integration tests: \`tests/integration/**\`
+              - E2E tests: \`tests/e2e/**\``
+            });
+
+  ai-documentation-check:
+    runs-on: ubuntu-latest
+    name: AI Documentation Check
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check documentation updates
+        id: docs-check
+        uses: tj-actions/changed-files@v42
+        with:
+          files_yaml: |
+            docs:
+              - '**/*.md'
+              - '**/docs/**'
+              - '**/README*'
+            api:
+              - '**/api/**'
+              - '**/routes/**'
+              - '**/controllers/**'
+              
+      - name: Documentation reminder
+        if: steps.docs-check.outputs.api_any_changed == 'true' && steps.docs-check.outputs.docs_any_changed == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `📚 **AI Documentation Assistant**: API/interface changes detected.
+              
+              **Documentation to update**:
+              - [ ] API documentation
+              - [ ] README if public interfaces changed
+              - [ ] Code comments for complex logic
+              - [ ] Migration guides for breaking changes
+              - [ ] Examples/tutorials if applicable
+              
+              Well-documented code helps AI assistants provide better support! 🤖`
+            });
