@@ -6,6 +6,7 @@ interface TypingAnimationProps {
   text: string
   speed?: number
   onComplete?: () => void
+  onProgress?: () => void
   className?: string
 }
 
@@ -13,6 +14,7 @@ export default function TypingAnimation({
   text,
   speed = 30,
   onComplete,
+  onProgress,
   className = ""
 }: TypingAnimationProps) {
   const [displayedText, setDisplayedText] = useState('')
@@ -24,6 +26,7 @@ export default function TypingAnimation({
       const timer = setTimeout(() => {
         setDisplayedText(prev => prev + text[currentIndex])
         setCurrentIndex(prev => prev + 1)
+        onProgress?.() // Trigger scroll on each character
       }, speed)
 
       return () => clearTimeout(timer)

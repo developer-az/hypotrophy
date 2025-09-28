@@ -250,7 +250,7 @@ export default function Home() {
 
         <div className="lg:col-span-1 space-y-6">
           <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <BiscuitConversation 
+            <BiscuitConversation
               aiResponse={latestInsight}
               onResponseComplete={() => setLatestInsight('')}
               onTypingStart={() => setIsBiscuitTyping(true)}

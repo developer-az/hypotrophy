@@ -34,18 +34,32 @@ export default function BiscuitConversation({
   ])
   const [currentlyTyping, setCurrentlyTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const characterCount = useRef(0)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
+  // Auto-scroll when messages change
   useEffect(() => {
     scrollToBottom()
   }, [messages])
 
+  // Auto-scroll during typing animation (throttled for performance)
+  const handleTypingProgress = () => {
+    characterCount.current += 1
+    // Scroll every 10 characters to follow the text smoothly
+    if (characterCount.current % 10 === 0) {
+      setTimeout(() => {
+        scrollToBottom()
+      }, 10)
+    }
+  }
+
   useEffect(() => {
     if (aiResponse && !currentlyTyping) {
       setCurrentlyTyping(true)
+      characterCount.current = 0 // Reset character count for new message
       onTypingStart?.()
       const newMessage: Message = {
         id: Date.now().toString(),
@@ -118,6 +132,7 @@ export default function BiscuitConversation({
                   text={message.text}
                   speed={25}
                   onComplete={handleTypingComplete}
+                  onProgress={handleTypingProgress}
                   className="text-sm"
                 />
               ) : (
