@@ -194,8 +194,54 @@ body {
   animation: wiggle 1.2s ease-in-out;
 }
 
+@keyframes celebrate {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+  }
+  25% { 
+    transform: scale(1.1) rotate(10deg);
+  }
+  50% { 
+    transform: scale(1.2) rotate(-10deg);
+  }
+  75% { 
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+@keyframes rainbow-border {
+  0% { border-color: #667eea; }
+  25% { border-color: #764ba2; }
+  50% { border-color: #f093fb; }
+  75% { border-color: #f5576c; }
+  100% { border-color: #4facfe; }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
 .animate-pulse-rainbow {
   animation: pulse-rainbow 4s ease-in-out infinite;
+}
+
+.animate-celebrate {
+  animation: celebrate 0.6s ease-in-out;
+}
+
+.animate-rainbow-border {
+  animation: rainbow-border 3s ease-in-out infinite;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 /* Modern Hover Effects */
