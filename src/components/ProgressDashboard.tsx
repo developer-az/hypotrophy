@@ -59,78 +59,76 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
 
   if (totalTasks === 0) {
     return (
-      <div className="modern-card p-16 text-center mb-12">
-        <div className="text-8xl mb-8 animate-float">📊</div>
-        <h2 className="text-4xl font-black text-gray-800 mb-8">Your Progress Dashboard</h2>
-        <p className="text-gray-600 text-xl mb-10 max-w-lg mx-auto">Add some tasks to see your amazing progress!</p>
-        <div className="inline-flex items-center space-x-4 text-indigo-700 font-bold text-lg bg-indigo-50 px-8 py-4 rounded-2xl border border-indigo-200">
-          <span className="text-2xl">🚀</span>
-          <span>Start your growth journey today</span>
-        </div>
+      <div className="modern-card p-12 text-center mb-8">
+        <div className="text-6xl mb-6 animate-float">📊</div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Progress Dashboard</h2>
+        <p className="text-gray-600 mb-6">Add goals to track your progress!</p>
       </div>
     )
   }
 
   return (
-    <div className="modern-card p-10 mb-12">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4">
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-3xl">📊</span>
+    <div className="modern-card p-8 mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-md">
+            <span className="text-white text-xl">📊</span>
           </div>
-          <h2 className="text-3xl font-black text-gray-800">Your Progress Dashboard</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Progress</h2>
         </div>
         {onGenerateInsight && totalTasks > 0 && (
           <button
             onClick={isAnalyzing ? undefined : onGenerateInsight}
             disabled={isAnalyzing}
-            className={`px-6 py-3 rounded-2xl font-bold shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 ${
+            className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 ${
               isAnalyzing
                 ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-75'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-xl focus:ring-indigo-200'
+                : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-200'
             }`}
           >
-            <span className="flex items-center space-x-3">
-              <span className="text-xl">{isAnalyzing ? '💭' : '🐹'}</span>
-              <span>{isAnalyzing ? 'Biscuit is thinking...' : 'Ask Biscuit for Analysis'}</span>
+            <span className="flex items-center space-x-2">
+              <span>{isAnalyzing ? '💭' : '🐹'}</span>
+              <span>{isAnalyzing ? 'Analyzing...' : 'Ask Biscuit'}</span>
             </span>
           </button>
         )}
       </div>
 
-      {/* Main stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-        <div className="text-center p-6 bg-green-50 rounded-3xl border border-green-200 hover:shadow-lg transition-shadow">
-          <div className="text-5xl font-black text-green-700 mb-2">{completedTasks}</div>
-          <div className="text-sm font-bold text-green-600 uppercase tracking-wide">Completed</div>
+      {/* Simplified stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="text-center p-4 bg-green-50 rounded-2xl border border-green-200">
+          <div className="text-3xl font-bold text-green-700 mb-1">{completedTasks}</div>
+          <div className="text-xs font-medium text-green-600 uppercase">Completed</div>
         </div>
-        <div className="text-center p-6 bg-blue-50 rounded-3xl border border-blue-200 hover:shadow-lg transition-shadow">
-          <div className="text-5xl font-black text-blue-700 mb-2">{totalTasks}</div>
-          <div className="text-sm font-bold text-blue-600 uppercase tracking-wide">Total Tasks</div>
+        <div className="text-center p-4 bg-blue-50 rounded-2xl border border-blue-200">
+          <div className="text-3xl font-bold text-blue-700 mb-1">{totalTasks}</div>
+          <div className="text-xs font-medium text-blue-600 uppercase">Total</div>
         </div>
-        <div className="text-center p-6 bg-purple-50 rounded-3xl border border-purple-200 hover:shadow-lg transition-shadow">
-          <div className="text-5xl font-black text-purple-700 mb-2">{completionRate}%</div>
-          <div className="text-sm font-bold text-purple-600 uppercase tracking-wide">Success Rate</div>
+        <div className="text-center p-4 bg-purple-50 rounded-2xl border border-purple-200">
+          <div className="text-3xl font-bold text-purple-700 mb-1">{completionRate}%</div>
+          <div className="text-xs font-medium text-purple-600 uppercase">Success</div>
         </div>
-        <div className="text-center p-6 bg-orange-50 rounded-3xl border border-orange-200 hover:shadow-lg transition-shadow">
-          <div className="text-5xl font-black text-orange-700 mb-2">{streak}</div>
-          <div className="text-sm font-bold text-orange-600 uppercase tracking-wide">Active Days</div>
+        <div className="text-center p-4 bg-orange-50 rounded-2xl border border-orange-200">
+          <div className="text-3xl font-bold text-orange-700 mb-1">{streak}</div>
+          <div className="text-xs font-medium text-orange-600 uppercase">Days</div>
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-lg font-bold text-gray-800">Overall Progress</span>
-          <span className="text-2xl font-black text-indigo-600">{completionRate}%</span>
+      {/* Simplified progress bar */}
+      {totalTasks > 0 && (
+        <div className="mb-4">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm font-medium text-gray-700">Progress</span>
+            <span className="text-lg font-bold text-indigo-600">{completionRate}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-3">
+            <div
+              className="bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full transition-all duration-300"
+              style={{ width: `${completionRate}%` }}
+            ></div>
+          </div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner">
-          <div
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-4 rounded-full transition-all duration-500 shadow-lg"
-            style={{ width: `${completionRate}%` }}
-          ></div>
-        </div>
-      </div>
+      )}
 
       {/* Category breakdown */}
       {categoryCompletion.length > 0 && (

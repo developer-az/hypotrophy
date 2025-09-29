@@ -165,39 +165,37 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
 
   return (
     <div className="relative">
-      {/* Modern Task Input */}
-      <div className="modern-card p-10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 mb-10">
-          <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-2xl">🎯</span>
+      {/* Simplified Task Input */}
+      <div className="modern-card p-8">
+        <div className="flex items-center space-x-4 mb-6">
+          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <span className="text-white text-xl">🎯</span>
           </div>
           <div className="flex-1">
-            <h2 className="text-3xl font-black text-gray-800">
-              What would you like to accomplish?
-            </h2>
-            <p className="text-gray-600 text-lg">Just describe it naturally - I'll figure out the details!</p>
+            <h2 className="text-2xl font-bold text-gray-800">Add a Goal</h2>
+            <p className="text-gray-500 text-sm">Describe what you want to accomplish</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Smart Input Field */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Simplified Input Field */}
           <div className="relative">
             <textarea
               value={input}
               onChange={(e) => handleInputChange(e.target.value)}
-              placeholder="E.g., 'I need to go for a 30-minute run today' or 'Call mom to catch up this weekend' or 'Finish the presentation for Monday's meeting'"
-              className="w-full px-6 py-4 text-lg rounded-2xl border-2 border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 transition-all duration-300 placeholder-gray-400 resize-none shadow-sm hover:shadow-md"
-              rows={4}
+              placeholder="I want to exercise for 30 minutes today..."
+              className="w-full px-4 py-3 text-base rounded-xl border-2 border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 placeholder-gray-400 resize-none shadow-sm"
+              rows={3}
               disabled={isProcessing}
             />
 
-            {/* Real-time Detection Preview */}
+            {/* Minimal Detection Preview */}
             {detectedCategory && input.length > 3 && (
-              <div className="absolute top-4 right-4 flex items-center space-x-3">
-                <span className={`px-3 py-1 rounded-full text-sm font-bold border ${getPriorityColor(detectedPriority)}`}>
-                  {detectedPriority}
+              <div className="absolute top-3 right-3 flex items-center space-x-2">
+                <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getPriorityColor(detectedPriority)}`}>
+                  {detectedPriority.toUpperCase()}
                 </span>
-                <span className="flex items-center space-x-2 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold border border-indigo-200">
+                <span className="flex items-center space-x-1 px-2 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-medium">
                   <span>{getCategoryIcon(detectedCategory)}</span>
                   <span className="capitalize">{detectedCategory}</span>
                 </span>
@@ -205,52 +203,25 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
             )}
           </div>
 
-          {/* Submit Button */}
+          {/* Simplified Submit Button */}
           <button
             type="submit"
             disabled={!input.trim() || isProcessing}
-            className="w-full bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-indigo-700 hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-200"
+            className="w-full bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-indigo-700 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            <span className="flex items-center justify-center space-x-3">
-              {isProcessing ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <span>Processing...</span>
-                </>
-              ) : (
-                <>
-                  <span className="text-xl">✨</span>
-                  <span>Add to My Goals</span>
-                  <span className="text-xl">🚀</span>
-                </>
-              )}
-            </span>
+            {isProcessing ? (
+              <span className="flex items-center justify-center space-x-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>Adding...</span>
+              </span>
+            ) : (
+              <span className="flex items-center justify-center space-x-2">
+                <span>Add Goal</span>
+                <span>✨</span>
+              </span>
+            )}
           </button>
         </form>
-
-        {/* Help Text */}
-        <div className="mt-8 p-6 bg-indigo-50 rounded-2xl border border-indigo-200">
-          <div className="flex items-start space-x-4">
-            <span className="text-indigo-600 mt-1 text-2xl">💡</span>
-            <div className="text-sm text-indigo-800">
-              <p className="font-bold mb-3 text-lg">Smart Detection Examples:</p>
-              <ul className="space-y-2 text-indigo-700">
-                <li className="flex items-center space-x-2">
-                  <span>•</span>
-                  <span>"Exercise for 30 minutes" → 💪 Health, Medium priority</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <span>•</span>
-                  <span>"Urgent: Finish project deadline tomorrow" → 💼 Career, High priority</span>
-                </li>
-                <li className="flex items-center space-x-2">
-                  <span>•</span>
-                  <span>"Maybe read a book when I have time" → 📚 Learning, Low priority</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )

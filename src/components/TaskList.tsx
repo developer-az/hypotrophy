@@ -73,58 +73,50 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   if (tasks.length === 0) {
     return (
-      <div className="modern-card p-16 text-center">
-        <div className="relative mb-8">
-          <div className="text-8xl animate-float">🌱</div>
-          <div className="absolute -top-3 -right-3 w-8 h-8 bg-indigo-600 rounded-full"></div>
-        </div>
-        <h3 className="text-4xl font-black text-gray-800 mb-6">
-          Ready to Transform Your Life?
+      <div className="modern-card p-12 text-center">
+        <div className="text-6xl mb-6 animate-float">🌱</div>
+        <h3 className="text-2xl font-bold text-gray-800 mb-4">
+          Start Your Growth Journey
         </h3>
-        <p className="text-gray-600 text-xl mb-10 max-w-lg mx-auto leading-relaxed">
-          Describe any goal naturally above, and watch as Biscuit helps you break it down and achieve it step by step!
+        <p className="text-gray-600 mb-6 max-w-md mx-auto">
+          Add your first goal above and let Biscuit help you achieve it!
         </p>
-        <div className="inline-flex items-center space-x-4 bg-indigo-50 px-8 py-4 rounded-3xl text-indigo-700 font-bold text-lg border border-indigo-200">
-          <span className="text-2xl">✨</span>
-          <span>Your growth journey starts with one task</span>
-          <span className="text-2xl">🚀</span>
-        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center space-x-4">
-        <div className="w-12 h-12 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-lg">
-          <span className="text-white text-xl">📋</span>
+    <div className="space-y-6">
+      <div className="flex items-center space-x-3">
+        <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-md">
+          <span className="text-white text-lg">📋</span>
         </div>
-        <h2 className="text-3xl font-black text-gray-800">Your Tasks</h2>
-        <span className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-2xl text-lg font-bold border border-indigo-200">
+        <h2 className="text-2xl font-bold text-gray-800">Your Goals</h2>
+        <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm font-semibold">
           {tasks.length}
         </span>
       </div>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className={`group modern-card p-8 border-2 ${
+            className={`group modern-card p-6 border-2 ${
               task.completed
                 ? 'border-green-200 bg-green-50'
                 : getPriorityColor(task.priority)
             }`}
           >
-            <div className="flex items-start space-x-6">
+            <div className="flex items-start space-x-4">
               <button
                 onClick={() => onToggleTask(task.id)}
-                className={`mt-2 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-md ${
+                className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 hover:scale-110 ${
                   task.completed
                     ? 'bg-green-600 border-green-600 text-white'
                     : 'border-gray-300 hover:border-indigo-500 hover:bg-indigo-50'
                 }`}
               >
                 {task.completed && (
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 )}
@@ -132,45 +124,45 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
               <div className="flex-1">
                 {deleteConfirm === task.id && (
-                  <div className="mb-6 p-6 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200/50 rounded-3xl shadow-soft">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <span className="text-red-500 text-2xl">⚠️</span>
-                      <p className="text-lg font-bold text-red-800">
-                        Are you sure you want to delete this task?
+                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <span className="text-red-500">⚠️</span>
+                      <p className="text-sm font-medium text-red-800">
+                        Delete this goal?
                       </p>
                     </div>
-                    <div className="flex space-x-4">
+                    <div className="flex space-x-2">
                       <button
                         onClick={() => confirmDelete(task.id)}
-                        className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold rounded-2xl hover:shadow-xl hover:scale-105 transition-all duration-300 shadow-soft"
+                        className="px-3 py-1 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
                       >
-                        Yes, Delete
+                        Delete
                       </button>
                       <button
                         onClick={cancelDelete}
-                        className="px-6 py-3 bg-gradient-to-r from-neutral-200 to-neutral-300 text-neutral-700 font-bold rounded-2xl hover:shadow-lg hover:scale-105 transition-all duration-300"
+                        className="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors"
                       >
                         Cancel
                       </button>
                     </div>
                   </div>
                 )}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-4">
-                    <span className="text-3xl animate-bounce-gentle">{getCategoryIcon(task.category)}</span>
-                    <h3 className={`text-2xl font-bold ${task.completed ? 'line-through text-neutral-500' : 'text-neutral-800'}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <span className="text-xl">{getCategoryIcon(task.category)}</span>
+                    <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
                       {task.title}
                     </h3>
-                    <span className={`px-4 py-2 text-sm font-black rounded-2xl shadow-soft ${getPriorityBadge(task.priority)}`}>
+                    <span className={`px-2 py-1 text-xs font-bold rounded-lg ${getPriorityBadge(task.priority)}`}>
                       {task.priority.toUpperCase()}
                     </span>
                   </div>
                   <button
                     onClick={() => handleDeleteClick(task.id)}
-                    className="text-neutral-400 hover:text-red-500 transition-all duration-300 p-3 rounded-2xl hover:bg-red-50 hover:shadow-soft hover:scale-110"
-                    title="Delete task"
+                    className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-50"
+                    title="Delete goal"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>

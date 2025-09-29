@@ -177,55 +177,54 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full">
-      <div className="max-w-full mx-auto px-6 py-12">
-        <header className="text-center mb-20 max-w-4xl mx-auto">
+      <div className="max-w-full mx-auto px-6 py-8">
+        <header className="text-center mb-12 max-w-4xl mx-auto">
           <div className="animate-fade-in">
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
               <img
                 src="/biscuit.png"
                 alt="Biscuit the Hamster"
-                className="w-24 h-24 rounded-full border-4 border-indigo-200 animate-float shadow-lg"
+                className="w-16 h-16 rounded-full border-2 border-indigo-200 animate-float shadow-md"
               />
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black hypotrophy-gradient tracking-tight text-center sm:text-left">
+              <h1 className="text-4xl sm:text-5xl font-black hypotrophy-gradient tracking-tight text-center sm:text-left">
                 Hypotrophy
               </h1>
             </div>
-            <p className="text-xl sm:text-2xl text-gray-700 font-medium mb-6 max-w-2xl mx-auto">
-              Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
+            <p className="text-lg text-gray-600 font-medium mb-4 max-w-xl mx-auto">
+              Your AI-Powered Personal Growth Assistant 🐹
             </p>
-            <div className="w-32 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full"></div>
           </div>
         </header>
 
         <div className="max-w-7xl mx-auto">
           <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
 
-          <div className="flex justify-center mb-12">
-            <div className="modern-card p-3 inline-flex">
+          <div className="flex justify-center mb-8">
+            <div className="modern-card p-2 inline-flex">
               <button
                 onClick={() => setActiveTab('tasks')}
-                className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
                   activeTab === 'tasks'
-                    ? 'bg-indigo-600 text-white shadow-lg'
+                    ? 'bg-indigo-600 text-white shadow-md'
                     : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
                 }`}
               >
-                <span className="flex items-center space-x-3">
-                  <span className="text-xl">🎯</span>
-                  <span>My Goals</span>
+                <span className="flex items-center space-x-2">
+                  <span>🎯</span>
+                  <span>Goals</span>
                 </span>
               </button>
               <button
                 onClick={() => setActiveTab('insights')}
-                className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
                   activeTab === 'insights'
-                    ? 'bg-indigo-600 text-white shadow-lg'
+                    ? 'bg-indigo-600 text-white shadow-md'
                     : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
                 }`}
               >
-                <span className="flex items-center space-x-3">
-                  <span className="text-xl">🐹</span>
-                  <span>Biscuit's Insights</span>
+                <span className="flex items-center space-x-2">
+                  <span>🐹</span>
+                  <span>Insights</span>
                 </span>
               </button>
             </div>
