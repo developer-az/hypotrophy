@@ -28,19 +28,19 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   const getPriorityColor = (priority: Task['priority']) => {
     switch (priority) {
-      case 'high': return 'border-red-300/50 bg-gradient-to-br from-red-50 via-red-100 to-pink-50'
-      case 'medium': return 'border-yellow-300/50 bg-gradient-to-br from-yellow-50 via-yellow-100 to-amber-50'
-      case 'low': return 'border-green-300/50 bg-gradient-to-br from-green-50 via-green-100 to-emerald-50'
-      default: return 'border-primary-300/50 bg-gradient-to-br from-primary-50 via-primary-100 to-secondary-50'
+      case 'high': return 'border-red-200 bg-red-50'
+      case 'medium': return 'border-yellow-200 bg-yellow-50'
+      case 'low': return 'border-green-200 bg-green-50'
+      default: return 'border-blue-200 bg-blue-50'
     }
   }
 
   const getPriorityBadge = (priority: Task['priority']) => {
     switch (priority) {
-      case 'high': return 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
-      case 'medium': return 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white'
-      case 'low': return 'bg-gradient-to-r from-green-500 to-emerald-500 text-white'
-      default: return 'bg-gradient-to-r from-primary-500 to-secondary-500 text-white'
+      case 'high': return 'bg-red-600 text-white'
+      case 'medium': return 'bg-yellow-600 text-white'
+      case 'low': return 'bg-green-600 text-white'
+      default: return 'bg-blue-600 text-white'
     }
   }
 
@@ -73,18 +73,18 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   if (tasks.length === 0) {
     return (
-      <div className="modern-card p-16 text-center hover-lift">
+      <div className="modern-card p-16 text-center">
         <div className="relative mb-8">
           <div className="text-8xl animate-float">🌱</div>
-          <div className="absolute -top-3 -right-3 w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full animate-pulse-rainbow"></div>
+          <div className="absolute -top-3 -right-3 w-8 h-8 bg-indigo-600 rounded-full"></div>
         </div>
-        <h3 className="text-4xl font-black bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent mb-6">
+        <h3 className="text-4xl font-black text-gray-800 mb-6">
           Ready to Transform Your Life?
         </h3>
-        <p className="text-neutral-600 text-xl mb-10 max-w-lg mx-auto leading-relaxed">
+        <p className="text-gray-600 text-xl mb-10 max-w-lg mx-auto leading-relaxed">
           Describe any goal naturally above, and watch as Biscuit helps you break it down and achieve it step by step!
         </p>
-        <div className="inline-flex items-center space-x-4 bg-gradient-to-r from-primary-100 via-secondary-100 to-accent-100 px-8 py-4 rounded-3xl text-primary-700 font-bold text-lg shadow-soft">
+        <div className="inline-flex items-center space-x-4 bg-indigo-50 px-8 py-4 rounded-3xl text-indigo-700 font-bold text-lg border border-indigo-200">
           <span className="text-2xl">✨</span>
           <span>Your growth journey starts with one task</span>
           <span className="text-2xl">🚀</span>
@@ -96,11 +96,11 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
   return (
     <div className="space-y-8">
       <div className="flex items-center space-x-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-3xl flex items-center justify-center shadow-xl animate-pulse-rainbow">
+        <div className="w-12 h-12 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-lg">
           <span className="text-white text-xl">📋</span>
         </div>
-        <h2 className="text-3xl font-black bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent">Your Tasks</h2>
-        <span className="bg-gradient-to-r from-primary-100 to-secondary-100 text-primary-700 px-4 py-2 rounded-2xl text-lg font-bold shadow-soft">
+        <h2 className="text-3xl font-black text-gray-800">Your Tasks</h2>
+        <span className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-2xl text-lg font-bold border border-indigo-200">
           {tasks.length}
         </span>
       </div>
@@ -108,19 +108,19 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className={`group modern-card p-8 hover-lift animate-slide-up ${
+            className={`group modern-card p-8 border-2 ${
               task.completed
-                ? 'border-green-300/50 bg-gradient-to-br from-green-50 via-green-100 to-emerald-50'
+                ? 'border-green-200 bg-green-50'
                 : getPriorityColor(task.priority)
             }`}
           >
             <div className="flex items-start space-x-6">
               <button
                 onClick={() => onToggleTask(task.id)}
-                className={`mt-2 w-8 h-8 rounded-full border-3 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-soft ${
+                className={`mt-2 w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-md ${
                   task.completed
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-green-400 text-white shadow-glow animate-bounce-gentle'
-                    : 'border-neutral-300 hover:border-primary-500 hover:shadow-glow hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50'
+                    ? 'bg-green-600 border-green-600 text-white'
+                    : 'border-gray-300 hover:border-indigo-500 hover:bg-indigo-50'
                 }`}
               >
                 {task.completed && (

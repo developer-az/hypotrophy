@@ -59,11 +59,11 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
 
   if (totalTasks === 0) {
     return (
-      <div className="modern-card p-12 text-center hover-lift">
-        <div className="text-8xl mb-6 animate-float">📊</div>
-        <h2 className="text-4xl font-black bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent mb-6">Your Progress Dashboard</h2>
-        <p className="text-neutral-600 text-xl mb-8">Add some tasks to see your amazing progress!</p>
-        <div className="inline-flex items-center space-x-3 text-primary-600 font-bold text-lg bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-3 rounded-2xl shadow-soft">
+      <div className="modern-card p-16 text-center mb-12">
+        <div className="text-8xl mb-8 animate-float">📊</div>
+        <h2 className="text-4xl font-black text-gray-800 mb-8">Your Progress Dashboard</h2>
+        <p className="text-gray-600 text-xl mb-10 max-w-lg mx-auto">Add some tasks to see your amazing progress!</p>
+        <div className="inline-flex items-center space-x-4 text-indigo-700 font-bold text-lg bg-indigo-50 px-8 py-4 rounded-2xl border border-indigo-200">
           <span className="text-2xl">🚀</span>
           <span>Start your growth journey today</span>
         </div>
@@ -72,22 +72,22 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
   }
 
   return (
-    <div className="modern-card p-10 hover-lift">
-      <div className="flex items-center justify-between mb-8">
+    <div className="modern-card p-10 mb-12">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 gap-4">
         <div className="flex items-center space-x-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-3xl flex items-center justify-center shadow-xl animate-pulse-rainbow">
-            <span className="text-white text-2xl">📊</span>
+          <div className="w-16 h-16 bg-indigo-600 rounded-3xl flex items-center justify-center shadow-lg">
+            <span className="text-white text-3xl">📊</span>
           </div>
-          <h2 className="text-3xl font-black bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent">Your Progress Dashboard</h2>
+          <h2 className="text-3xl font-black text-gray-800">Your Progress Dashboard</h2>
         </div>
         {onGenerateInsight && totalTasks > 0 && (
           <button
             onClick={isAnalyzing ? undefined : onGenerateInsight}
             disabled={isAnalyzing}
-            className={`px-6 py-3 rounded-2xl font-bold shadow-xl transition-all duration-500 ease-out focus:outline-none focus:ring-4 ${
+            className={`px-6 py-3 rounded-2xl font-bold shadow-lg transition-all duration-300 focus:outline-none focus:ring-4 ${
               isAnalyzing
-                ? 'bg-neutral-400 text-neutral-600 cursor-not-allowed opacity-75'
-                : 'bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 text-white hover:shadow-2xl hover:scale-105 active:scale-95 focus:ring-primary-200/50 animate-glow'
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-75'
+                : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-xl focus:ring-indigo-200'
             }`}
           >
             <span className="flex items-center space-x-3">
@@ -100,33 +100,33 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
 
       {/* Main stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
-        <div className="text-center p-6 bg-gradient-to-br from-primary-50 via-primary-100 to-primary-200 rounded-3xl shadow-soft hover-scale">
-          <div className="text-5xl font-black text-primary-600 mb-2">{completedTasks}</div>
-          <div className="text-sm font-bold text-primary-700 uppercase tracking-wide">Completed</div>
+        <div className="text-center p-6 bg-green-50 rounded-3xl border border-green-200 hover:shadow-lg transition-shadow">
+          <div className="text-5xl font-black text-green-700 mb-2">{completedTasks}</div>
+          <div className="text-sm font-bold text-green-600 uppercase tracking-wide">Completed</div>
         </div>
-        <div className="text-center p-6 bg-gradient-to-br from-neutral-50 via-neutral-100 to-neutral-200 rounded-3xl shadow-soft hover-scale">
-          <div className="text-5xl font-black text-neutral-700 mb-2">{totalTasks}</div>
-          <div className="text-sm font-bold text-neutral-600 uppercase tracking-wide">Total Tasks</div>
+        <div className="text-center p-6 bg-blue-50 rounded-3xl border border-blue-200 hover:shadow-lg transition-shadow">
+          <div className="text-5xl font-black text-blue-700 mb-2">{totalTasks}</div>
+          <div className="text-sm font-bold text-blue-600 uppercase tracking-wide">Total Tasks</div>
         </div>
-        <div className="text-center p-6 bg-gradient-to-br from-accent-50 via-accent-100 to-accent-200 rounded-3xl shadow-soft hover-scale">
-          <div className="text-5xl font-black text-accent-600 mb-2">{completionRate}%</div>
-          <div className="text-sm font-bold text-accent-700 uppercase tracking-wide">Success Rate</div>
+        <div className="text-center p-6 bg-purple-50 rounded-3xl border border-purple-200 hover:shadow-lg transition-shadow">
+          <div className="text-5xl font-black text-purple-700 mb-2">{completionRate}%</div>
+          <div className="text-sm font-bold text-purple-600 uppercase tracking-wide">Success Rate</div>
         </div>
-        <div className="text-center p-6 bg-gradient-to-br from-secondary-50 via-secondary-100 to-secondary-200 rounded-3xl shadow-soft hover-scale">
-          <div className="text-5xl font-black text-secondary-600 mb-2">{streak}</div>
-          <div className="text-sm font-bold text-secondary-700 uppercase tracking-wide">Active Days</div>
+        <div className="text-center p-6 bg-orange-50 rounded-3xl border border-orange-200 hover:shadow-lg transition-shadow">
+          <div className="text-5xl font-black text-orange-700 mb-2">{streak}</div>
+          <div className="text-sm font-bold text-orange-600 uppercase tracking-wide">Active Days</div>
         </div>
       </div>
 
       {/* Progress bar */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-sm font-semibold text-neutral-700">Overall Progress</span>
-          <span className="text-lg font-bold text-primary-600">{completionRate}%</span>
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-lg font-bold text-gray-800">Overall Progress</span>
+          <span className="text-2xl font-black text-indigo-600">{completionRate}%</span>
         </div>
-        <div className="progress-bar">
+        <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner">
           <div
-            className="progress-fill"
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-4 rounded-full transition-all duration-500 shadow-lg"
             style={{ width: `${completionRate}%` }}
           ></div>
         </div>
@@ -135,8 +135,8 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
       {/* Category breakdown */}
       {categoryCompletion.length > 0 && (
         <div>
-          <h3 className="text-lg font-bold text-neutral-800 mb-4">Progress by Category</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <h3 className="text-xl font-black text-gray-800 mb-6">Progress by Category</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {categoryCompletion.map(({ category, total, completed, rate }) => (
               <div key={category} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-4">
                 <div className="flex items-center justify-between mb-3">

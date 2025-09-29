@@ -176,86 +176,90 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="text-center mb-16">
-        <div className="animate-fade-in">
-          <div className="flex items-center justify-center space-x-6 mb-6">
-            <img
-              src="/biscuit.png"
-              alt="Biscuit the Hamster"
-              className="w-20 h-20 rounded-full border-4 border-white/30 animate-float shadow-xl hover-glow"
-            />
-            <h1 className="text-7xl font-black hypotrophy-gradient tracking-tight">
-              Hypotrophy
-            </h1>
+    <div className="min-h-screen w-full">
+      <div className="max-w-full mx-auto px-6 py-12">
+        <header className="text-center mb-20 max-w-4xl mx-auto">
+          <div className="animate-fade-in">
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+              <img
+                src="/biscuit.png"
+                alt="Biscuit the Hamster"
+                className="w-24 h-24 rounded-full border-4 border-indigo-200 animate-float shadow-lg"
+              />
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black hypotrophy-gradient tracking-tight text-center sm:text-left">
+                Hypotrophy
+              </h1>
+            </div>
+            <p className="text-xl sm:text-2xl text-gray-700 font-medium mb-6 max-w-2xl mx-auto">
+              Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
+            </p>
+            <div className="w-32 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mx-auto rounded-full"></div>
           </div>
-          <p className="text-2xl text-neutral-600 font-medium mb-4">
-            Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
-          </p>
-          <div className="w-32 h-1.5 bg-gradient-to-r from-primary-500 via-secondary-500 to-accent-500 mx-auto rounded-full animate-shimmer"></div>
-        </div>
-      </header>
+        </header>
 
-      <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
+        <div className="max-w-7xl mx-auto">
+          <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
 
-      <div className="flex justify-center mb-10">
-        <div className="modern-card p-3 inline-flex hover-lift">
-          <button
-            onClick={() => setActiveTab('tasks')}
-            className={`px-10 py-4 rounded-2xl font-bold transition-all duration-500 ease-out hover:scale-105 active:scale-95 ${
-              activeTab === 'tasks'
-                ? 'bg-gradient-to-r from-primary-500 via-primary-600 to-secondary-500 text-white shadow-glow animate-glow'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50'
-            }`}
-          >
-            <span className="flex items-center space-x-3">
-              <span className="text-xl">🎯</span>
-              <span>My Goals</span>
-            </span>
-          </button>
-          <button
-            onClick={() => setActiveTab('insights')}
-            className={`px-10 py-4 rounded-2xl font-bold transition-all duration-500 ease-out hover:scale-105 active:scale-95 ${
-              activeTab === 'insights'
-                ? 'bg-gradient-to-r from-primary-500 via-primary-600 to-secondary-500 text-white shadow-glow animate-glow'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-secondary-50'
-            }`}
-          >
-            <span className="flex items-center space-x-3">
-              <span className="text-xl">🐹</span>
-              <span>Biscuit's Insights</span>
-            </span>
-          </button>
-        </div>
-      </div>
+          <div className="flex justify-center mb-12">
+            <div className="modern-card p-3 inline-flex">
+              <button
+                onClick={() => setActiveTab('tasks')}
+                className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
+                  activeTab === 'tasks'
+                    ? 'bg-indigo-600 text-white shadow-lg'
+                    : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
+                }`}
+              >
+                <span className="flex items-center space-x-3">
+                  <span className="text-xl">🎯</span>
+                  <span>My Goals</span>
+                </span>
+              </button>
+              <button
+                onClick={() => setActiveTab('insights')}
+                className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
+                  activeTab === 'insights'
+                    ? 'bg-indigo-600 text-white shadow-lg'
+                    : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
+                }`}
+              >
+                <span className="flex items-center space-x-3">
+                  <span className="text-xl">🐹</span>
+                  <span>Biscuit's Insights</span>
+                </span>
+              </button>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          {activeTab === 'tasks' && (
-            <>
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            <div className="xl:col-span-3 space-y-8">
+              {activeTab === 'tasks' && (
+                <>
                   <div className="animate-slide-up">
                     <TaskForm onAddTask={addTask} userTasks={tasks} />
                   </div>
-              <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <TaskList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
-              </div>
-            </>
-          )}
-          {activeTab === 'insights' && (
-            <div className="animate-fade-in">
-              <AIInsights insights={insights} />
+                  <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                    <TaskList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
+                  </div>
+                </>
+              )}
+              {activeTab === 'insights' && (
+                <div className="animate-fade-in">
+                  <AIInsights insights={insights} />
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        <div className="lg:col-span-1 space-y-6">
-          <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <BiscuitConversation
-              aiResponse={latestInsight}
-              onResponseComplete={() => setLatestInsight('')}
-              onTypingStart={() => setIsBiscuitTyping(true)}
-              onTypingEnd={() => setIsBiscuitTyping(false)}
-            />
+            <div className="xl:col-span-1 space-y-8">
+              <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                <BiscuitConversation
+                  aiResponse={latestInsight}
+                  onResponseComplete={() => setLatestInsight('')}
+                  onTypingStart={() => setIsBiscuitTyping(true)}
+                  onTypingEnd={() => setIsBiscuitTyping(false)}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
