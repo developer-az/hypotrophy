@@ -156,70 +156,77 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
 
   const getPriorityColor = (priority: string) => {
     const colors: Record<string, string> = {
-      low: 'text-green-800 bg-green-100 border-green-300',
-      medium: 'text-yellow-800 bg-yellow-100 border-yellow-300',
-      high: 'text-red-800 bg-red-100 border-red-300'
+      low: 'bg-green-500/20 border-green-400/50',
+      medium: 'bg-yellow-500/20 border-yellow-400/50',
+      high: 'bg-red-500/20 border-red-400/50'
     }
     return colors[priority] || colors.medium
   }
 
   return (
     <div className="relative">
-      {/* Simplified Task Input */}
+      {/* Premium Task Input */}
       <div className="modern-card p-8">
-        <div className="flex items-center space-x-4 mb-6">
-          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-xl">🎯</span>
+        <div className="flex items-center space-x-4 mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/20">
+            <span className="text-white text-2xl drop-shadow-sm">🎯</span>
           </div>
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-800">Add a Goal</h2>
-            <p className="text-gray-500 text-sm">Describe what you want to accomplish</p>
+            <h2 className="text-3xl font-bold text-white drop-shadow-sm">Create Your Goal</h2>
+            <p className="text-white/80 text-lg">Transform your dreams into achievements</p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Simplified Input Field */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Premium Input Field */}
           <div className="relative">
-            <textarea
-              value={input}
-              onChange={(e) => handleInputChange(e.target.value)}
-              placeholder="I want to exercise for 30 minutes today..."
-              className="w-full px-4 py-3 text-base rounded-xl border-2 border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition-all duration-200 placeholder-gray-400 resize-none shadow-sm"
-              rows={3}
-              disabled={isProcessing}
-            />
+            <div className="relative group">
+              <textarea
+                value={input}
+                onChange={(e) => handleInputChange(e.target.value)}
+                placeholder="I want to master a new skill, build a healthy habit, or achieve something meaningful..."
+                className="glass-input w-full px-6 py-4 text-lg rounded-2xl resize-none min-h-[120px] leading-relaxed"
+                disabled={isProcessing}
+              />
+              
+              {/* Premium Detection Badges */}
+              {detectedCategory && input.length > 3 && (
+                <div className="absolute top-4 right-4 flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-xl text-sm font-medium border border-white/30">
+                    <span>{getCategoryIcon(detectedCategory)}</span>
+                    <span className="capitalize">{detectedCategory}</span>
+                  </div>
+                  <span className={`px-3 py-1 rounded-xl text-sm font-bold text-white backdrop-blur-sm border ${getPriorityColor(detectedPriority)}`}>
+                    {detectedPriority.toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
 
-            {/* Minimal Detection Preview */}
-            {detectedCategory && input.length > 3 && (
-              <div className="absolute top-3 right-3 flex items-center space-x-2">
-                <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getPriorityColor(detectedPriority)}`}>
-                  {detectedPriority.toUpperCase()}
-                </span>
-                <span className="flex items-center space-x-1 px-2 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-medium">
-                  <span>{getCategoryIcon(detectedCategory)}</span>
-                  <span className="capitalize">{detectedCategory}</span>
-                </span>
-              </div>
-            )}
+            {/* Animated border */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/30 via-white/10 to-white/30 opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 -z-10 blur-sm"></div>
           </div>
 
-          {/* Simplified Submit Button */}
+          {/* Premium Submit Button */}
           <button
             type="submit"
             disabled={!input.trim() || isProcessing}
-            className="w-full bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-indigo-700 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="premium-button w-full relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group"
           >
-            {isProcessing ? (
-              <span className="flex items-center justify-center space-x-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Adding...</span>
-              </span>
-            ) : (
-              <span className="flex items-center justify-center space-x-2">
-                <span>Add Goal</span>
-                <span>✨</span>
-              </span>
-            )}
+            <span className="relative z-10 flex items-center justify-center space-x-3 text-lg">
+              {isProcessing ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>Creating your goal...</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-xl">✨</span>
+                  <span>Create Goal</span>
+                  <span className="text-xl group-hover:animate-bounce">🚀</span>
+                </>
+              )}
+            </span>
           </button>
         </form>
       </div>

@@ -60,9 +60,9 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
   if (totalTasks === 0) {
     return (
       <div className="modern-card p-12 text-center mb-8">
-        <div className="text-6xl mb-6 animate-float">📊</div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Progress Dashboard</h2>
-        <p className="text-gray-600 mb-6">Add goals to track your progress!</p>
+        <div className="text-6xl mb-6 animate-float drop-shadow-sm">📊</div>
+        <h2 className="text-2xl font-bold text-white drop-shadow-sm mb-4">Your Progress Hub</h2>
+        <p className="text-white/80 mb-6">Create your first goal to start tracking progress!</p>
       </div>
     )
   }
@@ -70,20 +70,20 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
   return (
     <div className="modern-card p-8 mb-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-md">
-            <span className="text-white text-xl">📊</span>
+        <div className="flex items-center space-x-4">
+          <div className="w-14 h-14 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/20">
+            <span className="text-white text-2xl drop-shadow-sm">📊</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">Progress</h2>
+          <h2 className="text-3xl font-bold text-white drop-shadow-sm">Progress Hub</h2>
         </div>
         {onGenerateInsight && totalTasks > 0 && (
           <button
             onClick={isAnalyzing ? undefined : onGenerateInsight}
             disabled={isAnalyzing}
-            className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-200 focus:outline-none focus:ring-2 ${
+            className={`premium-button text-sm px-6 py-3 ${
               isAnalyzing
-                ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-75'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-200'
+                ? 'opacity-50 cursor-not-allowed'
+                : ''
             }`}
           >
             <span className="flex items-center space-x-2">
@@ -94,63 +94,64 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
         )}
       </div>
 
-      {/* Simplified stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="text-center p-4 bg-green-50 rounded-2xl border border-green-200">
-          <div className="text-3xl font-bold text-green-700 mb-1">{completedTasks}</div>
-          <div className="text-xs font-medium text-green-600 uppercase">Completed</div>
+      {/* Premium Stats Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="stats-card">
+          <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{completedTasks}</div>
+          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Completed</div>
         </div>
-        <div className="text-center p-4 bg-blue-50 rounded-2xl border border-blue-200">
-          <div className="text-3xl font-bold text-blue-700 mb-1">{totalTasks}</div>
-          <div className="text-xs font-medium text-blue-600 uppercase">Total</div>
+        <div className="stats-card">
+          <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{totalTasks}</div>
+          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Total</div>
         </div>
-        <div className="text-center p-4 bg-purple-50 rounded-2xl border border-purple-200">
-          <div className="text-3xl font-bold text-purple-700 mb-1">{completionRate}%</div>
-          <div className="text-xs font-medium text-purple-600 uppercase">Success</div>
+        <div className="stats-card">
+          <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{completionRate}%</div>
+          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Success</div>
         </div>
-        <div className="text-center p-4 bg-orange-50 rounded-2xl border border-orange-200">
-          <div className="text-3xl font-bold text-orange-700 mb-1">{streak}</div>
-          <div className="text-xs font-medium text-orange-600 uppercase">Days</div>
+        <div className="stats-card">
+          <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{streak}</div>
+          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Streak</div>
         </div>
       </div>
 
-      {/* Simplified progress bar */}
+      {/* Premium Progress Bar */}
       {totalTasks > 0 && (
-        <div className="mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700">Progress</span>
-            <span className="text-lg font-bold text-indigo-600">{completionRate}%</span>
+        <div className="mb-6">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-lg font-semibold text-white drop-shadow-sm">Overall Progress</span>
+            <span className="text-2xl font-bold text-white drop-shadow-sm">{completionRate}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3">
+          <div className="relative w-full h-4 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/20">
             <div
-              className="bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full transition-all duration-300"
+              className="h-full bg-gradient-to-r from-white/80 to-white/60 rounded-full transition-all duration-500 shadow-inner"
               style={{ width: `${completionRate}%` }}
             ></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
           </div>
         </div>
       )}
 
-      {/* Category breakdown */}
+      {/* Compact Category Progress - Made Smaller */}
       {categoryCompletion.length > 0 && (
         <div>
-          <h3 className="text-xl font-black text-gray-800 mb-6">Progress by Category</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <h3 className="text-lg font-semibold text-white/90 mb-3 drop-shadow-sm">Categories</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {categoryCompletion.map(({ category, total, completed, rate }) => (
-              <div key={category} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center space-x-3">
-                    <span className="text-2xl">{getCategoryIcon(category)}</span>
-                    <span className="font-semibold text-neutral-700 capitalize">{category}</span>
+              <div key={category} className="bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 p-3 hover:bg-white/15 transition-all duration-300">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-lg">{getCategoryIcon(category)}</span>
+                    <span className="text-sm font-medium text-white/90 capitalize truncate">{category}</span>
                   </div>
-                  <span className="text-sm font-bold text-primary-600">{completed}/{total}</span>
+                  <span className="text-xs font-bold text-white/80">{completed}/{total}</span>
                 </div>
-                <div className="progress-bar h-2">
+                <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                   <div
-                    className="progress-fill h-2"
+                    className="h-full bg-gradient-to-r from-white/60 to-white/40 rounded-full transition-all duration-300"
                     style={{ width: `${rate}%` }}
                   ></div>
                 </div>
-                <div className="text-xs font-medium text-neutral-500 mt-2">{rate}% complete</div>
+                <div className="text-xs text-white/70 mt-1">{rate}%</div>
               </div>
             ))}
           </div>

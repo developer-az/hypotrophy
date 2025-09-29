@@ -176,22 +176,32 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen w-full">
-      <div className="max-w-full mx-auto px-6 py-8">
+    <div className="min-h-screen w-full relative overflow-hidden">
+      {/* Premium Background with Animated Particles */}
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
         <header className="text-center mb-12 max-w-4xl mx-auto">
           <div className="animate-fade-in">
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
-              <img
-                src="/biscuit.png"
-                alt="Biscuit the Hamster"
-                className="w-16 h-16 rounded-full border-2 border-indigo-200 animate-float shadow-md"
-              />
-              <h1 className="text-4xl sm:text-5xl font-black hypotrophy-gradient tracking-tight text-center sm:text-left">
-                Hypotrophy
-              </h1>
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+              <div className="relative">
+                <img
+                  src="/biscuit.png"
+                  alt="Biscuit the Hamster"
+                  className="w-20 h-20 rounded-full border-4 border-white/30 animate-float shadow-2xl backdrop-blur-sm"
+                />
+                <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/10 rounded-full blur-md"></div>
+              </div>
+              <div className="text-center sm:text-left">
+                <h1 className="text-5xl sm:text-6xl font-black hypotrophy-gradient tracking-tight mb-2">
+                  Hypotrophy
+                </h1>
+                <div className="h-1 w-32 bg-gradient-to-r from-white/60 to-white/20 rounded-full mx-auto sm:mx-0"></div>
+              </div>
             </div>
-            <p className="text-lg text-gray-600 font-medium mb-4 max-w-xl mx-auto">
-              Your AI-Powered Personal Growth Assistant 🐹
+            <p className="text-xl text-white/90 font-medium mb-6 max-w-2xl mx-auto drop-shadow-sm">
+              Your AI-Powered Personal Growth Companion 🐹
             </p>
           </div>
         </header>
@@ -199,31 +209,31 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
 
-          <div className="flex justify-center mb-8">
-            <div className="modern-card p-2 inline-flex">
+          <div className="flex justify-center mb-10">
+            <div className="modern-card p-3 inline-flex">
               <button
                 onClick={() => setActiveTab('tasks')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                className={`px-8 py-4 rounded-2xl font-semibold transition-all duration-300 ${
                   activeTab === 'tasks'
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
+                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/30'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <span className="flex items-center space-x-2">
-                  <span>🎯</span>
+                <span className="flex items-center space-x-3">
+                  <span className="text-xl">🎯</span>
                   <span>Goals</span>
                 </span>
               </button>
               <button
                 onClick={() => setActiveTab('insights')}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                className={`px-8 py-4 rounded-2xl font-semibold transition-all duration-300 ${
                   activeTab === 'insights'
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : 'text-gray-700 hover:text-indigo-600 hover:bg-indigo-50'
+                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/30'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <span className="flex items-center space-x-2">
-                  <span>🐹</span>
+                <span className="flex items-center space-x-3">
+                  <span className="text-xl">🐹</span>
                   <span>Insights</span>
                 </span>
               </button>

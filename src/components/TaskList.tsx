@@ -28,19 +28,19 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   const getPriorityColor = (priority: Task['priority']) => {
     switch (priority) {
-      case 'high': return 'border-red-200 bg-red-50'
-      case 'medium': return 'border-yellow-200 bg-yellow-50'
-      case 'low': return 'border-green-200 bg-green-50'
-      default: return 'border-blue-200 bg-blue-50'
+      case 'high': return 'border-red-400/50 bg-red-500/10'
+      case 'medium': return 'border-yellow-400/50 bg-yellow-500/10'
+      case 'low': return 'border-green-400/50 bg-green-500/10'
+      default: return 'border-blue-400/50 bg-blue-500/10'
     }
   }
 
   const getPriorityBadge = (priority: Task['priority']) => {
     switch (priority) {
-      case 'high': return 'bg-red-600 text-white'
-      case 'medium': return 'bg-yellow-600 text-white'
-      case 'low': return 'bg-green-600 text-white'
-      default: return 'bg-blue-600 text-white'
+      case 'high': return 'bg-red-500/20 text-red-200 border-red-400/50'
+      case 'medium': return 'bg-yellow-500/20 text-yellow-200 border-yellow-400/50'
+      case 'low': return 'bg-green-500/20 text-green-200 border-green-400/50'
+      default: return 'bg-blue-500/20 text-blue-200 border-blue-400/50'
     }
   }
 
@@ -74,12 +74,12 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
   if (tasks.length === 0) {
     return (
       <div className="modern-card p-12 text-center">
-        <div className="text-6xl mb-6 animate-float">🌱</div>
-        <h3 className="text-2xl font-bold text-gray-800 mb-4">
-          Start Your Growth Journey
+        <div className="text-6xl mb-6 animate-float drop-shadow-sm">🌱</div>
+        <h3 className="text-2xl font-bold text-white drop-shadow-sm mb-4">
+          Ready for Growth?
         </h3>
-        <p className="text-gray-600 mb-6 max-w-md mx-auto">
-          Add your first goal above and let Biscuit help you achieve it!
+        <p className="text-white/80 mb-6 max-w-md mx-auto">
+          Your first goal is waiting to be created above!
         </p>
       </div>
     )
@@ -87,12 +87,12 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-md">
-          <span className="text-white text-lg">📋</span>
+      <div className="flex items-center space-x-4">
+        <div className="w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/20">
+          <span className="text-white text-xl drop-shadow-sm">🎯</span>
         </div>
-        <h2 className="text-2xl font-bold text-gray-800">Your Goals</h2>
-        <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-xl text-sm font-semibold">
+        <h2 className="text-2xl font-bold text-white drop-shadow-sm">Active Goals</h2>
+        <span className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-xl text-sm font-semibold border border-white/30">
           {tasks.length}
         </span>
       </div>
@@ -102,17 +102,17 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
             key={task.id}
             className={`group modern-card p-6 border-2 ${
               task.completed
-                ? 'border-green-200 bg-green-50'
+                ? 'border-green-400/50 bg-green-500/10'
                 : getPriorityColor(task.priority)
             }`}
           >
             <div className="flex items-start space-x-4">
               <button
                 onClick={() => onToggleTask(task.id)}
-                className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                className={`mt-1 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 ${
                   task.completed
-                    ? 'bg-green-600 border-green-600 text-white'
-                    : 'border-gray-300 hover:border-indigo-500 hover:bg-indigo-50'
+                    ? 'bg-green-500 border-green-400 text-white shadow-lg'
+                    : 'border-white/40 hover:border-white/60 hover:bg-white/10 text-white'
                 }`}
               >
                 {task.completed && (
@@ -124,23 +124,23 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
               <div className="flex-1">
                 {deleteConfirm === task.id && (
-                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                  <div className="mb-4 p-4 bg-red-500/20 backdrop-blur-sm border border-red-400/50 rounded-xl">
                     <div className="flex items-center space-x-2 mb-3">
-                      <span className="text-red-500">⚠️</span>
-                      <p className="text-sm font-medium text-red-800">
+                      <span className="text-red-300">⚠️</span>
+                      <p className="text-sm font-medium text-red-200">
                         Delete this goal?
                       </p>
                     </div>
                     <div className="flex space-x-2">
                       <button
                         onClick={() => confirmDelete(task.id)}
-                        className="px-3 py-1 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
+                        className="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors"
                       >
                         Delete
                       </button>
                       <button
                         onClick={cancelDelete}
-                        className="px-3 py-1 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-300 transition-colors"
+                        className="px-3 py-1 bg-white/20 text-white text-sm font-medium rounded-lg hover:bg-white/30 transition-colors"
                       >
                         Cancel
                       </button>
@@ -149,17 +149,17 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
                 )}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
-                    <span className="text-xl">{getCategoryIcon(task.category)}</span>
-                    <h3 className={`text-lg font-semibold ${task.completed ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+                    <span className="text-xl drop-shadow-sm">{getCategoryIcon(task.category)}</span>
+                    <h3 className={`text-lg font-semibold drop-shadow-sm ${task.completed ? 'line-through text-white/60' : 'text-white'}`}>
                       {task.title}
                     </h3>
-                    <span className={`px-2 py-1 text-xs font-bold rounded-lg ${getPriorityBadge(task.priority)}`}>
+                    <span className={`px-2 py-1 text-xs font-bold rounded-lg border backdrop-blur-sm ${getPriorityBadge(task.priority)}`}>
                       {task.priority.toUpperCase()}
                     </span>
                   </div>
                   <button
                     onClick={() => handleDeleteClick(task.id)}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-50"
+                    className="text-white/60 hover:text-red-300 transition-colors p-1 rounded-lg hover:bg-red-500/20"
                     title="Delete goal"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,16 +169,16 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
                 </div>
 
                 {task.description && (
-                  <p className={`text-lg mb-4 ${task.completed ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                  <p className={`text-base mb-4 ${task.completed ? 'text-white/60' : 'text-white/90'}`}>
                     {task.description}
                   </p>
                 )}
 
                 <div className="flex items-center justify-between text-sm">
-                  <span className="capitalize bg-gradient-to-r from-neutral-100 to-neutral-200 text-neutral-700 px-4 py-2 rounded-2xl font-bold shadow-soft">
+                  <span className="capitalize bg-white/10 backdrop-blur-sm text-white/90 px-3 py-1 rounded-xl font-medium border border-white/20">
                     {task.category}
                   </span>
-                  <span className="text-neutral-500 font-medium bg-neutral-50 px-3 py-1 rounded-xl">
+                  <span className="text-white/70 font-medium bg-white/10 backdrop-blur-sm px-3 py-1 rounded-xl border border-white/20">
                     {task.completed && task.completedAt
                       ? `✅ Completed ${new Date(task.completedAt).toLocaleDateString()}`
                       : `📅 Created ${new Date(task.createdAt).toLocaleDateString()}`
@@ -187,8 +187,8 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
                 </div>
 
                 {task.aiInsight && (
-                  <div className="mt-6 p-6 bg-gradient-to-r from-primary-50 via-secondary-50 to-accent-50 rounded-3xl border-2 border-primary-200/50 shadow-soft">
-                    <p className="text-lg text-primary-800 font-medium">💡 {task.aiInsight}</p>
+                  <div className="mt-4 p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
+                    <p className="text-sm text-white/90 font-medium">💡 {task.aiInsight}</p>
                   </div>
                 )}
               </div>

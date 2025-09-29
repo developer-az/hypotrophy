@@ -27,7 +27,7 @@ export default function BiscuitConversation({
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
-      text: "Hi! I'm Biscuit 🐹 Ready to help you grow and achieve your goals!",
+      text: "Hey there! I'm Biscuit 🐹 Your personal growth companion. Ready to turn your dreams into achievements?",
       isUser: false,
       timestamp: new Date()
     }
@@ -84,29 +84,29 @@ export default function BiscuitConversation({
   }
 
   return (
-    <div className="modern-card p-6 max-h-[400px] overflow-hidden flex flex-col">
+    <div className="modern-card p-6 max-h-[450px] overflow-hidden flex flex-col">
       <div className="flex items-center space-x-3 mb-4">
         <div className="relative">
           <Image
             src="/biscuit.png"
             alt="Biscuit the Hamster"
-            width={48}
-            height={48}
-            className={`rounded-full border-2 border-indigo-200 shadow-md ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
+            width={52}
+            height={52}
+            className={`rounded-full border-2 border-white/30 shadow-lg drop-shadow-sm ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
           />
-          <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${currentlyTyping ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'} rounded-full border-2 border-white shadow-sm`}></div>
+          <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${currentlyTyping ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'} rounded-full border-2 border-white shadow-sm`}></div>
         </div>
         <div>
-          <h3 className="font-bold text-lg text-gray-800 flex items-center">
+          <h3 className="font-bold text-lg text-white drop-shadow-sm flex items-center">
             Biscuit {getBiscuitExpression()}
           </h3>
-          <p className="text-xs text-gray-500">
-            {currentlyTyping ? 'Typing...' : 'AI Assistant'}
+          <p className="text-xs text-white/80">
+            {currentlyTyping ? 'Thinking...' : 'Growth Companion'}
           </p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-64">
+      <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-72">
         {messages.map((message, index) => (
           <div key={message.id} className="flex items-start space-x-3">
             <div className="flex-shrink-0">
@@ -114,17 +114,17 @@ export default function BiscuitConversation({
                 <Image
                   src="/biscuit.png"
                   alt="Biscuit"
-                  width={32}
-                  height={32}
-                  className="rounded-full border border-gray-200 shadow-sm"
+                  width={28}
+                  height={28}
+                  className="rounded-full border border-white/20 shadow-sm"
                 />
               )}
             </div>
             <div
-              className={`max-w-[90%] p-3 rounded-2xl ${
+              className={`max-w-[90%] p-3 rounded-2xl backdrop-blur-sm ${
                 message.isUser
-                  ? 'bg-indigo-600 text-white ml-auto rounded-br-md'
-                  : 'bg-gray-100 text-gray-800 rounded-bl-md'
+                  ? 'bg-white/20 text-white ml-auto rounded-br-md border border-white/30'
+                  : 'bg-white/15 text-white rounded-bl-md border border-white/20'
               }`}
             >
               {index === messages.length - 1 && !message.isUser && currentlyTyping ? (
@@ -136,7 +136,7 @@ export default function BiscuitConversation({
                   className="text-sm"
                 />
               ) : (
-                <p className="text-sm">{message.text}</p>
+                <p className="text-sm leading-relaxed">{message.text}</p>
               )}
             </div>
           </div>
