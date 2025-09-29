@@ -27,7 +27,7 @@ export default function BiscuitConversation({
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
-      text: "Hi there! I'm Biscuit, your friendly hamster assistant! 🐹 I'm here to help you grow and achieve your goals. I'll cheer you on, give you insights, and celebrate every victory with you - no matter how small! Let's make some amazing progress together!",
+      text: "Hey there! I'm Biscuit 🐹 Your personal growth companion. Ready to turn your dreams into achievements?",
       isUser: false,
       timestamp: new Date()
     }
@@ -84,29 +84,29 @@ export default function BiscuitConversation({
   }
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-white/30 p-6 max-h-96 overflow-hidden flex flex-col hover-lift">
-      <div className="flex items-center space-x-3 mb-4 pb-3 border-b border-neutral-200">
+    <div className="modern-card p-6 max-h-[450px] overflow-hidden flex flex-col">
+      <div className="flex items-center space-x-3 mb-4">
         <div className="relative">
           <Image
             src="/biscuit.png"
             alt="Biscuit the Hamster"
-            width={48}
-            height={48}
-            className={`rounded-full border-2 border-primary-200 ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
+            width={52}
+            height={52}
+            className={`rounded-full border-2 border-white/30 shadow-lg drop-shadow-sm ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
           />
-          <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${currentlyTyping ? 'bg-yellow-500 animate-pulse' : 'bg-green-500'} rounded-full border-2 border-white`}></div>
+          <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${currentlyTyping ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'} rounded-full border-2 border-white shadow-sm`}></div>
         </div>
         <div>
-          <h3 className="font-bold text-neutral-800 flex items-center">
+          <h3 className="font-bold text-lg text-white drop-shadow-sm flex items-center">
             Biscuit {getBiscuitExpression()}
           </h3>
-          <p className="text-xs text-neutral-500">
-            {currentlyTyping ? 'Typing...' : 'Your AI Growth Assistant'}
+          <p className="text-xs text-white/80">
+            {currentlyTyping ? 'Thinking...' : 'Growth Companion'}
           </p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-4 mb-4 max-h-64">
+      <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-72">
         {messages.map((message, index) => (
           <div key={message.id} className="flex items-start space-x-3">
             <div className="flex-shrink-0">
@@ -114,17 +114,17 @@ export default function BiscuitConversation({
                 <Image
                   src="/biscuit.png"
                   alt="Biscuit"
-                  width={32}
-                  height={32}
-                  className="rounded-full"
+                  width={28}
+                  height={28}
+                  className="rounded-full border border-white/20 shadow-sm"
                 />
               )}
             </div>
             <div
-              className={`max-w-[80%] p-3 rounded-2xl ${
+              className={`max-w-[90%] p-3 rounded-2xl backdrop-blur-sm ${
                 message.isUser
-                  ? 'bg-primary-500 text-white ml-auto rounded-br-md'
-                  : 'bg-neutral-100 text-neutral-800 rounded-bl-md'
+                  ? 'bg-white/20 text-white ml-auto rounded-br-md border border-white/30'
+                  : 'bg-white/15 text-white rounded-bl-md border border-white/20'
               }`}
             >
               {index === messages.length - 1 && !message.isUser && currentlyTyping ? (
@@ -136,16 +136,12 @@ export default function BiscuitConversation({
                   className="text-sm"
                 />
               ) : (
-                <p className="text-sm">{message.text}</p>
+                <p className="text-sm leading-relaxed">{message.text}</p>
               )}
             </div>
           </div>
         ))}
         <div ref={messagesEndRef} />
-      </div>
-
-      <div className="text-xs text-neutral-400 text-center">
-        Biscuit is powered by AI and here to help you grow! 🌱
       </div>
     </div>
   )

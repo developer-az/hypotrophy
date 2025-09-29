@@ -156,92 +156,79 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
 
   const getPriorityColor = (priority: string) => {
     const colors: Record<string, string> = {
-      low: 'text-green-600 bg-green-100',
-      medium: 'text-yellow-600 bg-yellow-100',
-      high: 'text-red-600 bg-red-100'
+      low: 'bg-green-500/20 border-green-400/50',
+      medium: 'bg-yellow-500/20 border-yellow-400/50',
+      high: 'bg-red-500/20 border-red-400/50'
     }
     return colors[priority] || colors.medium
   }
 
   return (
     <div className="relative">
-      {/* Modern Task Input */}
-      <div className="bg-gradient-to-br from-white to-neutral-50 rounded-3xl shadow-xl border border-neutral-200/50 hover:shadow-2xl transition-all duration-500 ease-out p-8 backdrop-blur-sm">
+      {/* Premium Task Input */}
+      <div className="modern-card p-8">
         <div className="flex items-center space-x-4 mb-8">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-xl">🎯</span>
+          <div className="w-16 h-16 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/20">
+            <span className="text-white text-2xl drop-shadow-sm">🎯</span>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-neutral-800 to-neutral-600 bg-clip-text text-transparent">
-              What would you like to accomplish?
-            </h2>
-            <p className="text-neutral-500 text-sm">Just describe it naturally - I'll figure out the details!</p>
+          <div className="flex-1">
+            <h2 className="text-3xl font-bold text-white drop-shadow-sm">Create Your Goal</h2>
+            <p className="text-white/80 text-lg">Transform your dreams into achievements</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Smart Input Field */}
+          {/* Premium Input Field */}
           <div className="relative">
-            <textarea
-              value={input}
-              onChange={(e) => handleInputChange(e.target.value)}
-              placeholder="E.g., 'I need to go for a 30-minute run today' or 'Call mom to catch up this weekend' or 'Finish the presentation for Monday's meeting'"
-              className="w-full px-6 py-5 text-lg rounded-2xl border-2 border-neutral-200 bg-white/80 text-neutral-800 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all duration-300 placeholder-neutral-400 resize-none shadow-sm"
-              rows={3}
-              disabled={isProcessing}
-            />
+            <div className="relative group">
+              <textarea
+                value={input}
+                onChange={(e) => handleInputChange(e.target.value)}
+                placeholder="I want to master a new skill, build a healthy habit, or achieve something meaningful..."
+                className="glass-input w-full px-6 py-4 text-lg rounded-2xl resize-none min-h-[120px] leading-relaxed"
+                disabled={isProcessing}
+              />
+              
+              {/* Premium Detection Badges */}
+              {detectedCategory && input.length > 3 && (
+                <div className="absolute top-4 right-4 flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 px-3 py-1 bg-white/20 backdrop-blur-sm text-white rounded-xl text-sm font-medium border border-white/30">
+                    <span>{getCategoryIcon(detectedCategory)}</span>
+                    <span className="capitalize">{detectedCategory}</span>
+                  </div>
+                  <span className={`px-3 py-1 rounded-xl text-sm font-bold text-white backdrop-blur-sm border ${getPriorityColor(detectedPriority)}`}>
+                    {detectedPriority.toUpperCase()}
+                  </span>
+                </div>
+              )}
+            </div>
 
-            {/* Real-time Detection Preview */}
-            {detectedCategory && input.length > 3 && (
-              <div className="absolute top-4 right-4 flex items-center space-x-2">
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(detectedPriority)}`}>
-                  {detectedPriority}
-                </span>
-                <span className="flex items-center space-x-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                  <span>{getCategoryIcon(detectedCategory)}</span>
-                  <span className="capitalize">{detectedCategory}</span>
-                </span>
-              </div>
-            )}
+            {/* Animated border */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/30 via-white/10 to-white/30 opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 -z-10 blur-sm"></div>
           </div>
 
-          {/* Submit Button */}
+          {/* Premium Submit Button */}
           <button
             type="submit"
             disabled={!input.trim() || isProcessing}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-5 rounded-2xl font-semibold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all duration-300 ease-out focus:outline-none focus:ring-4 focus:ring-blue-200"
+            className="premium-button w-full relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group"
           >
-            <span className="flex items-center justify-center space-x-3">
+            <span className="relative z-10 flex items-center justify-center space-x-3 text-lg">
               {isProcessing ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <span>Processing...</span>
+                  <span>Creating your goal...</span>
                 </>
               ) : (
                 <>
-                  <span>✨</span>
-                  <span>Add to My Goals</span>
-                  <span>🚀</span>
+                  <span className="text-xl">✨</span>
+                  <span>Create Goal</span>
+                  <span className="text-xl group-hover:animate-bounce">🚀</span>
                 </>
               )}
             </span>
           </button>
         </form>
-
-        {/* Help Text */}
-        <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200/50">
-          <div className="flex items-start space-x-3">
-            <span className="text-blue-500 mt-0.5">💡</span>
-            <div className="text-sm text-blue-700">
-              <p className="font-medium mb-1">Smart Detection Examples:</p>
-              <ul className="space-y-1 text-blue-600">
-                <li>• "Exercise for 30 minutes" → 💪 Health, Medium priority</li>
-                <li>• "Urgent: Finish project deadline tomorrow" → 💼 Career, High priority</li>
-                <li>• "Maybe read a book when I have time" → 📚 Learning, Low priority</li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
