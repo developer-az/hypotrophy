@@ -18,15 +18,26 @@ Expected response:
 
 ### 2. If apiConfigured is false:
 - Go to Vercel Dashboard → Project Settings → Environment Variables
-- Add: `GEMINI_API_KEY` = `AIzaSyDdl33nc5BXTdg-gZghU5n3B0l8-pP2C84`
+- Add: `GEMINI_API_KEY` = `YOUR_ACTUAL_GEMINI_API_KEY_HERE`
 - Redeploy
 
 ### 3. Environment Variable Setup:
+
+**For Local Development:**
+Create a `.env.local` file in your project root:
+```bash
+# .env.local
+GEMINI_API_KEY=your_actual_api_key_here
+```
+
+**For Vercel Deployment:**
 ```
 Name: GEMINI_API_KEY
-Value: AIzaSyDdl33nc5BXTdg-gZghU5n3B0l8-pP2C84
+Value: YOUR_ACTUAL_GEMINI_API_KEY_HERE
 Environments: ✅ Production ✅ Preview ✅ Development
 ```
+
+**Get your API key from:** https://aistudio.google.com/app/apikey
 
 ### 4. Common Issues:
 - **500 Error**: API key not set in Vercel environment variables
