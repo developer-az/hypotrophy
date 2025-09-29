@@ -176,86 +176,99 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <header className="text-center mb-12">
-        <div className="animate-fade-in">
-          <div className="flex items-center justify-center space-x-4 mb-4">
-            <img
-              src="/biscuit.png"
-              alt="Biscuit the Hamster"
-              className="w-16 h-16 rounded-full border-4 border-primary-200 animate-float"
-            />
-            <h1 className="text-6xl font-black hypotrophy-gradient tracking-tight">
-              Hypotrophy
-            </h1>
+    <div className="min-h-screen w-full relative overflow-hidden">
+      {/* Premium Background with Animated Particles */}
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
+      
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
+        <header className="text-center mb-12 max-w-4xl mx-auto">
+          <div className="animate-fade-in">
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
+              <div className="relative">
+                <img
+                  src="/biscuit.png"
+                  alt="Biscuit the Hamster"
+                  className="w-20 h-20 rounded-full border-4 border-white/30 animate-float shadow-2xl backdrop-blur-sm"
+                />
+                <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/10 rounded-full blur-md"></div>
+              </div>
+              <div className="text-center sm:text-left">
+                <h1 className="text-5xl sm:text-6xl font-black hypotrophy-gradient tracking-tight mb-2">
+                  Hypotrophy
+                </h1>
+                <div className="h-1 w-32 bg-gradient-to-r from-white/60 to-white/20 rounded-full mx-auto sm:mx-0"></div>
+              </div>
+            </div>
+            <p className="text-xl text-white/90 font-medium mb-6 max-w-2xl mx-auto drop-shadow-sm">
+              Your AI-Powered Personal Growth Companion 🐹
+            </p>
           </div>
-          <p className="text-xl text-neutral-600 font-medium mb-2">
-            Meet Biscuit 🐹 - Your AI-Powered Personal Growth Assistant
-          </p>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto rounded-full"></div>
-        </div>
-      </header>
+        </header>
 
-      <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
+        <div className="max-w-7xl mx-auto">
+          <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
 
-      <div className="flex justify-center mb-8">
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-2 inline-flex hover:shadow-xl transition-all duration-300 ease-out hover:scale-105 hover:border-primary-200">
-          <button
-            onClick={() => setActiveTab('tasks')}
-            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
-              activeTab === 'tasks'
-                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
-            }`}
-          >
-            <span className="flex items-center space-x-2">
-              <span>🎯</span>
-              <span>My Goals</span>
-            </span>
-          </button>
-          <button
-            onClick={() => setActiveTab('insights')}
-            className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ease-out hover:scale-105 active:scale-95 ${
-              activeTab === 'insights'
-                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg'
-                : 'text-neutral-600 hover:text-primary-600 hover:bg-primary-50'
-            }`}
-          >
-            <span className="flex items-center space-x-2">
-              <span>🐹</span>
-              <span>Biscuit's Insights</span>
-            </span>
-          </button>
-        </div>
-      </div>
+          <div className="flex justify-center mb-10">
+            <div className="modern-card p-3 inline-flex">
+              <button
+                onClick={() => setActiveTab('tasks')}
+                className={`px-8 py-4 rounded-2xl font-semibold transition-all duration-300 ${
+                  activeTab === 'tasks'
+                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/30'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span className="flex items-center space-x-3">
+                  <span className="text-xl">🎯</span>
+                  <span>Goals</span>
+                </span>
+              </button>
+              <button
+                onClick={() => setActiveTab('insights')}
+                className={`px-8 py-4 rounded-2xl font-semibold transition-all duration-300 ${
+                  activeTab === 'insights'
+                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/30'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                }`}
+              >
+                <span className="flex items-center space-x-3">
+                  <span className="text-xl">🐹</span>
+                  <span>Insights</span>
+                </span>
+              </button>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          {activeTab === 'tasks' && (
-            <>
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            <div className="xl:col-span-3 space-y-8">
+              {activeTab === 'tasks' && (
+                <>
                   <div className="animate-slide-up">
                     <TaskForm onAddTask={addTask} userTasks={tasks} />
                   </div>
-              <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <TaskList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
-              </div>
-            </>
-          )}
-          {activeTab === 'insights' && (
-            <div className="animate-fade-in">
-              <AIInsights insights={insights} />
+                  <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                    <TaskList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
+                  </div>
+                </>
+              )}
+              {activeTab === 'insights' && (
+                <div className="animate-fade-in">
+                  <AIInsights insights={insights} />
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        <div className="lg:col-span-1 space-y-6">
-          <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <BiscuitConversation
-              aiResponse={latestInsight}
-              onResponseComplete={() => setLatestInsight('')}
-              onTypingStart={() => setIsBiscuitTyping(true)}
-              onTypingEnd={() => setIsBiscuitTyping(false)}
-            />
+            <div className="xl:col-span-1 space-y-8">
+              <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                <BiscuitConversation
+                  aiResponse={latestInsight}
+                  onResponseComplete={() => setLatestInsight('')}
+                  onTypingStart={() => setIsBiscuitTyping(true)}
+                  onTypingEnd={() => setIsBiscuitTyping(false)}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
