@@ -1,155 +1,117 @@
-# 🐹 Hypotrophy - AI-Powered Personal Growth
+# Hypotrophy — Human Capital Engine
 
-> **Built for hackUMBC2025 🏆** - A 24-hour hackathon project
+Local-first growth software that treats attention like capital.
 
-**Meet Biscuit, your friendly AI hamster companion for personal growth!**
+Hackathon origin: **hackUMBC 2025** (Biscuit, a hamster, and a 24-hour to-do UI). This revision is the production thesis: **your history is an append-only ledger**. Completions, cuts, and dependencies are events. Events are hash-chained. Weekly commitments are Merkle roots, signed on-device. The next action is not a vibe — it is a feasible node on a DAG, ranked by Thompson sampling and half-Kelly weights.
 
-Transform your basic to-do lists into engaging conversations with Biscuit, your AI hamster assistant! Hypotrophy makes personal growth fun and motivating through real-time encouragement, progress celebration, and intelligent insights.
+Live mental model: *private git for who you are becoming, with a trading desk on top.*
 
-## 🏆 hackUMBC2025 Achievement
+## Why this exists
 
-This project was built during **hackUMBC2025**, a 24-hour hackathon, showcasing:
-- ⚡ **Rapid Development**: Full-featured app built in 24 hours
-- 🤖 **AI Integration**: Google Gemini API for intelligent insights
-- 🎨 **Creative UX**: Personality-driven design with Biscuit the hamster
-- 💻 **Modern Tech Stack**: Next.js 15, TypeScript, Tailwind CSS
-- 🚀 **Production Ready**: Deployed and fully functional
+Generic habit apps are CRUD plus a chat model. Interviewers have seen a thousand of those, and they can tell. The interesting problem is different:
 
-**Timeline:** 24 hours | **Event:** hackUMBC2025 | **Result:** Complete AI companion app
+1. **You cannot audit a to-do list.** Anyone can edit yesterday.
+2. **You cannot allocate attention.** Most apps treat every task as equal.
+3. **You cannot prove the work.** A résumé bullet is a claim. A signed Merkle root over an event log is a commitment.
 
-## 🌟 What Makes Hypotrophy Special
+Hypotrophy keeps Biscuit (the companion) and replaces the data model with something you can defend for 45 minutes: event sourcing, cryptographic integrity, a constraint scheduler, and a small quant layer. It is still a personal product. The capital is *yours* — a ledger only you can extend, and a receipt other people can verify without seeing your titles.
 
-### 🐹 Meet Biscuit - Your AI Companion
-- **Real-time Conversations**: Chat with Biscuit through typing animations
-- **Personalized Encouragement**: Celebrates every achievement with unique messages
-- **Intelligent Insights**: Provides contextual motivation and suggestions
-- **Emotional Support**: Makes personal growth feel like a friendship
+## What to click first
 
-### 🎯 Smart Task & Goal Management
-- **Task Creation**: Add tasks with categories, priorities, and descriptions
-- **Goal Tracking**: Set long-term goals with progress visualization and deadlines
-- **Completion Celebration**: Biscuit cheers you on with every completed task
-- **Delete & Modify**: Full task management with confirmation dialogs
+```bash
+npm install
+npm test
+npm run dev
+```
 
-### 📊 Visual Progress Tracking
-- **Progress Bars**: Beautiful visual indicators for goal completion
-- **Smart Analytics**: "Ask Biscuit for Analysis" button for progress insights
-- **Deadline Awareness**: Color-coded status for overdue, due today, or upcoming goals
-- **Category Organization**: Track progress across life areas (health, career, personal, etc.)
+Open [http://localhost:3000](http://localhost:3000), hit **Demo ledger**, then walk:
 
-### ✨ Delightful User Experience
-- **Smooth Animations**: Float, slide-up, fade-in, and wiggle effects
-- **Glassmorphism Design**: Modern backdrop-blur effects and transparency
-- **Responsive Layout**: Perfect experience on desktop, tablet, and mobile
-- **Accessibility First**: Keyboard navigation and screen reader friendly
+| Surface | What you are looking at |
+|---|---|
+| **Command** | Next best *feasible* action (DAG ∩ Thompson ∩ Kelly) |
+| **Ledger** | Append-only hash chain. Tamper a payload and verification fails |
+| **Graph** | Goal dependencies, generations, critical path |
+| **Capital** | Half-Kelly domain weights + Kaplan–Meier survival |
+| **Receipts** | Ed25519 / P-256 signed Merkle receipt (titles never included) |
+| **Biscuit** | Model is an overlay, not the source of truth |
+| **/verify** | Public verifier — paste a receipt JSON, no account |
 
-## 🚀 Coming Soon
+## Architecture
 
-### 🔮 Advanced AI Integration
-- **Google Gemini API**: Enhanced AI analysis and recommendations
-- **Image Analysis**: Track habits through photos and visual progress
-- **Smart Scheduling**: AI-powered time optimization suggestions
-- **Goal Refinement**: Intelligent goal adjustment based on your success patterns
+```
+UI (Next.js) ──commands──► Engine (pure TypeScript)
+                               │
+                               ├─ crypto/   SHA-256 chain, RFC 6962 Merkle, signatures
+                               ├─ domain/   events, reducer, migration
+                               ├─ graph/    cycle detect, Kahn topo, longest path
+                               └─ quant/    Thompson, half-Kelly, Kaplan–Meier
+```
 
-### 📸 Visual Habit Tracking
-- **Photo Progress**: Upload images to track physical changes or achievements
-- **Visual Verification**: AI-powered habit completion verification
-- **Progress Galleries**: See your transformation over time
-- **Achievement Celebrations**: Visual milestones and rewards
+The engine imports nothing from React. The same reducer that paints the UI is the one the tests fold. That is the interview sentence.
 
-### 🎯 Advanced Goal Management
-- **SMART Goals**: AI helps create Specific, Measurable, Achievable goals
-- **Milestone Tracking**: Break large goals into manageable steps
-- **Dependency Management**: Understanding how goals connect and build upon each other
-- **Success Prediction**: AI analyzes likelihood of goal completion
+```mermaid
+flowchart LR
+  cmd[Command] --> ev[Event]
+  ev --> chain[Hash chain]
+  chain --> fold[Pure reducer]
+  fold --> proj[Projection]
+  proj --> dag[Goal DAG]
+  dag --> alloc[Allocator]
+  chain --> merkle[Merkle root]
+  merkle --> sig[Device signature]
+  sig --> receipt[Growth receipt]
+  receipt --> verify["/verify"]
+```
 
-## 🛠️ Technology Stack
+## Technical core (the parts that are not a wrapper)
 
-- **Frontend**: Next.js 15 with React 19
-- **Styling**: Tailwind CSS with custom design system
-- **TypeScript**: Full type safety and developer experience
-- **Storage**: Local storage (with planned database integration)
-- **AI Integration**: Google Gemini API (planned)
-- **Image Processing**: Free image analysis services (planned)
+### Hash chain
+Each entry is `SHA-256(canonicalize({ seq, ts, type, payload, prevHash }))`. Canonical JSON sorts keys and **rejects floats**, because IEEE-754 is not a protocol. Mutate any historical field and `verifyChain` reports the first broken index.
 
-## 📦 Installation
+### Merkle receipts (RFC 6962)
+Leaves are domain-separated (`0x00 || data`), nodes too (`0x01 || left || right`). Inclusion proofs are O(log n). A receipt commits to the root plus aggregate stats — not the prose. Optional sample proofs let a verifier check specific event hashes without the rest of the log.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/developer-az/hypotrophy.git
-   cd hypotrophy
-   ```
+### Signatures
+Ed25519 when the runtime supports it, ECDSA P-256 otherwise. The private key never goes to the server. `/api/receipts/verify` is stateless: it checks the signature, and if you supply leaves, recomputes the root.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+Why not a public blockchain? Personal growth data is not a consensus problem. You need tamper evidence and third-party verifiability, not global replication. Using the primitives without the token is the adult version of this idea. See [TRADEOFFS.md](./TRADEOFFS.md).
 
-3. **Run the development server**
-   ```bash
-   npm run dev
-   ```
+### Allocator
+1. **Hard constraint:** Kahn topological order. Blocked goals cannot be `next`.
+2. **Critical path:** longest remaining path in the DAG (classic DP after topo).
+3. **Thompson sampling:** each domain is a Beta-Bernoulli arm. Sample θ, do not just take the mean — that is how you explore a weak domain instead of starving it.
+4. **Half-Kelly:** `f* = p − q/b` on Laplace-smoothed hit rate and priority-as-odds, then haircut 50% and normalize to basis points.
 
-4. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+### Survival
+Kaplan–Meier product-limit estimator on time-to-completion. Completions are events; open and abandoned goals are censored. Median survival is the first t where S(t) ≤ 0.5.
 
-## 🎮 Usage
+## Production surface
 
-### Getting Started
-1. **Add Your First Task**: Use the task form to create your first personal growth goal
-2. **Choose Categories**: Organize tasks by life areas (health, career, personal, etc.)
-3. **Set Priorities**: Mark tasks as low, medium, or high priority
-4. **Track Progress**: Complete tasks and watch your progress dashboard update
-5. **Get AI Insights**: Receive personalized recommendations and encouragement
+- Typed commands with range checks (`estimatedMinutes` ∈ [5, 1440])
+- Reducer that **skips** illegal events instead of crashing the fold
+- Token-bucket rate limit on AI and verify routes
+- Structured JSON logs
+- No API-key leakage in error bodies
+- Vitest suite on the engine, including a 2048-leaf Merkle budget test
+- GitHub Actions: `test`, `typecheck`, `build`
+- One-way migration from the hackathon `localStorage` task list
 
-### Categories Available
-- 👤 **Personal**: Self-care, habits, personal development
-- 💪 **Health & Fitness**: Exercise, nutrition, wellness goals
-- 💼 **Career**: Professional development, skills, networking
-- 📚 **Learning**: Education, new skills, knowledge acquisition
-- ❤️ **Relationships**: Social connections, communication, family
-- 💰 **Finance**: Budgeting, savings, financial planning
-- 🎨 **Creativity**: Art, writing, creative projects
-- 🏠 **Home & Environment**: Organization, living space improvements
+## Resume bullets (steal these, then be ready to derive them)
 
-### Tips for Success
-- **Start Small**: Begin with achievable daily tasks
-- **Be Consistent**: Regular small actions lead to big transformations
-- **Use AI Insights**: Pay attention to patterns and recommendations
-- **Celebrate Wins**: Acknowledge every completed task, no matter how small
-- **Stay Flexible**: Adjust your goals based on what you learn about yourself
+- Designed a **local-first event-sourced** personal ledger with a pure reducer and hash-chained integrity, so history is auditable without a server.
+- Implemented **RFC 6962 Merkle proofs** and device-local **Ed25519/P-256 receipts** that attest to a root without revealing goal titles.
+- Built a **constraint + quant allocator**: DAG feasibility and critical path as hard/soft structure, Thompson sampling for exploration, half-Kelly for domain weights.
+- Estimated **time-to-completion with Kaplan–Meier**, treating open goals as censored observations rather than failures.
+- Hardened the AI boundary: rate limits, payload caps, and a model that annotates the ledger instead of owning it.
 
-## 🛡️ Privacy & Data
+Talking-point script: [INTERVIEW.md](./INTERVIEW.md). Decision log: [TRADEOFFS.md](./TRADEOFFS.md). Module map: [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-Hypotrophy respects your privacy:
-- **Local Storage**: Your data stays on your device
-- **No Account Required**: Start using immediately without registration
-- **Open Source**: Transparent code you can review and modify
-- **Future Cloud Sync**: Optional, secure cloud backup planned for premium features
+## What this is not
 
-## 🤝 Contributing
+- Not a token, not an NFT, not "AI agents managing your life."
+- Not a tutorial clone. The hamster is the product personality; the engine is the claim.
+- Not finished infrastructure. Persistence is localStorage; keys are extractable JWKs. Those are deliberate demo compromises, written down in TRADEOFFS so you can say what you would change on a real deploy.
 
-We welcome contributions! Here's how you can help:
+## Origin
 
-1. **Report Bugs**: Use GitHub issues to report problems
-2. **Suggest Features**: Share ideas for new functionality
-3. **Submit PRs**: Contribute code improvements
-4. **Share Feedback**: Tell us about your experience using Hypotrophy
-
-## 📜 License
-
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
-
-## 🌟 Vision
-
-Hypotrophy aims to revolutionize personal growth by making self-improvement:
-- **Intelligent**: AI-powered insights that adapt to your unique patterns
-- **Effortless**: Streamlined technology that enhances rather than complicates
-- **Insightful**: Deep understanding of your progress and potential
-- **Empowering**: Tools that help you become the best version of yourself
-
----
-
-**Start your growth journey today!** 🌱
-
-*Made with ❤️ for personal transformation*
+Built as Hypotrophy for hackUMBC 2025 in 24 hours: Next.js, Gemini, Biscuit. This tree keeps the character and replaces the architecture. The migration path is `hypotrophy-tasks` → `ledger.genesis` + `goal.*` events, so early users are not discarded.
