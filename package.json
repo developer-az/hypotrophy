@@ -1,27 +1,28 @@
 {
   "name": "hypotrophy",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "🐹 AI-powered personal growth app with Biscuit the hamster - Built for hackUMBC2025 24-hour hackathon",
+  "description": "Human capital engine: local-first event-sourced growth ledger with hash chains, Merkle receipts, Thompson sampling and half-Kelly allocation.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
-    "ai",
+    "event-sourcing",
+    "merkle-tree",
+    "hash-chain",
+    "thompson-sampling",
+    "kelly-criterion",
+    "kaplan-meier",
     "personal-growth",
-    "todo",
-    "self-improvement",
-    "gemini",
-    "hackathon",
-    "hackUMBC2025",
-    "conversational-ai",
-    "hamster",
-    "biscuit",
     "nextjs",
-    "typescript"
+    "typescript",
+    "hackUMBC2025"
   ],
   "author": "",
   "license": "ISC",
@@ -40,5 +41,8 @@
     "react-dom": "^19.1.1",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
   }
 }
