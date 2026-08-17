@@ -2,6 +2,9 @@
   "name": "hypotrophy",
   "version": "2.0.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "description": "Human capital engine: local-first event-sourced growth ledger with hash chains, Merkle receipts, Thompson sampling and half-Kelly allocation.",
   "scripts": {
     "dev": "next dev",

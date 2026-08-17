@@ -1,8 +1,8 @@
 @import "tailwindcss" source(none);
-@source "../app";
-@source "../components";
-@source "../hooks";
-@source "../lib";
+@source "../app/**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../hooks/**/*.{ts,tsx}";
+@source "../lib/**/*.{ts,tsx}";
 
 :root {
   --ink: #0b0a08;

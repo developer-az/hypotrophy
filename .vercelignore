@@ -1,0 +1,8 @@
+# Files that must not enter the Vercel compile graph.
+# Vitest is a devDependency; next build typechecks tsconfig include and
+# fails if these files are present when npm omits devDependencies.
+src/engine/__tests__
+**/*.test.ts
+vitest.config.ts
+test-gemini.js
+coverage
