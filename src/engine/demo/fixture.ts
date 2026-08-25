@@ -88,8 +88,8 @@ export function demoScript(): DemoGoal[] {
     },
     {
       id: 'g-allocator',
-      title: 'Ship Thompson + half-Kelly allocator',
-      description: 'Feasible set from the DAG, ranking from the quant layer.',
+      title: 'Ship the next-action ranker',
+      description: 'Only recommend work that is unblocked. Rank the rest by payoff.',
       domain: 'career',
       priority: 'high',
       dependsOn: ['g-sys', 'g-tests'],

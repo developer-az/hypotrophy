@@ -12,6 +12,7 @@ import {
 import { allocate } from '../quant/allocator'
 import { forecast } from '../quant/forward'
 import { BILLS_INTEL_ID, buildPnl, dollarImpact } from '../quant/pnl'
+import { buildDemoLedger } from '../demo/fixture'
 import type { Goal } from '../domain/types'
 
 describe('money ledger', () => {
@@ -78,6 +79,36 @@ describe('90d expected profit uses p90', () => {
     expect(pnl.claimedCents).toBe(100_000)
     expect(pnl.expectedProfit90dCents).toBe(Math.round(100_000 * p90))
   })
+
+  it('adds blended skill hours into 90d expected profit', async () => {
+    const ts = 1_700_000_000_000
+    let chain = [await genesis([], ts)]
+    chain = [
+      ...chain,
+      await createGoal(
+        chain,
+        {
+          id: 'bill',
+          title: 'Billable block',
+          domain: 'career',
+          priority: 'high',
+          estimatedMinutes: 120,
+        },
+        ts + 1
+      ),
+    ]
+    chain = [
+      ...chain,
+      await upsertSkill(chain, { id: 'dev', name: 'Dev', domain: 'career', rateCentsPerHour: 10_000 }, ts + 2),
+    ]
+    const projection = fold(chain)
+    const forward = forecast(Object.values(projection.goals), ts + 2, 7, { paths: 8, capacityMinutesPerDay: 180 })
+    const pnl = buildPnl(projection, forward, ts + 2)
+    const claims = 0
+    expect(pnl.blendedRateCentsPerHour).toBe(10_000)
+    expect(pnl.expectedProfit90dCents).toBe(claims + Math.round(10_000 * pnl.expectedHours90))
+    expect(pnl.expectedHours90).toBeGreaterThan(0)
+  })
 })
 
 describe('dollar impact and allocator', () => {
@@ -143,5 +174,17 @@ describe('skills', () => {
       await recordIntel(chain, { id: 'offer', title: 'New rate', cents: 12000, skillId: 'dev' }, ts + 2),
     ]
     expect(fold(chain).skills.dev.rateCentsPerHour).toBe(12000)
+  })
+})
+
+describe('demo book', () => {
+  it('surfaces an English next action, not a quant slogan', async () => {
+    const chain = await buildDemoLedger(1_700_000_000_000)
+    const projection = fold(chain)
+    const goals = Object.values(projection.goals)
+    const skills = Object.values(projection.skills)
+    const plan = allocate(goals, 1_700_000_000_000, 1, skills)
+    expect(plan.next?.title).toBe('Ship the next-action ranker')
+    expect(plan.next?.title).not.toMatch(/Thompson|Kelly|ħ|tape|fill/i)
   })
 })

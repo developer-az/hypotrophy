@@ -86,7 +86,7 @@ export class AIService {
       return {
         id: crypto.randomUUID(),
         type: 'memo',
-        title: 'CIO memo',
+        title: 'Briefing',
         content: fallback,
         createdAt: new Date(),
         relevantTasks: briefing.next ? [] : [],

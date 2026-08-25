@@ -46,14 +46,14 @@ export function buildPnl(
 
   const open = Object.values(projection.goals).filter((g) => g.status === 'open')
   const claimedCents = open.reduce((n, g) => n + (g.stakeCents ?? 0), 0)
-  const expectedHours90 = forward.expectedMinutes.d90 / 60
+  const expectedHours90 = Math.round((forward.expectedMinutes.d90 / 60) * 10) / 10
   let expectedFromClaims = 0
   for (const g of open) {
     const row = forward.goals.find((f) => f.goalId === g.id)
     expectedFromClaims += Math.round((g.stakeCents ?? 0) * (row?.p90 ?? 0))
   }
   const expectedProfit90dCents =
-    expectedFromClaims + Math.round((blendedRateCentsPerHour * expectedHours90) / 1)
+    expectedFromClaims + Math.round(blendedRateCentsPerHour * expectedHours90)
 
   return {
     netWorthCents,
@@ -63,7 +63,7 @@ export function buildPnl(
     blendedRateCentsPerHour,
     claimedCents,
     expectedProfit90dCents,
-    expectedHours90: Math.round(expectedHours90 * 10) / 10,
+    expectedHours90,
   }
 }
 

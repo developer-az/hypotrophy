@@ -20,6 +20,10 @@ test('capture product surfaces', async ({ page }) => {
   await page.getByRole('heading', { name: /cash, debt/i }).waitFor()
   await page.screenshot({ path: `${out}/03-map.png`, fullPage: true })
 
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Skills' }).click()
+  await page.getByRole('heading', { name: /what an hour of you is worth/i }).waitFor()
+  await page.screenshot({ path: `${out}/03b-skills.png`, fullPage: true })
+
   await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Work' }).click()
   await page.getByRole('heading', { name: /ranked, feasible work/i }).waitFor()
   await page.screenshot({ path: `${out}/04-capital.png`, fullPage: true })

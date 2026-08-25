@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         id: crypto.randomUUID(),
         type: 'memo',
-        title: 'CIO memo',
+        title: 'Briefing',
         content: text.trim(),
         createdAt: new Date().toISOString(),
         relevantTasks: [],

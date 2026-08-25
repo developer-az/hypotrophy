@@ -22,7 +22,7 @@ interface GoalComposerProps {
 export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
   const toast = useToast()
   const [input, setInput] = useState('')
-  const [minutes, setMinutes] = useState(30)
+  const [hours, setHours] = useState(0.5)
   const [stake, setStake] = useState('')
   const [dependsOn, setDependsOn] = useState('')
   const [busy, setBusy] = useState(false)
@@ -49,7 +49,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
         description,
         domain: previewDomain,
         priority: previewPriority,
-        estimatedMinutes: minutes,
+        estimatedMinutes: Math.max(5, Math.round(Number(hours) * 60) || 30),
         dependsOn: dependsOn ? [dependsOn] : [],
         stakeCents,
       })
@@ -115,15 +115,15 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
           </select>
         </label>
         <label className="block">
-          <span className="kicker mb-1 block">Minutes</span>
+          <span className="kicker mb-1 block">Hours</span>
           <input
             type="number"
-            min={5}
-            max={1440}
-            step={5}
+            min={0.1}
+            max={24}
+            step={0.25}
             className="field"
-            value={minutes}
-            onChange={(e) => setMinutes(Number(e.target.value))}
+            value={hours}
+            onChange={(e) => setHours(Number(e.target.value))}
           />
         </label>
         <label className="block">

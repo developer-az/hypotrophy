@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { HypotrophyEngine } from '@/hooks/useEngine'
 import { formatUsd, formatUsdRate } from '@/lib/format'
+import { aiService } from '@/lib/aiService'
 import { useToast } from '../Toast'
 
 export default function HomeView({
@@ -15,7 +16,19 @@ export default function HomeView({
   onMoney: () => void
 }) {
   const toast = useToast()
-  const { plan, pnl, impactCents, memo, complete, logMoney, accounts } = engine
+  const { plan, pnl, impactCents, memo, briefing, complete, logMoney, accounts } = engine
+  const [brief, setBrief] = useState(memo)
+
+  useEffect(() => {
+    setBrief(memo)
+    let cancelled = false
+    void aiService.generateCioMemo(briefing, memo).then((insight) => {
+      if (!cancelled && insight.content.trim()) setBrief(insight.content.trim())
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [memo, briefing])
   const next = plan.next
   const cash = accounts.find((a) => a.kind === 'cash') ?? accounts[0]
   const [amount, setAmount] = useState('')
@@ -95,7 +108,7 @@ export default function HomeView({
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="panel p-6">
           <div className="kicker">Briefing</div>
-          <p className="mt-3 text-[15px] leading-relaxed text-[var(--paper)]">{memo}</p>
+          <p className="mt-3 text-[15px] leading-relaxed text-[var(--paper)]">{brief}</p>
         </section>
         <section className="panel p-6">
           <div className="kicker">Log money</div>

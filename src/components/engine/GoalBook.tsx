@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import type { Goal, PricedGoal } from '@/engine'
-import { DOMAIN_META, formatHbar, formatUsd } from '@/lib/format'
+import { DOMAIN_META, formatUsd } from '@/lib/format'
 import { useToast } from '../Toast'
 
 interface GoalBookProps {
@@ -89,9 +89,11 @@ export default function GoalBook({
                 </h3>
                 {goal.description && <p className="mt-1 text-sm text-[var(--mute)]">{goal.description}</p>}
                 <p className="mt-2 font-mono text-[11px] text-[var(--mute)]">
-                  {goal.estimatedMinutes}m
-                  {quote ? ` · ${formatHbar(quote.hbar)}` : ''}
-                  {goal.stakeCents ? ` · ${formatUsd(goal.stakeCents)} claimed` : ''}
+                  {goal.estimatedMinutes >= 60
+                    ? `${Math.round((goal.estimatedMinutes / 60) * 10) / 10}h`
+                    : `${goal.estimatedMinutes}m`}
+                  {quote ? ` · ${formatUsd(quote.stakeCents ?? goal.stakeCents ?? 0)} expected` : ''}
+                  {!quote && goal.stakeCents ? ` · ${formatUsd(goal.stakeCents)} claimed` : ''}
                   {goal.dependsOn.length > 0 ? ` · ${goal.dependsOn.length} deps` : ''}
                   {` · ${new Date(goal.createdAt).toLocaleDateString()}`}
                 </p>
