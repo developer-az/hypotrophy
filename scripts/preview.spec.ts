@@ -12,7 +12,8 @@ test('capture product surfaces', async ({ page }) => {
   await page.screenshot({ path: `${out}/01-welcome.png`, fullPage: true })
 
   await page.getByRole('button', { name: /load a demo week/i }).click()
-  await page.getByRole('heading', { name: /do this next/i }).waitFor()
+  await page.getByText('Demo week loaded').waitFor()
+  await page.locator('.kicker', { hasText: 'Do this next' }).waitFor()
   await page.screenshot({ path: `${out}/02-today.png`, fullPage: true })
 
   await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Map' }).click()
