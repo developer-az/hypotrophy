@@ -4,6 +4,7 @@ import { useMemo, useState, type FormEvent } from 'react'
 import type { Domain, Goal, Priority } from '@/engine'
 import { DOMAINS } from '@/engine'
 import { detectDomain, detectPriority, DOMAIN_META, splitTitle } from '@/lib/format'
+import { useToast } from '../Toast'
 
 interface GoalComposerProps {
   goals: Goal[]
@@ -14,12 +15,15 @@ interface GoalComposerProps {
     priority: Priority
     dependsOn?: string[]
     estimatedMinutes?: number
+    stakeCents?: number
   }) => Promise<unknown>
 }
 
 export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
+  const toast = useToast()
   const [input, setInput] = useState('')
-  const [minutes, setMinutes] = useState(30)
+  const [hours, setHours] = useState(0.5)
+  const [stake, setStake] = useState('')
   const [dependsOn, setDependsOn] = useState('')
   const [busy, setBusy] = useState(false)
   const [overrideDomain, setOverrideDomain] = useState<Domain | ''>('')
@@ -35,18 +39,26 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
     setBusy(true)
     try {
       const { title, description } = splitTitle(input.trim())
+      const dollars = stake.trim() === '' ? undefined : Number(stake)
+      const stakeCents =
+        dollars != null && Number.isFinite(dollars) && dollars >= 0
+          ? Math.round(dollars * 100)
+          : undefined
       await onCreate({
         title,
         description,
         domain: previewDomain,
         priority: previewPriority,
-        estimatedMinutes: minutes,
+        estimatedMinutes: Math.max(5, Math.round(Number(hours) * 60) || 30),
         dependsOn: dependsOn ? [dependsOn] : [],
+        stakeCents,
       })
       setInput('')
       setDependsOn('')
+      setStake('')
       setOverrideDomain('')
       setOverridePriority('')
+      toast('On the ledger')
     } finally {
       setBusy(false)
     }
@@ -56,8 +68,8 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
     <form onSubmit={submit} className="panel p-6">
       <div className="mb-5 flex items-end justify-between gap-4">
         <div>
-          <div className="kicker">Book a position</div>
-          <h2 className="font-display text-2xl text-[var(--paper)]">New goal</h2>
+          <div className="kicker">Add work</div>
+          <h2 className="font-display text-2xl text-[var(--paper)]">New work</h2>
         </div>
         <div className="flex gap-2">
           <span className="chip">{DOMAIN_META[previewDomain].label}</span>
@@ -68,12 +80,12 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Ship the Merkle verifier. Make it independently checkable."
+        placeholder="Ship the paid audit. Claim is the invoice, not the hours."
         className="field min-h-[108px] resize-none"
         disabled={busy}
       />
 
-      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
         <label className="block">
           <span className="kicker mb-1 block">Domain</span>
           <select
@@ -103,15 +115,27 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
           </select>
         </label>
         <label className="block">
-          <span className="kicker mb-1 block">Minutes</span>
+          <span className="kicker mb-1 block">Hours</span>
           <input
             type="number"
-            min={5}
-            max={1440}
-            step={5}
+            min={0.1}
+            max={24}
+            step={0.25}
             className="field"
-            value={minutes}
-            onChange={(e) => setMinutes(Number(e.target.value))}
+            value={hours}
+            onChange={(e) => setHours(Number(e.target.value))}
+          />
+        </label>
+        <label className="block">
+          <span className="kicker mb-1 block">Claim $</span>
+          <input
+            type="number"
+            min={0}
+            step={1}
+            className="field"
+            placeholder="optional"
+            value={stake}
+            onChange={(e) => setStake(e.target.value)}
           />
         </label>
         <label className="block">
@@ -128,7 +152,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       </div>
 
       <button type="submit" disabled={!input.trim() || busy} className="btn-gold mt-5 w-full">
-        {busy ? 'Writing to ledger…' : 'Commit to ledger'}
+        {busy ? 'Saving…' : 'Add work'}
       </button>
     </form>
   )

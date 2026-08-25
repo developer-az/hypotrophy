@@ -4,8 +4,8 @@
 .pnp.js
 .yarn/install-state.gz
 
-# Testing
-/coverage
+# Preview screenshots generated in CI
+/preview/*.png
 
 # Next.js
 /.next/

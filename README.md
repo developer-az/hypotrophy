@@ -24,17 +24,17 @@ npm test
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000), hit **Demo ledger**, then walk:
+Open [http://localhost:3000](http://localhost:3000). Enter cash, bills, and your hourly rate — or hit **Load a demo week** — then walk:
 
 | Surface | What you are looking at |
 |---|---|
-| **Command** | Next best *feasible* action (DAG ∩ Thompson ∩ Kelly) |
-| **Ledger** | Append-only hash chain. Tamper a payload and verification fails |
-| **Graph** | Goal dependencies, generations, critical path |
-| **Capital** | Half-Kelly domain weights + Kaplan–Meier survival |
-| **Receipts** | Ed25519 / P-256 signed Merkle receipt (titles never included) |
-| **Biscuit** | Model is an overlay, not the source of truth |
+| **Home** | Net worth, bills, skill rate, 90-day expected profit, and **Do this now** |
+| **Money** | Accounts, paycheck/spend, snapshots |
+| **Skills** | Rate card. You bump a rate when you have a real offer |
+| **Work** | Ranked feasible work. Map is behind a disclosure |
+| **Proof** | Signed Merkle receipt. Tamper a payload and verification fails |
 | **/verify** | Public verifier — paste a receipt JSON, no account |
+| **/studio** | Weekly net-worth + receipt pack (billing unwired) |
 
 ## Architecture
 
@@ -81,6 +81,8 @@ Why not a public blockchain? Personal growth data is not a consensus problem. Yo
 2. **Critical path:** longest remaining path in the DAG (classic DP after topo).
 3. **Thompson sampling:** each domain is a Beta-Bernoulli arm. Sample θ, do not just take the mean — that is how you explore a weak domain instead of starving it.
 4. **Half-Kelly:** `f* = p − q/b` on Laplace-smoothed hit rate and priority-as-odds, then haircut 50% and normalize to basis points.
+5. **ħ (human-capital units):** minutes × domain compound × priority × critical-path premium. Optional `stakeCents` is a user-declared dollar claim.
+6. **Forward book:** posterior predictive — N seeded replays of the allocator under a daily capacity. Output is P(fill by 7/30/90d) for *this DAG*, not a market call.
 
 ### Survival
 Kaplan–Meier product-limit estimator on time-to-completion. Completions are events; open and abandoned goals are censored. Median survival is the first t where S(t) ≤ 0.5.

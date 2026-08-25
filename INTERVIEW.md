@@ -6,7 +6,7 @@ Senior engineers in 2026 are not impressed by "I used Next.js and Gemini." They 
 
 ## 30-second opener
 
-> I took a 24-hour hackathon growth app and replaced the to-do list with an event-sourced ledger. Every action is an append-only hash-chained event. I can issue a signed Merkle receipt of the history that does not include titles. The "what should I do next" button is not the model — it is a DAG feasibility check plus Thompson sampling and half-Kelly weights over life domains. The hamster is still there. The hamster is not the claim.
+> I took a 24-hour hackathon growth app and replaced the to-do list with an event-sourced ledger. Every action is an append-only hash-chained event. I can issue a signed Merkle receipt of the history that does not include titles. The "what should I do next" button is not the model — it is a DAG feasibility check plus Thompson sampling and half-Kelly weights over life domains. A forward book then predicts P(I finish this by T) by replaying that allocator. The hamster is still there. The hamster is not the claim.
 
 If they only remember one sentence: **integrity is cryptographic, scheduling is a constraint problem, allocation is a bet.**
 

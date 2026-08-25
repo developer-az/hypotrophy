@@ -27,7 +27,7 @@ export default function BiscuitConversation({
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
-      text: "I'm Biscuit. I don't cheer empty motion. Book a position, and I'll underwrite it.",
+      text: "I'm Biscuit. I don't cheer empty motion. Write a goal, close it, and I'll underwrite the book.",
       isUser: false,
       timestamp: new Date(),
     },

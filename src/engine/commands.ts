@@ -1,5 +1,6 @@
 import { appendEntry, type ChainEntry } from './crypto/chain'
 import type {
+  AccountKind,
   Domain,
   EngineEventType,
   GoalAbandonedPayload,
@@ -7,9 +8,10 @@ import type {
   GoalIdPayload,
   GoalLinkedPayload,
   InsightRecordedPayload,
+  MoneyKind,
   Priority,
 } from './domain/types'
-import { isDomain, isPriority } from './domain/types'
+import { isAccountKind, isDomain, isMoneyKind, isPriority } from './domain/types'
 
 export class CommandError extends Error {
   constructor(message: string) {
@@ -36,6 +38,7 @@ export async function createGoal(
     priority: Priority
     dependsOn?: string[]
     estimatedMinutes?: number
+    stakeCents?: number
     id?: string
   },
   ts: number
@@ -57,6 +60,12 @@ export async function createGoal(
     priority: input.priority,
     dependsOn: input.dependsOn ?? [],
     estimatedMinutes,
+  }
+  if (input.stakeCents != null) {
+    if (!Number.isInteger(input.stakeCents) || input.stakeCents < 0 || input.stakeCents > 50_000_000) {
+      throw new CommandError('stakeCents must be an integer between 0 and 50000000')
+    }
+    payload.stakeCents = input.stakeCents
   }
   return appendEntry(chain, 'goal.created', payload, ts)
 }
@@ -107,6 +116,107 @@ export async function recordInsight(
   return appendEntry(chain, 'insight.recorded', input, ts)
 }
 
+export async function openAccount(
+  chain: readonly ChainEntry[],
+  input: { id?: string; name: string; kind: AccountKind },
+  ts: number
+): Promise<ChainEntry> {
+  const name = input.name.trim()
+  if (name.length < 1 || name.length > 80) throw new CommandError('account name must be 1–80 characters')
+  if (!isAccountKind(input.kind)) throw new CommandError('unknown account kind')
+  return appendEntry(
+    chain,
+    'account.opened',
+    { id: input.id ?? newId(), name, kind: input.kind },
+    ts
+  )
+}
+
+export async function setAccountBalance(
+  chain: readonly ChainEntry[],
+  id: string,
+  cents: number,
+  ts: number
+): Promise<ChainEntry> {
+  if (!id) throw new CommandError('account id required')
+  if (!Number.isInteger(cents) || Math.abs(cents) > 500_000_000) {
+    throw new CommandError('balance must be integer cents within ±$5,000,000')
+  }
+  return appendEntry(chain, 'account.balanced', { id, cents }, ts)
+}
+
+export async function postMoney(
+  chain: readonly ChainEntry[],
+  input: { id?: string; accountId: string; cents: number; kind: MoneyKind; memo?: string },
+  ts: number
+): Promise<ChainEntry> {
+  if (!input.accountId) throw new CommandError('account id required')
+  if (!isMoneyKind(input.kind)) throw new CommandError('unknown money kind')
+  if (!Number.isInteger(input.cents) || input.cents <= 0 || input.cents > 500_000_000) {
+    throw new CommandError('amount must be a positive integer in cents')
+  }
+  return appendEntry(
+    chain,
+    'money.posted',
+    {
+      id: input.id ?? newId(),
+      accountId: input.accountId,
+      cents: input.cents,
+      kind: input.kind,
+      memo: input.memo?.trim().slice(0, 200) || undefined,
+    },
+    ts
+  )
+}
+
+export async function upsertSkill(
+  chain: readonly ChainEntry[],
+  input: { id?: string; name: string; domain: Domain; rateCentsPerHour: number },
+  ts: number
+): Promise<ChainEntry> {
+  const name = input.name.trim()
+  if (name.length < 1 || name.length > 80) throw new CommandError('skill name must be 1–80 characters')
+  if (!isDomain(input.domain)) throw new CommandError('unknown domain')
+  if (!Number.isInteger(input.rateCentsPerHour) || input.rateCentsPerHour < 0 || input.rateCentsPerHour > 500_000) {
+    throw new CommandError('rate must be integer cents per hour, 0–500000')
+  }
+  return appendEntry(
+    chain,
+    'skill.upserted',
+    {
+      id: input.id ?? newId(),
+      name,
+      domain: input.domain,
+      rateCentsPerHour: input.rateCentsPerHour,
+    },
+    ts
+  )
+}
+
+export async function recordIntel(
+  chain: readonly ChainEntry[],
+  input: { id?: string; title: string; cents?: number; skillId?: string; note?: string },
+  ts: number
+): Promise<ChainEntry> {
+  const title = input.title.trim()
+  if (title.length < 2 || title.length > 120) throw new CommandError('intel title must be 2–120 characters')
+  if (input.cents != null && (!Number.isInteger(input.cents) || input.cents < 0 || input.cents > 500_000_000)) {
+    throw new CommandError('intel cents must be a non-negative integer')
+  }
+  return appendEntry(
+    chain,
+    'intel.recorded',
+    {
+      id: input.id ?? newId(),
+      title,
+      cents: input.cents,
+      skillId: input.skillId,
+      note: input.note?.trim().slice(0, 2000) || undefined,
+    },
+    ts
+  )
+}
+
 export const EVENT_TYPES: EngineEventType[] = [
   'ledger.genesis',
   'goal.created',
@@ -115,4 +225,9 @@ export const EVENT_TYPES: EngineEventType[] = [
   'goal.deleted',
   'goal.linked',
   'insight.recorded',
+  'account.opened',
+  'account.balanced',
+  'money.posted',
+  'skill.upserted',
+  'intel.recorded',
 ]

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
 
@@ -29,9 +29,21 @@ const mono = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Hypotrophy — Human Capital Engine',
+  title: {
+    default: 'Hypotrophy — Human Capital Engine',
+    template: '%s · Hypotrophy',
+  },
   description:
-    'Local-first personal growth ledger: hash-chained events, Merkle receipts, Thompson sampling and half-Kelly allocation. Built from a hackUMBC project.',
+    'Cash, skills, and ranked work on one local ledger. Net worth you typed. Next hour priced in dollars.',
+  applicationName: 'Hypotrophy',
+  keywords: ['personal growth', 'event sourcing', 'merkle', 'local-first', 'productivity'],
+}
+
+export const viewport: Viewport = {
+  themeColor: '#0b0a08',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

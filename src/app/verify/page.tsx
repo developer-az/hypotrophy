@@ -4,16 +4,19 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { verifyReceipt, type GrowthReceipt } from '@/engine'
 import { BiscuitMark } from '@/components/BiscuitMark'
+import { formatUsd } from '@/lib/format'
 
 export default function VerifyPage() {
   const [raw, setRaw] = useState('')
   const [leaves, setLeaves] = useState('')
-  const [result, setResult] = useState<string>('')
   const [busy, setBusy] = useState(false)
+  const [ok, setOk] = useState<boolean | null>(null)
+  const [detail, setDetail] = useState('')
 
   const run = async () => {
     setBusy(true)
-    setResult('')
+    setOk(null)
+    setDetail('')
     try {
       const receipt = JSON.parse(raw) as GrowthReceipt
       const leafList = leaves
@@ -25,13 +28,14 @@ export default function VerifyPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ receipt, leaves: leafList.length ? leafList : undefined }),
-      }).then((r) => r.json())
-      setResult(
+      }).then((r) => r.json() as Promise<{ ok?: boolean; error?: string }>)
+      const passed = Boolean(local.ok && remote.ok)
+      setOk(passed)
+      setDetail(
         JSON.stringify(
           {
             client: local,
             server: remote,
-            subject: receipt.subject?.slice(0, 18) + '…',
             events: receipt.eventCount,
             alg: receipt.alg,
           },
@@ -40,7 +44,8 @@ export default function VerifyPage() {
         )
       )
     } catch (err) {
-      setResult(err instanceof Error ? err.message : 'invalid receipt')
+      setOk(false)
+      setDetail(err instanceof Error ? err.message : 'invalid receipt')
     } finally {
       setBusy(false)
     }
@@ -54,8 +59,10 @@ export default function VerifyPage() {
       <div className="mt-6 flex items-center gap-3">
         <BiscuitMark size={40} />
         <div>
-          <h1 className="font-display text-4xl text-[var(--paper)]">Receipt verifier</h1>
-          <p className="text-sm text-[var(--mute)]">Independent check. No account. No original titles required.</p>
+          <h1 className="font-display text-4xl text-[var(--paper)]">Verify a receipt</h1>
+          <p className="text-sm text-[var(--mute)]">
+            Independent check. No account. Titles are not required.
+          </p>
         </div>
       </div>
 
@@ -80,8 +87,32 @@ export default function VerifyPage() {
       <button type="button" className="btn-gold mt-5" disabled={busy || !raw.trim()} onClick={run}>
         {busy ? 'Verifying…' : 'Verify'}
       </button>
-      {result && (
-        <pre className="panel mt-6 overflow-auto p-4 font-mono text-xs text-[var(--mute)]">{result}</pre>
+      {ok !== null && (
+        <section className="panel mt-6 p-6">
+          <div className={`chip ${ok ? 'chip-ok' : 'chip-bad'}`}>{ok ? 'holds' : 'does not hold'}</div>
+          <p className="mt-3 font-display text-2xl text-[var(--paper)]">
+            {ok ? 'Signature and root check out.' : 'This receipt failed verification.'}
+          </p>
+          {ok && (() => {
+            try {
+              const r = JSON.parse(raw) as GrowthReceipt
+              if (r.stats?.netWorthCents == null) return null
+              return (
+                <p className="mt-3 text-sm text-[var(--mute)]">
+                  Issuer declared net worth {formatUsd(r.stats.netWorthCents)}
+                  {r.stats.runwayDays != null ? ` · ${r.stats.runwayDays} days of bills in cash` : ''}.
+                  Declared, not a bank statement. No titles in this file.
+                </p>
+              )
+            } catch {
+              return null
+            }
+          })()}
+          <details className="quant mt-4">
+            <summary>Machine report</summary>
+            <pre className="mt-3 overflow-auto font-mono text-xs text-[var(--mute)]">{detail}</pre>
+          </details>
+        </section>
       )}
     </div>
   )

@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   const type = body.type
-  if (type !== 'progress' && type !== 'task' && type !== 'suggestions') {
+  if (type !== 'progress' && type !== 'task' && type !== 'suggestions' && type !== 'cio') {
     return jsonError('invalid request type', 400)
   }
 
@@ -81,6 +81,21 @@ export async function POST(request: NextRequest) {
         category: task.category,
         createdAt: new Date().toISOString(),
         relevantTasks: [task.id],
+      })
+    }
+
+    if (type === 'cio') {
+      const briefing = body.briefing
+      const prompt = cioPrompt(briefing)
+      const text = (await model.generateContent(prompt)).response.text()
+      logger.info('ai.cio')
+      return NextResponse.json({
+        id: crypto.randomUUID(),
+        type: 'memo',
+        title: 'Briefing',
+        content: text.trim(),
+        createdAt: new Date().toISOString(),
+        relevantTasks: [],
       })
     }
 
@@ -127,4 +142,11 @@ function biscuitSuggestPrompt(category: string, history: Task[]) {
     .slice(0, 5)
     .map((t) => t.title)
     .join('; ') || 'none'}. One line each.`
+}
+
+function cioPrompt(briefing: unknown) {
+  return `You brief one person on their money, skills, and next hour. You are given computed JSON. You MUST NOT invent dollars, probabilities, or market calls. Four sentences in plain English: (1) net worth and burn, (2) the leak, (3) what to do now, (4) 90-day expected profit. No wellness voice. Never say you are an AI.
+
+P&L:
+${JSON.stringify(briefing)}`
 }

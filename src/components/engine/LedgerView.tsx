@@ -14,12 +14,11 @@ export default function LedgerView({ engine }: { engine: HypotrophyEngine }) {
           <div>
             <div className="kicker">Integrity</div>
             <h2 className="font-display text-3xl text-[var(--paper)]">
-              {integrity.ok ? 'Chain verifies' : 'Chain broken'}
+              {integrity.ok ? 'The chain holds' : 'The chain is broken'}
             </h2>
             <p className="mt-2 max-w-xl text-sm text-[var(--mute)]">
               Each event hashes its payload plus the previous hash. Edit history in DevTools and this
-              badge fails — the same sequential integrity guarantee a blockchain uses, without a public
-              mempool of your life.
+              badge fails. Integrity without putting your life on a public chain.
             </p>
           </div>
           <div className="font-mono text-xs text-[var(--mute)]">

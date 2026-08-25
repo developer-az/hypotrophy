@@ -1,5 +1,6 @@
 import { appendEntry, type ChainEntry } from '../crypto/chain'
 import { mulberry32 } from '../quant/bandit'
+import { BILLS_INTEL_ID } from '../quant/pnl'
 import type { Domain, Priority } from '../domain/types'
 
 const DAY = 86_400_000
@@ -15,6 +16,7 @@ interface DemoGoal {
   createdOffsetDays: number
   outcome: 'open' | 'completed' | 'abandoned'
   settleOffsetDays?: number
+  stakeCents?: number
 }
 
 /**
@@ -86,14 +88,15 @@ export function demoScript(): DemoGoal[] {
     },
     {
       id: 'g-allocator',
-      title: 'Ship Thompson + half-Kelly allocator',
-      description: 'Feasible set from the DAG, ranking from the quant layer.',
+      title: 'Ship the next-action ranker',
+      description: 'Only recommend work that is unblocked. Rank the rest by payoff.',
       domain: 'career',
       priority: 'high',
       dependsOn: ['g-sys', 'g-tests'],
       estimatedMinutes: 240,
       createdOffsetDays: -17,
       outcome: 'open',
+      stakeCents: 800_000,
     },
     {
       id: 'g-resume',
@@ -105,6 +108,7 @@ export function demoScript(): DemoGoal[] {
       estimatedMinutes: 120,
       createdOffsetDays: -8,
       outcome: 'open',
+      stakeCents: 2_500_000,
     },
     {
       id: 'g-run',
@@ -152,6 +156,7 @@ export function demoScript(): DemoGoal[] {
       estimatedMinutes: 90,
       createdOffsetDays: -24,
       outcome: 'open',
+      stakeCents: 500_000,
     },
     {
       id: 'g-write',
@@ -209,6 +214,47 @@ export async function buildDemoLedger(now: number, seed = 20250814): Promise<Cha
     await appendEntry(chain, 'ledger.genesis', { protocol: 'hypotrophy-hce', version: 1 }, genesisTs)
   )
 
+  chain.push(
+    await appendEntry(chain, 'account.opened', { id: 'acct-cash', name: 'Checking', kind: 'cash' }, genesisTs + 1)
+  )
+  chain.push(await appendEntry(chain, 'account.balanced', { id: 'acct-cash', cents: 1_240_000 }, genesisTs + 2))
+  chain.push(
+    await appendEntry(chain, 'account.opened', { id: 'acct-card', name: 'Card', kind: 'credit' }, genesisTs + 3)
+  )
+  chain.push(await appendEntry(chain, 'account.balanced', { id: 'acct-card', cents: 320_000 }, genesisTs + 4))
+  chain.push(
+    await appendEntry(
+      chain,
+      'skill.upserted',
+      { id: 'skill-ts', name: 'TypeScript', domain: 'career', rateCentsPerHour: 8500 },
+      genesisTs + 5
+    )
+  )
+  chain.push(
+    await appendEntry(
+      chain,
+      'skill.upserted',
+      { id: 'skill-sys', name: 'Systems', domain: 'learning', rateCentsPerHour: 12000 },
+      genesisTs + 6
+    )
+  )
+  chain.push(
+    await appendEntry(
+      chain,
+      'intel.recorded',
+      { id: BILLS_INTEL_ID, title: 'Monthly bills', cents: 280_000 },
+      genesisTs + 7
+    )
+  )
+  chain.push(
+    await appendEntry(
+      chain,
+      'money.posted',
+      { id: 'pay-demo', accountId: 'acct-cash', cents: 420_000, kind: 'income', memo: 'paycheck' },
+      now - 3 * DAY
+    )
+  )
+
   const script = demoScript()
   const jitter = () => Math.floor(rng() * 8 * 3_600_000)
 
@@ -226,6 +272,7 @@ export async function buildDemoLedger(now: number, seed = 20250814): Promise<Cha
           priority: goal.priority,
           dependsOn: goal.dependsOn,
           estimatedMinutes: goal.estimatedMinutes,
+          ...(goal.stakeCents != null ? { stakeCents: goal.stakeCents } : {}),
         },
         createdAt
       )
@@ -258,10 +305,10 @@ export async function buildDemoLedger(now: number, seed = 20250814): Promise<Cha
       'insight.recorded',
       {
         id: 'ins-demo',
-        kind: 'analysis',
-        title: 'Demo ledger loaded',
+        kind: 'memo',
+        title: 'Opening briefing',
         content:
-          'This history is synthetic but internally consistent: a career/learning critical path, a health abandonment, and a finance dependency. Use it to exercise the allocator, then replace it with your own chain.',
+          'Demo book: cash, a card balance, two skill rates, a paycheck, and a career path. Home shows net worth and what to do now. Replace it with your numbers.',
         relevantGoalIds: ['g-allocator', 'g-resume'],
       },
       now - DAY

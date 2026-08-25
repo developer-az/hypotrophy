@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import type { HypotrophyEngine } from '@/hooks/useEngine'
-import { shortHash } from '@/lib/format'
+import { formatUsd, shortHash } from '@/lib/format'
+import { useToast } from '../Toast'
 
 export default function ReceiptsView({ engine }: { engine: HypotrophyEngine }) {
+  const toast = useToast()
   const { identity, receipt, issue, issuing, chain } = engine
   const [copied, setCopied] = useState(false)
 
@@ -29,16 +31,24 @@ export default function ReceiptsView({ engine }: { engine: HypotrophyEngine }) {
   return (
     <div className="space-y-6">
       <section className="panel p-6">
-        <div className="kicker">Verifiable human capital</div>
+        <div className="kicker">What you can show someone</div>
         <h2 className="font-display text-3xl text-[var(--paper)]">Growth receipts</h2>
         <p className="mt-2 max-w-2xl text-sm text-[var(--mute)]">
-          A receipt is a signed commitment to a Merkle root of your event hashes. Titles never leave
-          the device. Anyone with the JSON can verify the signature; anyone with the leaf hashes can
-          recompute the root. This is the resume you cannot fake in an interview.
+          A receipt is a signed commitment to a Merkle root of your event hashes — counts, domains,
+          and the net-worth snapshot you declared. Never titles. Paste it on /verify. This is the
+          weekly pack Studio productizes.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <button type="button" className="btn-gold" disabled={issuing || chain.length < 2} onClick={() => issue()}>
-            {issuing ? 'Signing…' : 'Issue receipt'}
+          <button
+            type="button"
+            className="btn-gold"
+            disabled={issuing || chain.length < 2}
+            onClick={async () => {
+              await issue()
+              toast('Receipt signed on this device')
+            }}
+          >
+            {issuing ? 'Signing…' : 'Issue this week’s net-worth pack'}
           </button>
           <a className="btn-quiet inline-flex items-center" href="/verify">
             Open public verifier
@@ -88,12 +98,24 @@ export default function ReceiptsView({ engine }: { engine: HypotrophyEngine }) {
           <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Mini label="created" value={String(receipt.stats.created)} />
             <Mini label="completed" value={String(receipt.stats.completed)} />
-            <Mini label="abandoned" value={String(receipt.stats.abandoned)} />
-            <Mini label="proofs" value={String(receipt.sampleProofs.length)} />
+            <Mini label="net worth" value={formatUsd(receipt.stats.netWorthCents ?? 0)} />
+            <Mini
+              label="runway"
+              value={
+                receipt.stats.runwayDays != null ? `${receipt.stats.runwayDays}d` : '—'
+              }
+            />
           </dl>
-          <pre className="mt-4 max-h-80 overflow-auto rounded-xl bg-[var(--ink)] p-4 font-mono text-[11px] text-[var(--mute)]">
-            {JSON.stringify(receipt, null, 2)}
-          </pre>
+          <p className="mt-3 text-sm text-[var(--mute)]">
+            Net worth on the pack is what you declared on this device — not a bank feed. Titles are
+            still absent.
+          </p>
+          <details className="quant mt-4">
+            <summary>Raw JSON</summary>
+            <pre className="mt-3 max-h-80 overflow-auto rounded-xl bg-[var(--ink)] p-4 font-mono text-[11px] text-[var(--mute)]">
+              {JSON.stringify(receipt, null, 2)}
+            </pre>
+          </details>
         </section>
       )}
     </div>

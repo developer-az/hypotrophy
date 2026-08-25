@@ -2,16 +2,17 @@
 
 import { useMemo } from 'react'
 import type { HypotrophyEngine } from '@/hooks/useEngine'
-import { DOMAIN_META } from '@/lib/format'
+import { DOMAIN_META, formatUsd } from '@/lib/format'
 
 export default function GraphView({ engine }: { engine: HypotrophyEngine }) {
-  const { graph } = engine
+  const { graph, goals } = engine
   const layout = useMemo(() => layoutGraph(graph), [graph])
+  const byId = useMemo(() => Object.fromEntries(goals.map((g) => [g.id, g])), [goals])
 
   if (Object.keys(graph.nodes).length === 0) {
     return (
       <div className="panel p-10 text-center text-[var(--mute)]">
-        No nodes yet. Commit goals with dependencies to see the DAG.
+        No map yet. Add work with a dependency on the Work page.
       </div>
     )
   }
@@ -20,10 +21,10 @@ export default function GraphView({ engine }: { engine: HypotrophyEngine }) {
     <div className="space-y-6">
       <section className="panel p-6">
         <div className="kicker">Dependency graph</div>
-        <h2 className="font-display text-3xl text-[var(--paper)]">Critical path {graph.criticalPathMinutes}m</h2>
+        <h2 className="font-display text-3xl text-[var(--paper)]">What is on the critical path</h2>
         <p className="mt-2 max-w-2xl text-sm text-[var(--mute)]">
-          Layered by topological generation. Gold nodes sit on the longest remaining path. A blocked
-          node cannot be the allocator&apos;s next action — the DAG is a hard constraint.
+          {graph.criticalPathMinutes} minutes on the longest remaining path. Gold is the bottleneck.
+          Blocked work cannot be next.
         </p>
       </section>
       <div className="panel overflow-x-auto p-4">
@@ -71,7 +72,7 @@ export default function GraphView({ engine }: { engine: HypotrophyEngine }) {
                 fontSize="9"
                 fontFamily="IBM Plex Mono, monospace"
               >
-                {DOMAIN_META[n.domain].label} · gen {n.generation}
+                {DOMAIN_META[n.domain].label} · {byId[n.id]?.stakeCents ? formatUsd(byId[n.id]!.stakeCents!) : `${n.estimatedMinutes}m`}
                 {n.blocked ? ' · blocked' : ''}
               </text>
             </g>

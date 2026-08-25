@@ -76,6 +76,20 @@ LLM planners are non-deterministic, hard to test, and easy to cargo-cult. An int
 
 Honest: serverless isolates do not share memory. This stops a single tab from igniting the model bill. It does not stop a distributed flood. On a real deploy, put the platform limiter (Vercel/Cloudflare) or Redis in front and keep this as defense in depth.
 
+## ħ compound weights vs user-entered dollars only
+
+**Chose:** publish relative optionality multipliers (finance 4.0× … home 1.1×) so an unpriced book still ranks, plus optional integer `stakeCents`.
+**Not:** scrape markets, or pretend Gemini knows next quarter's income.
+
+An hour of career and an hour of laundry are not equal. The multipliers are a stated prior, visible in the Book, not a secret alpha. Declared stakes are claims. Expected dollars = claim × P(fill) from the forward book. If those multipliers are wrong for you, change `COMPOUND_BPS` — that is the point of keeping them in one file.
+
+## Forward book vs "the model will figure it out"
+
+**Chose:** N seeded replays of the same allocator under a daily minute budget.
+**Not:** an LLM planning your quarter.
+
+This is the only honest prediction past the current snapshot: the posterior of *this writer's* domain hit rates, through *this DAG*, at *this capacity*. It cannot see the economy. Saying that out loud is the product.
+
 ## What I would do next (in order)
 
 1. Non-extractable IndexedDB identity + encrypted backup phrase.
@@ -83,4 +97,5 @@ Honest: serverless isolates do not share memory. This stops a single tab from ig
 3. CRDT or op-based sync with the hash chain as the audit log (chain is not the sync primitive).
 4. External Merkle anchoring.
 5. Competing-risk survival and calibrated bandit diagnostics (Brier score on domain posteriors).
-6. Replace localStorage with OPFS or SQLite/WASM when the log outgrows the quota.
+6. User-set daily capacity and stake calibration against later realized dollars.
+7. Replace localStorage with OPFS or SQLite/WASM when the log outgrows the quota.

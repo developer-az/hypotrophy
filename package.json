@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "preview": "next build && next start",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -46,6 +47,7 @@
     "typescript": "^5.9.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.1",
     "vitest": "^3.2.4"
   }
 }

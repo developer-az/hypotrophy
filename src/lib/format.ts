@@ -63,3 +63,37 @@ export function formatDuration(ms: number | null): string {
 export function bpsPct(bps: number): string {
   return `${(bps / 100).toFixed(1)}%`
 }
+
+export function formatHbar(n: number): string {
+  if (n >= 10_000) return `${(n / 1000).toFixed(1)}k ħ`
+  return `${n.toLocaleString('en-US')} ħ`
+}
+
+export function formatUsd(cents: number): string {
+  if (cents === 0) return '$0'
+  const sign = cents < 0 ? '-' : ''
+  return `${sign}$${Math.abs(cents / 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}`
+}
+
+export function formatUsdRate(centsPerHour: number): string {
+  if (centsPerHour <= 0) return '—'
+  return `${formatUsd(centsPerHour)}/hr`
+}
+
+export function formatPct(p: number): string {
+  return `${Math.round(p * 100)}%`
+}
+
+export function formatHours(minutes: number): string {
+  const h = minutes / 60
+  if (h < 1) return `${minutes}m`
+  const rounded = Math.round(h * 10) / 10
+  return `${rounded}h`
+}
+
+export function formatRunway(days: number | null): string {
+  if (days == null) return '—'
+  if (days > 3650) return 'years of bills in cash'
+  if (days >= 365) return `${Math.round(days / 365)}y of bills in cash`
+  return `${days} days of bills in cash`
+}

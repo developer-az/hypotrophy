@@ -15,6 +15,7 @@ const eslintConfig = [
       'node_modules/**',
       'src/engine/__tests__/**',
       'vitest.config.ts',
+      'scripts/**',
       'next-env.d.ts',
     ],
   },
