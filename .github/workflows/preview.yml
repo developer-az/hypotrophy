@@ -16,7 +16,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npx --yes @playwright/test@1.49.1 install --with-deps chromium
+      - run: npm install --no-save @playwright/test@1.49.1
+      - run: npx playwright install --with-deps chromium
       - name: Capture surfaces
         run: |
           npx next start --hostname 127.0.0.1 --port 3000 &
@@ -24,7 +25,7 @@ jobs:
             curl -sf http://127.0.0.1:3000 >/dev/null && break
             sleep 1
           done
-          npx --yes @playwright/test@1.49.1 test --config=scripts/playwright.config.ts
+          npx playwright test --config=scripts/playwright.config.ts
       - uses: actions/upload-artifact@v4
         if: always()
         with:
