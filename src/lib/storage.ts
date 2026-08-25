@@ -5,6 +5,7 @@ const CHAIN_KEY = 'hypotrophy-hce-v1'
 const IDENTITY_KEY = 'hypotrophy-hce-identity'
 const LEGACY_TASKS_KEY = 'hypotrophy-tasks'
 const LEGACY_INSIGHTS_KEY = 'hypotrophy-insights'
+const ONBOARD_KEY = 'hypotrophy-onboarded'
 
 export function loadChain(): ChainEntry[] | null {
   if (typeof window === 'undefined') return null
@@ -58,4 +59,32 @@ export function clearLegacyKeys() {
 export function wipeEngineStorage() {
   window.localStorage.removeItem(CHAIN_KEY)
   window.localStorage.removeItem(IDENTITY_KEY)
+  window.localStorage.removeItem(ONBOARD_KEY)
+}
+
+export function hasOnboarded(): boolean {
+  if (typeof window === 'undefined') return true
+  return window.localStorage.getItem(ONBOARD_KEY) === '1'
+}
+
+export function markOnboarded() {
+  window.localStorage.setItem(ONBOARD_KEY, '1')
+}
+
+export type LedgerSnapshot = {
+  format: 'hypotrophy-ledger-v1'
+  exportedAt: number
+  chain: ChainEntry[]
+}
+
+export function snapshotChain(chain: ChainEntry[]): LedgerSnapshot {
+  return { format: 'hypotrophy-ledger-v1', exportedAt: Date.now(), chain }
+}
+
+export function parseSnapshot(raw: string): LedgerSnapshot {
+  const parsed = JSON.parse(raw) as LedgerSnapshot
+  if (parsed.format !== 'hypotrophy-ledger-v1' || !Array.isArray(parsed.chain)) {
+    throw new Error('not a Hypotrophy ledger file')
+  }
+  return parsed
 }

@@ -13,13 +13,19 @@ export default function CapitalView({ engine }: { engine: HypotrophyEngine }) {
   return (
     <div className="space-y-6">
       <section className="panel p-6">
-        <div className="kicker">Human capital desk</div>
-        <h2 className="font-display text-3xl text-[var(--paper)]">Half-Kelly allocation</h2>
+        <div className="kicker">Attention this week</div>
+        <h2 className="font-display text-3xl text-[var(--paper)]">Where capital should go</h2>
         <p className="mt-2 max-w-2xl text-sm text-[var(--mute)]">
-          Each domain is a bet. Win probability is the Laplace-smoothed completion rate. Odds are
-          average open priority. Full Kelly is too loud on noisy personal data, so we publish half
-          Kelly in basis points — the same haircut a trading desk uses.
+          Each domain is a slice of your week. Win rate is completions. Odds are how hot the open
+          work is. We publish half-Kelly so noisy personal data does not blow up the book.
         </p>
+        <details className="quant mt-3">
+          <summary>The formula</summary>
+          <p className="mt-2 max-w-2xl text-sm text-[var(--mute)]">
+            f* = p − q/b on Laplace-smoothed hit rate, then a 50% haircut, then basis points. Same
+            haircut a trading desk uses on noisy estimates.
+          </p>
+        </details>
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -46,7 +52,7 @@ export default function CapitalView({ engine }: { engine: HypotrophyEngine }) {
         </section>
 
         <section className="panel p-6">
-          <div className="kicker">Kaplan–Meier</div>
+          <div className="kicker">How long work takes</div>
           <p className="mt-1 font-display text-2xl text-[var(--paper)]">
             median {formatDuration(median)}
           </p>
@@ -75,7 +81,7 @@ export default function CapitalView({ engine }: { engine: HypotrophyEngine }) {
       <section className="panel overflow-hidden">
         <div className="border-b border-[var(--line)] px-6 py-4">
           <div className="kicker">Ranked book</div>
-          <h3 className="font-display text-xl text-[var(--paper)]">Thompson × Kelly × path</h3>
+          <h3 className="font-display text-xl text-[var(--paper)]">Ranked, feasible work</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">

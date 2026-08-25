@@ -27,12 +27,14 @@ import {
   loadChain,
   loadIdentity,
   loadLegacyTasks,
+  parseSnapshot,
   saveChain,
   saveIdentity,
+  snapshotChain,
   wipeEngineStorage,
 } from '@/lib/storage'
 
-export type ViewId = 'command' | 'ledger' | 'graph' | 'capital' | 'receipts' | 'biscuit'
+export type ViewId = 'today' | 'map' | 'capital' | 'proof' | 'biscuit'
 
 export function useEngine() {
   const [chain, setChain] = useState<ChainEntry[]>([])
@@ -168,6 +170,32 @@ export function useEngine() {
     setReceipt(null)
   }, [persist])
 
+  const exportLedger = useCallback(() => {
+    const pack = snapshotChain(chain)
+    const blob = new Blob([JSON.stringify(pack, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `hypotrophy-ledger-${pack.exportedAt}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [chain])
+
+  const importLedger = useCallback(
+    async (raw: string) => {
+      setError(null)
+      const pack = parseSnapshot(raw)
+      const check = await verifyChain(pack.chain)
+      if (!check.ok) {
+        throw new Error(check.reason ?? 'imported chain does not verify')
+      }
+      persist(pack.chain)
+      setReceipt(null)
+      setNow(Date.now())
+    },
+    [persist]
+  )
+
   const issue = useCallback(async () => {
     if (!identity) throw new Error('identity not ready')
     setIssuing(true)
@@ -212,6 +240,8 @@ export function useEngine() {
     loadDemo,
     reset,
     issue,
+    exportLedger,
+    importLedger,
   }
 }
 

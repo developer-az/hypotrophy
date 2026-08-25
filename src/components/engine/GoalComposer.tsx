@@ -4,6 +4,7 @@ import { useMemo, useState, type FormEvent } from 'react'
 import type { Domain, Goal, Priority } from '@/engine'
 import { DOMAINS } from '@/engine'
 import { detectDomain, detectPriority, DOMAIN_META, splitTitle } from '@/lib/format'
+import { useToast } from '../Toast'
 
 interface GoalComposerProps {
   goals: Goal[]
@@ -18,6 +19,7 @@ interface GoalComposerProps {
 }
 
 export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
+  const toast = useToast()
   const [input, setInput] = useState('')
   const [minutes, setMinutes] = useState(30)
   const [dependsOn, setDependsOn] = useState('')
@@ -47,6 +49,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       setDependsOn('')
       setOverrideDomain('')
       setOverridePriority('')
+      toast('On the ledger')
     } finally {
       setBusy(false)
     }
@@ -56,7 +59,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
     <form onSubmit={submit} className="panel p-6">
       <div className="mb-5 flex items-end justify-between gap-4">
         <div>
-          <div className="kicker">Book a position</div>
+          <div className="kicker">Add to the book</div>
           <h2 className="font-display text-2xl text-[var(--paper)]">New goal</h2>
         </div>
         <div className="flex gap-2">
@@ -68,7 +71,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Ship the Merkle verifier. Make it independently checkable."
+        placeholder="Ship the verifier. Make a stranger able to check it without an account."
         className="field min-h-[108px] resize-none"
         disabled={busy}
       />
@@ -128,7 +131,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       </div>
 
       <button type="submit" disabled={!input.trim() || busy} className="btn-gold mt-5 w-full">
-        {busy ? 'Writing to ledger…' : 'Commit to ledger'}
+        {busy ? 'Writing…' : 'Add to ledger'}
       </button>
     </form>
   )
