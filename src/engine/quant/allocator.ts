@@ -1,9 +1,10 @@
-import { DOMAINS, PRIORITY_WEIGHT, type Domain, type Goal } from '../domain/types'
+import { DOMAINS, PRIORITY_WEIGHT, type Domain, type Goal, type Skill } from '../domain/types'
 import { buildGraph, eligibleGoalIds } from '../graph/dag'
 import { mulberry32, thompsonSelect, type BanditArm } from './bandit'
 import { kellyPlan, type KellySlice } from './kelly'
 import { kaplanMeier, type SurvivalCurve } from './survival'
 import { hbarOf } from './wealth'
+import { dollarImpact } from './pnl'
 
 export interface NextAction {
   goalId: string
@@ -37,9 +38,10 @@ export interface AllocationPlan {
  *
  * Eligible goals only: blocked nodes are never recommended. That is the
  * scheduler invariant — the DAG is a hard constraint, the quant layer
- * is a soft ranking on the feasible set.
+ * is a soft ranking on the feasible set. Declared dollars (stakes and
+ * skill rates) boost score; they cannot promote blocked work.
  */
-export function allocate(goals: Goal[], now: number, seed = now): AllocationPlan {
+export function allocate(goals: Goal[], now: number, seed = now, skills: Skill[] = []): AllocationPlan {
   const graph = buildGraph(goals)
   const kelly = kellyPlan(goals)
   const kellyByDomain = Object.fromEntries(kelly.map((s) => [s.domain, s])) as Record<
@@ -65,17 +67,18 @@ export function allocate(goals: Goal[], now: number, seed = now): AllocationPlan
       const age = 1 + Math.min(ageDays, 21) / 42
       const feasible = eligible.has(n.id) ? 1 : 0.05
       const hbar = hbarOf(goal, n.onCriticalPath)
+      const dollars = dollarImpact(goal, skills)
       const wealth = 1 + Math.log1p(hbar) / 8
-      const score = t * (0.35 + k / 10000) * crit * pri * age * feasible * wealth
+      const moneyBoost = 1 + Math.log1p(dollars / 100) / 10
+      const score = t * (0.35 + k / 10000) * crit * pri * age * feasible * wealth * moneyBoost
       const reasons: string[] = []
       if (n.onCriticalPath) reasons.push('on the critical path')
-      if (k >= 2000) reasons.push(`Kelly over-weights ${n.domain}`)
-      if (t > 0.6) reasons.push('Thompson sample likes this domain today')
-      if (goal.priority === 'high') reasons.push('high stated priority')
-      if (hbar >= 800) reasons.push(`ħ${hbar} — dense human capital`)
-      if ((goal.stakeCents ?? 0) > 0) reasons.push(`claimed $${Math.round((goal.stakeCents ?? 0) / 100)}`)
-      if (n.blocked) reasons.push('blocked on unfinished prerequisites')
-      if (!n.blocked && eligible.has(n.id)) reasons.push('prerequisites clear')
+      if (k >= 2000) reasons.push(`this area has been paying off`)
+      if (t > 0.6) reasons.push('your track record in this area is hot')
+      if (goal.priority === 'high') reasons.push('you marked this high priority')
+      if (dollars > 0) reasons.push(`about $${Math.round(dollars / 100).toLocaleString('en-US')} if you finish`)
+      if (n.blocked) reasons.push('blocked — finish prerequisites first')
+      if (!n.blocked && eligible.has(n.id)) reasons.push('ready to start')
       return {
         goalId: n.id,
         title: n.title,

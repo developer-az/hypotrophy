@@ -30,14 +30,23 @@ export { issueReceipt, verifyReceipt, type GrowthReceipt } from './crypto/receip
 export {
   DOMAINS,
   PRIORITY_WEIGHT,
+  ACCOUNT_KINDS,
   emptyProjection,
   isDomain,
   isPriority,
+  isAccountKind,
+  isMoneyKind,
   type Domain,
   type Priority,
   type Goal,
   type Insight,
   type Projection,
+  type Account,
+  type AccountKind,
+  type Skill,
+  type MoneyPost,
+  type MoneyKind,
+  type Intel,
 } from './domain/types'
 export { fold, apply } from './domain/reducer'
 export { migrateLegacyTasks, type LegacyTask } from './domain/migrate'
@@ -54,6 +63,14 @@ export {
   type GoalForecast,
 } from './quant/forward'
 export { draftMemo, cioPayload, type CioInput } from './quant/memo'
+export {
+  buildPnl,
+  dollarImpact,
+  dollarImpactFromNext,
+  rateForDomain,
+  BILLS_INTEL_ID,
+  type PersonalPnl,
+} from './quant/pnl'
 export { buildDemoLedger, demoScript } from './demo/fixture'
 export {
   CommandError,
@@ -64,4 +81,9 @@ export {
   deleteGoal,
   linkGoal,
   recordInsight,
+  openAccount,
+  setAccountBalance,
+  postMoney,
+  upsertSkill,
+  recordIntel,
 } from './commands'

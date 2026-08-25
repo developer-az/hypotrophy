@@ -8,20 +8,20 @@ test.setTimeout(60_000)
 
 test('capture product surfaces', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('heading', { name: /attention is capital/i }).waitFor()
+  await page.getByRole('heading', { name: /start with what you have/i }).waitFor()
   await page.screenshot({ path: `${out}/01-welcome.png`, fullPage: true })
 
   await page.getByRole('button', { name: /load a demo week/i }).click()
   await page.getByText('Demo week loaded').waitFor()
-  await page.locator('.kicker', { hasText: 'The stake' }).waitFor()
+  await page.getByRole('heading', { name: /your money, skills, and next hour/i }).waitFor()
   await page.screenshot({ path: `${out}/02-today.png`, fullPage: true })
 
-  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Map' }).click()
-  await page.getByRole('heading', { name: /critical path/i }).waitFor()
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Money' }).click()
+  await page.getByRole('heading', { name: /cash, debt/i }).waitFor()
   await page.screenshot({ path: `${out}/03-map.png`, fullPage: true })
 
-  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Book' }).click()
-  await page.getByRole('heading', { name: /where capital should go/i }).waitFor()
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Work' }).click()
+  await page.getByRole('heading', { name: /ranked, feasible work/i }).waitFor()
   await page.screenshot({ path: `${out}/04-capital.png`, fullPage: true })
 
   await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Proof' }).click()

@@ -99,12 +99,21 @@ describe('forward book', () => {
 })
 
 describe('CIO memo', () => {
-  it('quotes the eligible fill and does not invent a next when the book is empty', () => {
+  it('does not invent a next when the book is empty', () => {
     const empty: Goal[] = []
     const plan = allocate(empty, 1, 1)
-    const book = priceBook(empty, { nodes: {}, order: [], cycles: [], criticalPath: [], criticalPathMinutes: 0 })
     const forward = forecast(empty, 1, 1, { paths: 4 })
-    expect(draftMemo({ plan, book, forward })).toMatch(/no eligible fill/i)
+    const pnl = {
+      netWorthCents: 0,
+      cashCents: 0,
+      liabilityCents: 0,
+      burnCentsPerMonth: 0,
+      blendedRateCentsPerHour: 0,
+      claimedCents: 0,
+      expectedProfit90dCents: 0,
+      expectedHours90: 0,
+    }
+    expect(draftMemo({ plan, pnl, forward, impactCents: 0 })).toMatch(/nothing is ready/i)
   })
 })
 

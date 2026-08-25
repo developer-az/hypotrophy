@@ -1,0 +1,147 @@
+import { describe, expect, it } from 'vitest'
+import { fold } from '../domain/reducer'
+import {
+  createGoal,
+  genesis,
+  openAccount,
+  postMoney,
+  recordIntel,
+  setAccountBalance,
+  upsertSkill,
+} from '../commands'
+import { allocate } from '../quant/allocator'
+import { forecast } from '../quant/forward'
+import { BILLS_INTEL_ID, buildPnl, dollarImpact } from '../quant/pnl'
+import type { Goal } from '../domain/types'
+
+describe('money ledger', () => {
+  it('nets cash minus credit and applies income and expense', async () => {
+    const ts = 1_700_000_000_000
+    let chain = [await genesis([], ts)]
+    chain = [...chain, await openAccount(chain, { id: 'cash', name: 'Checking', kind: 'cash' }, ts + 1)]
+    chain = [...chain, await setAccountBalance(chain, 'cash', 1_000_000, ts + 2)]
+    chain = [...chain, await openAccount(chain, { id: 'card', name: 'Card', kind: 'credit' }, ts + 3)]
+    chain = [...chain, await setAccountBalance(chain, 'card', 200_000, ts + 4)]
+    chain = [
+      ...chain,
+      await postMoney(chain, { id: 'pay', accountId: 'cash', cents: 50_000, kind: 'income', memo: 'paycheck' }, ts + 5),
+    ]
+    chain = [
+      ...chain,
+      await postMoney(chain, { id: 'rent', accountId: 'cash', cents: 10_000, kind: 'expense', memo: 'lunch' }, ts + 6),
+    ]
+    const p = fold(chain)
+    expect(p.accounts.cash.cents).toBe(1_040_000)
+    expect(p.accounts.card.cents).toBe(200_000)
+    const pnl = buildPnl(p, forecast([], ts + 6, 1, { paths: 4 }), ts + 6)
+    expect(pnl.netWorthCents).toBe(1_040_000 - 200_000)
+    expect(pnl.cashCents).toBe(1_040_000)
+    expect(pnl.liabilityCents).toBe(200_000)
+  })
+
+  it('uses onboarded monthly bills for burn', async () => {
+    const ts = 1_700_000_000_000
+    let chain = [await genesis([], ts)]
+    chain = [
+      ...chain,
+      await recordIntel(chain, { id: BILLS_INTEL_ID, title: 'Monthly bills', cents: 320_000 }, ts + 1),
+    ]
+    const pnl = buildPnl(fold(chain), forecast([], ts, 1, { paths: 4 }), ts)
+    expect(pnl.burnCentsPerMonth).toBe(320_000)
+  })
+})
+
+describe('90d expected profit uses p90', () => {
+  it('scales a claimed stake by forecast probability', async () => {
+    const ts = 1_700_000_000_000
+    let chain = [await genesis([], ts)]
+    chain = [
+      ...chain,
+      await createGoal(
+        chain,
+        {
+          id: 'job',
+          title: 'Close the offer',
+          domain: 'career',
+          priority: 'high',
+          estimatedMinutes: 60,
+          stakeCents: 100_000,
+        },
+        ts + 1
+      ),
+    ]
+    const projection = fold(chain)
+    const goals = Object.values(projection.goals)
+    const forward = forecast(goals, ts + 1, 7, { paths: 8, capacityMinutesPerDay: 180 })
+    const pnl = buildPnl(projection, forward, ts + 1)
+    const p90 = forward.goals.find((g) => g.goalId === 'job')?.p90 ?? 0
+    expect(pnl.claimedCents).toBe(100_000)
+    expect(pnl.expectedProfit90dCents).toBe(Math.round(100_000 * p90))
+  })
+})
+
+describe('dollar impact and allocator', () => {
+  it('prices hours at the skill rate plus the claim', () => {
+    const goal: Goal = {
+      id: 'g',
+      title: 'Billable hour',
+      domain: 'career',
+      priority: 'high',
+      dependsOn: [],
+      estimatedMinutes: 60,
+      stakeCents: 5000,
+      createdAt: 0,
+      status: 'open',
+    }
+    expect(dollarImpact(goal, [{ id: 's', name: 'Dev', domain: 'career', rateCentsPerHour: 15000, updatedAt: 0 }])).toBe(
+      20000
+    )
+  })
+
+  it('still never recommends a blocked goal as next', () => {
+    const goals: Goal[] = [
+      {
+        id: 'root',
+        title: 'Root',
+        domain: 'career',
+        priority: 'low',
+        dependsOn: [],
+        estimatedMinutes: 30,
+        createdAt: 0,
+        status: 'open',
+      },
+      {
+        id: 'child',
+        title: 'Child',
+        domain: 'career',
+        priority: 'high',
+        dependsOn: ['root'],
+        estimatedMinutes: 30,
+        stakeCents: 9_000_000,
+        createdAt: 1,
+        status: 'open',
+      },
+    ]
+    const plan = allocate(goals, 50, 1, [
+      { id: 's', name: 'Dev', domain: 'career', rateCentsPerHour: 20000, updatedAt: 0 },
+    ])
+    expect(plan.next?.goalId).toBe('root')
+    expect(plan.ranked.find((r) => r.goalId === 'child')?.blocked).toBe(true)
+  })
+})
+
+describe('skills', () => {
+  it('upserts a rate and lets intel reprice it', async () => {
+    const ts = 1_700_000_000_000
+    let chain = [await genesis([], ts)]
+    chain = [
+      ...chain,
+      await upsertSkill(chain, { id: 'dev', name: 'TypeScript', domain: 'career', rateCentsPerHour: 8000 }, ts + 1),
+    ]
+    chain = [
+      ...chain,
+      await recordIntel(chain, { id: 'offer', title: 'New rate', cents: 12000, skillId: 'dev' }, ts + 2),
+    ]
+    expect(fold(chain).skills.dev.rateCentsPerHour).toBe(12000)
+  })
+})

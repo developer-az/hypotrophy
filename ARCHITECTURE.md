@@ -7,7 +7,7 @@ src/engine/
   crypto/     bytes, canonical JSON, SHA-256, chain, merkle, identity, receipt
   domain/     types, reducer, stats, migrate
   graph/      DAG: cycles, Kahn, longest path
-  quant/      bandit, kelly, survival, allocator, wealth (ħ), forward book, CIO memo
+  quant/      bandit, kelly, survival, allocator, wealth, forward, pnl, memo
   demo/       deterministic six-week fixture
   commands.ts write-side validation
   index.ts    public API
@@ -22,7 +22,7 @@ src/app/verify/           public verifier UI
 ChainEntry {
   seq: integer
   ts: unix ms (integer)
-  type: ledger.genesis | goal.* | insight.recorded
+  type: ledger.genesis | goal.* | insight.recorded | account.* | money.posted | skill.upserted | intel.recorded
   payload: canonical object
   prevHash: hex
   hash: hex = SHA-256(canonicalize({ seq, ts, type, payload, prevHash }))

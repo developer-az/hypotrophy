@@ -68,8 +68,8 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
     <form onSubmit={submit} className="panel p-6">
       <div className="mb-5 flex items-end justify-between gap-4">
         <div>
-          <div className="kicker">Open a position</div>
-          <h2 className="font-display text-2xl text-[var(--paper)]">New claim</h2>
+          <div className="kicker">Add work</div>
+          <h2 className="font-display text-2xl text-[var(--paper)]">New work</h2>
         </div>
         <div className="flex gap-2">
           <span className="chip">{DOMAIN_META[previewDomain].label}</span>
@@ -80,7 +80,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Close the Series A intro. Claim is the raise, not the coffee."
+        placeholder="Ship the paid audit. Claim is the invoice, not the hours."
         className="field min-h-[108px] resize-none"
         disabled={busy}
       />
@@ -152,7 +152,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       </div>
 
       <button type="submit" disabled={!input.trim() || busy} className="btn-gold mt-5 w-full">
-        {busy ? 'Writing…' : 'Book the position'}
+        {busy ? 'Saving…' : 'Add work'}
       </button>
     </form>
   )

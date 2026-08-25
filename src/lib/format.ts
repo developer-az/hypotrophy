@@ -70,8 +70,14 @@ export function formatHbar(n: number): string {
 }
 
 export function formatUsd(cents: number): string {
-  if (cents <= 0) return '—'
-  return `$${(cents / 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}`
+  if (cents === 0) return '$0'
+  const sign = cents < 0 ? '-' : ''
+  return `${sign}$${Math.abs(cents / 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}`
+}
+
+export function formatUsdRate(centsPerHour: number): string {
+  if (centsPerHour <= 0) return '—'
+  return `${formatUsd(centsPerHour)}/hr`
 }
 
 export function formatPct(p: number): string {

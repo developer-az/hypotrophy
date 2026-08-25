@@ -4,44 +4,44 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import type { HypotrophyEngine, ViewId } from '@/hooks/useEngine'
 import { BiscuitMark } from '../BiscuitMark'
-import { formatHbar, formatPct, shortHash } from '@/lib/format'
+import { formatUsd, shortHash } from '@/lib/format'
 import { hasOnboarded, markOnboarded } from '@/lib/storage'
 import { useToast } from '../Toast'
-import FloorView from './FloorView'
-import GraphView from './GraphView'
-import BookView from './BookView'
+import HomeView from './HomeView'
+import MoneyView from './MoneyView'
+import SkillsView from './SkillsView'
+import WorkView from './WorkView'
 import ProofView from './ProofView'
-import CioView from './CioView'
 import Welcome from './Welcome'
 
 const NAV: { id: ViewId; label: string }[] = [
-  { id: 'floor', label: 'Floor' },
-  { id: 'book', label: 'Book' },
-  { id: 'map', label: 'Map' },
+  { id: 'home', label: 'Home' },
+  { id: 'money', label: 'Money' },
+  { id: 'skills', label: 'Skills' },
+  { id: 'work', label: 'Work' },
   { id: 'proof', label: 'Proof' },
-  { id: 'cio', label: 'CIO' },
 ]
 
 export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
   const toast = useToast()
   const fileRef = useRef<HTMLInputElement>(null)
-  const [view, setView] = useState<ViewId>('floor')
+  const [view, setView] = useState<ViewId>('home')
   const [welcome, setWelcome] = useState<boolean | null>(null)
 
   useEffect(() => {
-    setWelcome(!hasOnboarded() && engine.goals.length === 0)
-  }, [engine.goals.length])
+    setWelcome(!hasOnboarded() && engine.goals.length === 0 && engine.accounts.length === 0)
+  }, [engine.goals.length, engine.accounts.length])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return
       const map: Record<string, ViewId> = {
-        '1': 'floor',
-        '2': 'book',
-        '3': 'map',
-        '4': 'proof',
-        '5': 'cio',
+        '1': 'home',
+        '2': 'money',
+        '3': 'skills',
+        '4': 'work',
+        '5': 'proof',
       }
       const next = map[e.key]
       if (next) setView(next)
@@ -50,17 +50,24 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const startEmpty = () => {
+  const startEmpty = async (input: {
+    cashCents: number
+    billsCents: number
+    rateCentsPerHour: number
+    goalTitle?: string
+  }) => {
+    await engine.onboard(input)
     markOnboarded()
     setWelcome(false)
-    setView('floor')
+    setView('home')
+    toast('Book opened')
   }
 
   const startDemo = async () => {
     markOnboarded()
     await engine.loadDemo()
     setWelcome(false)
-    setView('floor')
+    setView('home')
     toast('Demo week loaded')
   }
 
@@ -76,20 +83,17 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
   }
 
   const verified = engine.integrity.ok
-  const nextP = engine.plan.next
-    ? engine.forward.goals.find((g) => g.goalId === engine.plan.next?.goalId)?.p7
-    : 0
 
   return (
     <div className="min-h-screen app-pad">
       <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--ink)]/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <Link href="/" className="flex items-center gap-3" onClick={() => setView('floor')}>
+          <Link href="/" className="flex items-center gap-3" onClick={() => setView('home')}>
             <BiscuitMark size={36} />
             <div>
               <div className="font-display text-xl leading-none text-[var(--paper)]">Hypotrophy</div>
               <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--mute)]">
-                Single-life fund
+                Money · skills · work
               </div>
             </div>
           </Link>
@@ -113,18 +117,14 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
             <Link href="/studio" className="btn-quiet hidden sm:inline-flex">
               Studio
             </Link>
-            <button type="button" className="btn-quiet" onClick={() => setView('cio')}>
-              CIO
-            </button>
           </div>
         </div>
         {!welcome && (
           <div className="tape">
-            <span>NAV {formatHbar(engine.book.navHbar)}</span>
-            <span>30d mark {formatHbar(engine.book.realizedHbar + engine.forward.expectedHbar.d30)}</span>
-            <span>next 7d {formatPct(nextP ?? 0)}</span>
-            <span>path {engine.plan.criticalPathMinutes}m</span>
-            <span className="hidden sm:inline">{engine.forward.paths} fwd paths</span>
+            <span>Net worth {formatUsd(engine.pnl.netWorthCents)}</span>
+            <span>Bills {formatUsd(engine.pnl.burnCentsPerMonth)}/mo</span>
+            <span>Rate {formatUsd(engine.pnl.blendedRateCentsPerHour)}/hr</span>
+            <span>90d {formatUsd(engine.pnl.expectedProfit90dCents)}</span>
           </div>
         )}
       </header>
@@ -140,23 +140,25 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
         )}
         {welcome === null ? (
           <div className="py-24 text-center">
-            <div className="kicker">opening the book</div>
+            <div className="kicker">opening</div>
           </div>
         ) : welcome ? (
           <Welcome onStart={startEmpty} onDemo={startDemo} />
         ) : (
           <>
-            {view === 'floor' && <FloorView engine={engine} />}
-            {view === 'book' && <BookView engine={engine} />}
-            {view === 'map' && <GraphView engine={engine} />}
+            {view === 'home' && (
+              <HomeView engine={engine} onWork={() => setView('work')} onMoney={() => setView('money')} />
+            )}
+            {view === 'money' && <MoneyView engine={engine} />}
+            {view === 'skills' && <SkillsView engine={engine} />}
+            {view === 'work' && <WorkView engine={engine} />}
             {view === 'proof' && <ProofView engine={engine} />}
-            {view === 'cio' && <CioView engine={engine} />}
           </>
         )}
       </main>
 
       <footer className="mx-auto hidden max-w-7xl flex-wrap items-center justify-center gap-3 px-4 pb-8 pt-2 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--mute)] md:flex">
-        <span>Local-first · not a public chain · not a market forecast</span>
+        <span>Local-first · not a bank feed · not a market forecast</span>
         <button type="button" className="underline" onClick={() => engine.exportLedger()}>
           Export
         </button>
@@ -167,16 +169,16 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
           type="button"
           className="underline"
           onClick={() => {
-            if (window.confirm('Reset this device book? The chain is local — this cannot be undone.')) {
+            if (window.confirm('Reset this device book? This cannot be undone.')) {
               engine.reset()
               setWelcome(true)
-              toast('Book reset')
+              toast('Reset')
             }
           }}
         >
           Reset
         </button>
-        <span className="hidden lg:inline">Keys 1–5 switch desks</span>
+        <span className="hidden lg:inline">Keys 1–5 switch pages</span>
       </footer>
 
       <nav className="dock" aria-label="Mobile">

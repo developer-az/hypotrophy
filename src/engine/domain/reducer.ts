@@ -1,5 +1,15 @@
 import type { ChainEntry } from '../crypto/chain'
-import { emptyProjection, isDomain, isPriority, type Goal, type Projection } from './types'
+import {
+  emptyProjection,
+  isAccountKind,
+  isDomain,
+  isMoneyKind,
+  isPriority,
+  type Account,
+  type Goal,
+  type Projection,
+  type Skill,
+} from './types'
 
 /**
  * Pure reducer. Given the same event log, every client reconstructs the same
@@ -23,6 +33,10 @@ export function apply(state: Projection, entry: ChainEntry): Projection {
     ...state,
     goals: { ...state.goals },
     insights: state.insights.slice(),
+    accounts: { ...state.accounts },
+    skills: { ...state.skills },
+    money: state.money.slice(),
+    intel: state.intel.slice(),
     lastEventAt: entry.ts,
   }
 
@@ -43,6 +57,16 @@ export function apply(state: Projection, entry: ChainEntry): Projection {
       return applyLinked(next, entry)
     case 'insight.recorded':
       return applyInsight(next, entry)
+    case 'account.opened':
+      return applyAccountOpened(next, entry)
+    case 'account.balanced':
+      return applyAccountBalanced(next, entry)
+    case 'money.posted':
+      return applyMoneyPosted(next, entry)
+    case 'skill.upserted':
+      return applySkill(next, entry)
+    case 'intel.recorded':
+      return applyIntel(next, entry)
     default:
       return state
   }
@@ -153,6 +177,111 @@ function applyInsight(state: Projection, entry: ChainEntry): Projection {
     relevantGoalIds: strArray(p.relevantGoalIds),
   })
   if (state.insights.length > 50) state.insights.length = 50
+  return state
+}
+
+function applyAccountOpened(state: Projection, entry: ChainEntry): Projection {
+  const p = entry.payload as Record<string, unknown>
+  const id = str(p.id)
+  const name = str(p.name).slice(0, 80)
+  const kind = str(p.kind)
+  if (!id || !name || state.accounts[id] || !isAccountKind(kind)) return state
+  const account: Account = {
+    id,
+    name,
+    kind,
+    cents: 0,
+    openedAt: entry.ts,
+    updatedAt: entry.ts,
+  }
+  state.accounts[id] = account
+  return state
+}
+
+function applyAccountBalanced(state: Projection, entry: ChainEntry): Projection {
+  const p = entry.payload as Record<string, unknown>
+  const id = str(p.id)
+  const account = id ? state.accounts[id] : undefined
+  if (!account) return state
+  const cents = int(p.cents, Number.NaN)
+  if (!Number.isInteger(cents) || Math.abs(cents) > 500_000_000) return state
+  state.accounts[id] = { ...account, cents, updatedAt: entry.ts }
+  return state
+}
+
+function applyMoneyPosted(state: Projection, entry: ChainEntry): Projection {
+  const p = entry.payload as Record<string, unknown>
+  const id = str(p.id)
+  const accountId = str(p.accountId)
+  const kind = str(p.kind)
+  const account = accountId ? state.accounts[accountId] : undefined
+  if (!id || !account || !isMoneyKind(kind)) return state
+  if (state.money.some((m) => m.id === id)) return state
+  const cents = int(p.cents, -1)
+  if (cents <= 0 || cents > 500_000_000) return state
+  const delta = kind === 'income' ? cents : -cents
+  state.accounts[accountId] = {
+    ...account,
+    cents: account.cents + delta,
+    updatedAt: entry.ts,
+  }
+  state.money.unshift({
+    id,
+    accountId,
+    cents,
+    kind,
+    memo: optStr(p.memo)?.slice(0, 200),
+    postedAt: entry.ts,
+  })
+  if (state.money.length > 200) state.money.length = 200
+  return state
+}
+
+function applySkill(state: Projection, entry: ChainEntry): Projection {
+  const p = entry.payload as Record<string, unknown>
+  const id = str(p.id)
+  const name = str(p.name).slice(0, 80)
+  const domain = str(p.domain)
+  if (!id || !name || !isDomain(domain)) return state
+  const rate = int(p.rateCentsPerHour, -1)
+  if (rate < 0 || rate > 500_000) return state
+  const skill: Skill = {
+    id,
+    name,
+    domain,
+    rateCentsPerHour: rate,
+    updatedAt: entry.ts,
+  }
+  state.skills[id] = skill
+  return state
+}
+
+function applyIntel(state: Projection, entry: ChainEntry): Projection {
+  const p = entry.payload as Record<string, unknown>
+  const id = str(p.id)
+  const title = str(p.title).slice(0, 120)
+  if (!id || !title) return state
+  const centsRaw = p.cents
+  const cents =
+    typeof centsRaw === 'number' && Number.isInteger(centsRaw) && centsRaw >= 0 && centsRaw <= 500_000_000
+      ? centsRaw
+      : undefined
+  const skillId = optStr(p.skillId)
+  if (skillId && state.skills[skillId] && cents != null) {
+    state.skills[skillId] = { ...state.skills[skillId], rateCentsPerHour: cents, updatedAt: entry.ts }
+  }
+  const existing = state.intel.findIndex((i) => i.id === id)
+  const item = {
+    id,
+    title,
+    cents,
+    skillId,
+    note: optStr(p.note)?.slice(0, 2000),
+    createdAt: entry.ts,
+  }
+  if (existing >= 0) state.intel[existing] = item
+  else state.intel.unshift(item)
+  if (state.intel.length > 50) state.intel.length = 50
   return state
 }
 

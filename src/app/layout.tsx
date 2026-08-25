@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     template: '%s · Hypotrophy',
   },
   description:
-    'Single-life fund. Ranked fills, forward book of P(done), hash-chained history, signed receipts. Not a to-do list.',
+    'Cash, skills, and ranked work on one local ledger. Net worth you typed. Next hour priced in dollars.',
   applicationName: 'Hypotrophy',
   keywords: ['personal growth', 'event sourcing', 'merkle', 'local-first', 'productivity'],
 }

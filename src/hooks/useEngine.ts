@@ -4,28 +4,37 @@ import {
   allocate,
   buildDemoLedger,
   buildGraph,
+  buildPnl,
+  BILLS_INTEL_ID,
+  cioPayload,
   completeGoal,
   createGoal,
   deleteGoal,
+  dollarImpactFromNext,
+  draftMemo,
   fold,
+  forecast,
   generateIdentity,
   genesis,
   issueReceipt,
   linkGoal,
   migrateLegacyTasks,
+  openAccount,
+  postMoney,
   recordInsight,
+  recordIntel,
+  setAccountBalance,
+  upsertSkill,
   verifyChain,
+  type AccountKind,
   type ChainEntry,
   type ChainVerifyResult,
   type Domain,
   type GrowthReceipt,
   type Identity,
   type LegacyTask,
+  type MoneyKind,
   type Priority,
-  priceBook,
-  forecast,
-  draftMemo,
-  cioPayload,
 } from '@/engine'
 import {
   loadChain,
@@ -38,7 +47,7 @@ import {
   wipeEngineStorage,
 } from '@/lib/storage'
 
-export type ViewId = 'floor' | 'book' | 'map' | 'proof' | 'cio'
+export type ViewId = 'home' | 'money' | 'skills' | 'work' | 'proof'
 
 export function useEngine() {
   const [chain, setChain] = useState<ChainEntry[]>([])
@@ -91,18 +100,30 @@ export function useEngine() {
 
   const projection = useMemo(() => fold(chain), [chain])
   const goals = useMemo(() => Object.values(projection.goals), [projection])
+  const skills = useMemo(() => Object.values(projection.skills), [projection])
+  const accounts = useMemo(() => Object.values(projection.accounts), [projection])
   const graph = useMemo(() => buildGraph(goals), [goals])
   const plan = useMemo(
-    () => allocate(goals, now, chain[0]?.ts ?? 1),
-    [goals, now, chain]
+    () => allocate(goals, now, chain[0]?.ts ?? 1, skills),
+    [goals, now, chain, skills]
   )
-  const book = useMemo(() => priceBook(goals, graph), [goals, graph])
   const forward = useMemo(
     () => forecast(goals, now, chain[0]?.ts ?? 1),
     [goals, now, chain]
   )
-  const memo = useMemo(() => draftMemo({ plan, book, forward }), [plan, book, forward])
-  const briefing = useMemo(() => cioPayload({ plan, book, forward }), [plan, book, forward])
+  const pnl = useMemo(() => buildPnl(projection, forward, now), [projection, forward, now])
+  const impactCents = useMemo(
+    () => dollarImpactFromNext(plan.next, goals, skills),
+    [plan.next, goals, skills]
+  )
+  const memo = useMemo(
+    () => draftMemo({ plan, pnl, forward, impactCents }),
+    [plan, pnl, forward, impactCents]
+  )
+  const briefing = useMemo(
+    () => cioPayload({ plan, pnl, forward, impactCents }),
+    [plan, pnl, forward, impactCents]
+  )
   const [integrity, setIntegrity] = useState<ChainVerifyResult>({
     ok: true,
     head: '',
@@ -119,15 +140,22 @@ export function useEngine() {
     }
   }, [chain])
 
+  const commit = useCallback(
+    (next: ChainEntry[]) => {
+      persist(next)
+      setNow(Date.now())
+    },
+    [persist]
+  )
+
   const append = useCallback(
     async (factory: (current: ChainEntry[]) => Promise<ChainEntry>) => {
       setError(null)
       const entry = await factory(chain)
-      persist([...chain, entry])
-      setNow(Date.now())
+      commit([...chain, entry])
       return entry
     },
-    [chain, persist]
+    [chain, commit]
   )
 
   const create = useCallback(
@@ -163,6 +191,100 @@ export function useEngine() {
       relevantGoalIds: string[]
     }) => append((c) => recordInsight(c, input, Date.now())),
     [append]
+  )
+
+  const addAccount = useCallback(
+    async (input: { name: string; kind: AccountKind; cents?: number }) => {
+      setError(null)
+      let c = chain
+      const opened = await openAccount(c, { name: input.name, kind: input.kind }, Date.now())
+      c = [...c, opened]
+      const id = (opened.payload as { id: string }).id
+      if (input.cents != null && Number.isInteger(input.cents)) {
+        c = [...c, await setAccountBalance(c, id, input.cents, Date.now() + 1)]
+      }
+      commit(c)
+      return id
+    },
+    [chain, commit]
+  )
+
+  const balanceAccount = useCallback(
+    (id: string, cents: number) => append((c) => setAccountBalance(c, id, cents, Date.now())),
+    [append]
+  )
+
+  const logMoney = useCallback(
+    (input: { accountId: string; cents: number; kind: MoneyKind; memo?: string }) =>
+      append((c) => postMoney(c, input, Date.now())),
+    [append]
+  )
+
+  const saveSkill = useCallback(
+    (input: { id?: string; name: string; domain: Domain; rateCentsPerHour: number }) =>
+      append((c) => upsertSkill(c, input, Date.now())),
+    [append]
+  )
+
+  const saveIntel = useCallback(
+    (input: { id?: string; title: string; cents?: number; skillId?: string; note?: string }) =>
+      append((c) => recordIntel(c, input, Date.now())),
+    [append]
+  )
+
+  const onboard = useCallback(
+    async (input: {
+      cashCents: number
+      billsCents: number
+      rateCentsPerHour: number
+      goalTitle?: string
+    }) => {
+      setError(null)
+      let c = chain.length ? chain : [await genesis([], Date.now())]
+      const t = Date.now()
+      c = [...c, await openAccount(c, { id: 'acct-cash', name: 'Cash', kind: 'cash' }, t)]
+      c = [...c, await setAccountBalance(c, 'acct-cash', input.cashCents, t + 1)]
+      c = [
+        ...c,
+        await upsertSkill(
+          c,
+          {
+            id: 'skill-core',
+            name: 'Your rate',
+            domain: 'career',
+            rateCentsPerHour: input.rateCentsPerHour,
+          },
+          t + 2
+        ),
+      ]
+      c = [
+        ...c,
+        await recordIntel(
+          c,
+          { id: BILLS_INTEL_ID, title: 'Monthly bills', cents: input.billsCents },
+          t + 3
+        ),
+      ]
+      const goal = input.goalTitle?.trim()
+      if (goal && goal.length >= 2) {
+        c = [
+          ...c,
+          await createGoal(
+            c,
+            {
+              title: goal.slice(0, 200),
+              domain: 'finance',
+              priority: 'high',
+              estimatedMinutes: 60,
+              stakeCents: Math.min(input.cashCents, 50_000_000),
+            },
+            t + 4
+          ),
+        ]
+      }
+      commit(c)
+    },
+    [chain, commit]
   )
 
   const loadDemo = useCallback(async () => {
@@ -235,10 +357,13 @@ export function useEngine() {
     chain,
     projection,
     goals,
+    skills,
+    accounts,
     graph,
     plan,
-    book,
     forward,
+    pnl,
+    impactCents,
     memo,
     briefing,
     integrity,
@@ -253,6 +378,12 @@ export function useEngine() {
     remove,
     link,
     note,
+    addAccount,
+    balanceAccount,
+    logMoney,
+    saveSkill,
+    saveIntel,
+    onboard,
     loadDemo,
     reset,
     issue,

@@ -24,17 +24,17 @@ npm test
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000), hit **Load a demo week**, then walk:
+Open [http://localhost:3000](http://localhost:3000). Enter cash, bills, and your hourly rate — or hit **Load a demo week** — then walk:
 
 | Surface | What you are looking at |
 |---|---|
-| **Floor** | The only legal fill — unblocked, priced in ħ, with P(done in 7/30d) |
-| **Book** | Half-Kelly rose, Kaplan–Meier, forward book past the snapshot |
-| **Map** | Goal DAG, critical path, ħ on each node |
+| **Home** | Net worth, bills, skill rate, 90-day expected profit, and **Do this now** |
+| **Money** | Accounts, paycheck/spend, snapshots |
+| **Skills** | Rate card. You bump a rate when you have a real offer |
+| **Work** | Ranked feasible work. Map is behind a disclosure |
 | **Proof** | Signed Merkle receipt. Tamper a payload and verification fails |
-| **CIO** | Deterministic allocation memo; Gemini may rewrite tone, not probabilities |
 | **/verify** | Public verifier — paste a receipt JSON, no account |
-| **/studio** | The paid contract (receipt pack + continuity) |
+| **/studio** | Weekly net-worth + receipt pack (billing unwired) |
 
 ## Architecture
 
