@@ -1,0 +1,33 @@
+name: Preview
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  shots:
+    name: screenshots
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx --yes @playwright/test@1.49.1 install --with-deps chromium
+      - name: Capture surfaces
+        run: |
+          npx next start --hostname 127.0.0.1 --port 3000 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:3000 >/dev/null && break
+            sleep 1
+          done
+          npx --yes @playwright/test@1.49.1 test --config=scripts/playwright.config.ts
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: preview-screenshots
+          path: preview/*.png
+          if-no-files-found: warn

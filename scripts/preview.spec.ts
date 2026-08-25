@@ -1,0 +1,37 @@
+import { test } from '@playwright/test'
+import { mkdirSync } from 'node:fs'
+
+const out = 'preview'
+mkdirSync(out, { recursive: true })
+
+test.setTimeout(60_000)
+
+test('capture product surfaces', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('heading', { name: /attention is capital/i }).waitFor()
+  await page.screenshot({ path: `${out}/01-welcome.png`, fullPage: true })
+
+  await page.getByRole('button', { name: /load a demo week/i }).click()
+  await page.getByRole('heading', { name: /do this next/i }).waitFor()
+  await page.screenshot({ path: `${out}/02-today.png`, fullPage: true })
+
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Map' }).click()
+  await page.getByRole('heading', { name: /critical path/i }).waitFor()
+  await page.screenshot({ path: `${out}/03-map.png`, fullPage: true })
+
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Capital' }).click()
+  await page.getByRole('heading', { name: /where capital should go/i }).waitFor()
+  await page.screenshot({ path: `${out}/04-capital.png`, fullPage: true })
+
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Proof' }).click()
+  await page.getByRole('heading', { name: /receipts and chain/i }).waitFor()
+  await page.screenshot({ path: `${out}/05-proof.png`, fullPage: true })
+
+  await page.goto('/studio')
+  await page.getByRole('heading', { name: 'Studio' }).waitFor()
+  await page.screenshot({ path: `${out}/06-studio.png`, fullPage: true })
+
+  await page.goto('/verify')
+  await page.getByRole('heading', { name: /verify a receipt/i }).waitFor()
+  await page.screenshot({ path: `${out}/07-verify.png`, fullPage: true })
+})

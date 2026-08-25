@@ -10,6 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "preview": "next build && next start",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
