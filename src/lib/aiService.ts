@@ -1,5 +1,8 @@
 import { Task, AIInsight } from '@/types'
 import type { Goal } from '@/engine'
+import { cioPayload } from '@/engine'
+
+type Briefing = ReturnType<typeof cioPayload>
 
 function goalsToTasks(goals: Goal[]): Task[] {
   return goals.map((g) => ({
@@ -65,6 +68,28 @@ export class AIService {
         content: `You've closed ${done} positions and still hold ${open} open. The interesting question isn't volume — it's whether the open set sits on the critical path.`,
         createdAt: new Date(),
         relevantTasks: goals.slice(0, 3).map((g) => g.id),
+      }
+    }
+  }
+
+  async generateCioMemo(briefing: Briefing, fallback: string): Promise<AIInsight> {
+    try {
+      const response = await fetch('/api/ai/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'cio', briefing }),
+      })
+      if (!response.ok) throw new Error(`API request failed: ${response.status}`)
+      const insight = await response.json()
+      return { ...insight, createdAt: new Date(insight.createdAt) }
+    } catch {
+      return {
+        id: crypto.randomUUID(),
+        type: 'memo',
+        title: 'CIO memo',
+        content: fallback,
+        createdAt: new Date(),
+        relevantTasks: briefing.next ? [] : [],
       }
     }
   }

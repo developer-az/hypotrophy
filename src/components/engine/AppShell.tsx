@@ -4,32 +4,28 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import type { HypotrophyEngine, ViewId } from '@/hooks/useEngine'
 import { BiscuitMark } from '../BiscuitMark'
-import { shortHash } from '@/lib/format'
+import { formatHbar, formatPct, shortHash } from '@/lib/format'
 import { hasOnboarded, markOnboarded } from '@/lib/storage'
 import { useToast } from '../Toast'
-import CommandDeck from './CommandDeck'
+import FloorView from './FloorView'
 import GraphView from './GraphView'
-import CapitalView from './CapitalView'
+import BookView from './BookView'
 import ProofView from './ProofView'
+import CioView from './CioView'
 import Welcome from './Welcome'
-import BiscuitConversation from '../BiscuitConversation'
-import AIInsights from '../AIInsights'
-import { aiService } from '@/lib/aiService'
 
 const NAV: { id: ViewId; label: string }[] = [
-  { id: 'today', label: 'Today' },
+  { id: 'floor', label: 'Floor' },
+  { id: 'book', label: 'Book' },
   { id: 'map', label: 'Map' },
-  { id: 'capital', label: 'Capital' },
   { id: 'proof', label: 'Proof' },
-  { id: 'biscuit', label: 'Biscuit' },
+  { id: 'cio', label: 'CIO' },
 ]
 
 export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
   const toast = useToast()
   const fileRef = useRef<HTMLInputElement>(null)
-  const [view, setView] = useState<ViewId>('today')
-  const [latest, setLatest] = useState('')
-  const [asking, setAsking] = useState(false)
+  const [view, setView] = useState<ViewId>('floor')
   const [welcome, setWelcome] = useState<boolean | null>(null)
 
   useEffect(() => {
@@ -41,11 +37,11 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
       const t = e.target as HTMLElement | null
       if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return
       const map: Record<string, ViewId> = {
-        '1': 'today',
-        '2': 'map',
-        '3': 'capital',
+        '1': 'floor',
+        '2': 'book',
+        '3': 'map',
         '4': 'proof',
-        '5': 'biscuit',
+        '5': 'cio',
       }
       const next = map[e.key]
       if (next) setView(next)
@@ -54,37 +50,17 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const ask = async () => {
-    if (asking) return
-    setAsking(true)
-    try {
-      const insight = await aiService.generateProgressInsight(engine.goals)
-      setLatest(insight.content)
-      await engine.note({
-        id: insight.id,
-        kind: insight.type,
-        title: insight.title,
-        content: insight.content,
-        relevantGoalIds: insight.relevantTasks ?? [],
-      })
-      setView('biscuit')
-      toast('Biscuit filed a note')
-    } finally {
-      setAsking(false)
-    }
-  }
-
   const startEmpty = () => {
     markOnboarded()
     setWelcome(false)
-    setView('today')
+    setView('floor')
   }
 
   const startDemo = async () => {
     markOnboarded()
     await engine.loadDemo()
     setWelcome(false)
-    setView('today')
+    setView('floor')
     toast('Demo week loaded')
   }
 
@@ -100,17 +76,20 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
   }
 
   const verified = engine.integrity.ok
+  const nextP = engine.plan.next
+    ? engine.forward.goals.find((g) => g.goalId === engine.plan.next?.goalId)?.p7
+    : 0
 
   return (
     <div className="min-h-screen app-pad">
-      <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--ink)]/85 backdrop-blur-xl">
+      <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-[var(--ink)]/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <Link href="/" className="flex items-center gap-3" onClick={() => setView('today')}>
+          <Link href="/" className="flex items-center gap-3" onClick={() => setView('floor')}>
             <BiscuitMark size={36} />
             <div>
               <div className="font-display text-xl leading-none text-[var(--paper)]">Hypotrophy</div>
               <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--mute)]">
-                Human capital
+                Single-life fund
               </div>
             </div>
           </Link>
@@ -129,17 +108,25 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
           </nav>
           <div className="flex flex-wrap items-center gap-2">
             <span className={`chip ${verified ? 'chip-ok' : 'chip-bad'}`}>
-              {verified ? 'verified' : 'broken'} ·{' '}
-              {shortHash(verified ? engine.integrity.head : 'err')}
+              {verified ? 'verified' : 'broken'} · {shortHash(verified ? engine.integrity.head : 'err')}
             </span>
             <Link href="/studio" className="btn-quiet hidden sm:inline-flex">
               Studio
             </Link>
-            <button type="button" className="btn-quiet" onClick={ask} disabled={asking}>
-              {asking ? '…' : 'Ask Biscuit'}
+            <button type="button" className="btn-quiet" onClick={() => setView('cio')}>
+              CIO
             </button>
           </div>
         </div>
+        {!welcome && (
+          <div className="tape">
+            <span>NAV {formatHbar(engine.book.navHbar)}</span>
+            <span>30d mark {formatHbar(engine.book.realizedHbar + engine.forward.expectedHbar.d30)}</span>
+            <span>next 7d {formatPct(nextP ?? 0)}</span>
+            <span>path {engine.plan.criticalPathMinutes}m</span>
+            <span className="hidden sm:inline">{engine.forward.paths} fwd paths</span>
+          </div>
+        )}
       </header>
 
       <main className="mx-auto max-w-7xl px-4 py-8">
@@ -153,41 +140,23 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
         )}
         {welcome === null ? (
           <div className="py-24 text-center">
-            <div className="kicker">booting</div>
+            <div className="kicker">opening the book</div>
           </div>
         ) : welcome ? (
           <Welcome onStart={startEmpty} onDemo={startDemo} />
         ) : (
           <>
-            {view === 'today' && <CommandDeck engine={engine} />}
+            {view === 'floor' && <FloorView engine={engine} />}
+            {view === 'book' && <BookView engine={engine} />}
             {view === 'map' && <GraphView engine={engine} />}
-            {view === 'capital' && <CapitalView engine={engine} />}
             {view === 'proof' && <ProofView engine={engine} />}
-            {view === 'biscuit' && (
-              <div className="grid gap-6 lg:grid-cols-2">
-                <BiscuitConversation
-                  aiResponse={latest}
-                  onResponseComplete={() => setLatest('')}
-                />
-                <AIInsights
-                  insights={engine.projection.insights.map((i) => ({
-                    id: i.id,
-                    type: i.kind,
-                    title: i.title,
-                    content: i.content,
-                    category: i.domain,
-                    createdAt: new Date(i.createdAt),
-                    relevantTasks: i.relevantGoalIds,
-                  }))}
-                />
-              </div>
-            )}
+            {view === 'cio' && <CioView engine={engine} />}
           </>
         )}
       </main>
 
       <footer className="mx-auto hidden max-w-7xl flex-wrap items-center justify-center gap-3 px-4 pb-8 pt-2 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--mute)] md:flex">
-        <span>Local-first · not a public chain</span>
+        <span>Local-first · not a public chain · not a market forecast</span>
         <button type="button" className="underline" onClick={() => engine.exportLedger()}>
           Export
         </button>

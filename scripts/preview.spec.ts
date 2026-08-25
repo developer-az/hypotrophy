@@ -13,14 +13,14 @@ test('capture product surfaces', async ({ page }) => {
 
   await page.getByRole('button', { name: /load a demo week/i }).click()
   await page.getByText('Demo week loaded').waitFor()
-  await page.locator('.kicker', { hasText: 'Do this next' }).waitFor()
+  await page.locator('.kicker', { hasText: 'The stake' }).waitFor()
   await page.screenshot({ path: `${out}/02-today.png`, fullPage: true })
 
   await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Map' }).click()
   await page.getByRole('heading', { name: /critical path/i }).waitFor()
   await page.screenshot({ path: `${out}/03-map.png`, fullPage: true })
 
-  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Capital' }).click()
+  await page.getByRole('navigation', { name: 'Primary' }).getByRole('button', { name: 'Book' }).click()
   await page.getByRole('heading', { name: /where capital should go/i }).waitFor()
   await page.screenshot({ path: `${out}/04-capital.png`, fullPage: true })
 

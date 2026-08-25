@@ -46,6 +46,14 @@ export { thompsonSelect, mulberry32, type BanditArm } from './quant/bandit'
 export { kellyPlan, type KellySlice } from './quant/kelly'
 export { kaplanMeier, medianSurvival, survivalAt, type SurvivalCurve } from './quant/survival'
 export { allocate, type AllocationPlan, type NextAction } from './quant/allocator'
+export { hbarOf, priceBook, COMPOUND_BPS, type CapitalBook, type PricedGoal } from './quant/wealth'
+export {
+  forecast,
+  DEFAULT_CAPACITY_MINUTES_PER_DAY,
+  type ForwardBook,
+  type GoalForecast,
+} from './quant/forward'
+export { draftMemo, cioPayload, type CioInput } from './quant/memo'
 export { buildDemoLedger, demoScript } from './demo/fixture'
 export {
   CommandError,

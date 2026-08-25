@@ -4,63 +4,63 @@ import { BiscuitMark } from '@/components/BiscuitMark'
 
 export const metadata: Metadata = {
   title: 'Studio — Hypotrophy',
-  description: 'Paid receipts, export packs, and sync when you outgrow a single device.',
+  description: 'Paid CIO pack, signed receipts, and a book that survives a new laptop.',
 }
 
 export default function StudioPage() {
   return (
     <div className="mx-auto min-h-screen max-w-4xl px-4 py-12">
       <Link href="/" className="kicker">
-        ← Back to the book
+        ← Back to the floor
       </Link>
       <div className="mt-6 flex items-center gap-3">
         <BiscuitMark size={44} />
         <div>
           <h1 className="font-display text-4xl text-[var(--paper)]">Studio</h1>
-          <p className="text-[var(--mute)]">The product that can actually charge.</p>
+          <p className="text-[var(--mute)]">The desk that can charge — without owning your ledger.</p>
         </div>
       </div>
 
       <p className="mt-8 max-w-2xl text-lg text-[var(--mute)]">
-        Free Hypotrophy is a local engine: next action, graph, capital weights, a chain on this
-        device. Studio is the layer people pay for — artifacts you can send, and a book that
-        survives a new laptop.
+        Free Hypotrophy is a single-life fund on this device: DAG constraint, Thompson + half-Kelly,
+        a forward book of P(fill), ħ pricing, signed receipts. Studio sells the artifacts other
+        people will pay you for — and the backup that keeps the book alive when the laptop dies.
       </p>
 
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         <Plan
-          name="Book"
+          name="Floor"
           price="Free"
           items={[
-            'Unlimited goals on this device',
-            'Allocator, map, and capital desk',
-            'Hash-chained ledger',
+            'Unlimited positions on this device',
+            'Forward book · Kelly rose · critical path',
+            'Deterministic CIO memo',
             'One receipt to try /verify',
           ]}
         />
         <Plan
           name="Studio"
-          price="$12 / month"
+          price="$29 / month"
           featured
           items={[
-            'Weekly signed receipt pack',
-            'PDF for applications — still no titles leaked',
-            'Encrypted export + restore',
-            'Multi-device sync when it ships (Neon/Turso, not a public chain)',
+            'Weekly CIO pack: memo + 7/30/90 tape, still no titles leaked',
+            'Receipt bundle for applications and boards',
+            'Encrypted export + restore phrase',
+            'Multi-device sync when it ships (Neon/Turso — not a public chain)',
           ]}
         />
       </div>
 
       <section className="panel mt-10 p-6">
-        <div className="kicker">Why this can make money</div>
-        <h2 className="mt-1 font-display text-2xl text-[var(--paper)]">ICP, not another habit app</h2>
+        <div className="kicker">Why this is a business</div>
+        <h2 className="mt-1 font-display text-2xl text-[var(--paper)]">People pay for proof and continuity</h2>
         <ul className="mt-4 space-y-2 text-[var(--mute)]">
-          <li>— People who interview, ship, or report to a board and need proof, not streaks.</li>
-          <li>— The free loop is: first goal → first close → first receipt → send /verify.</li>
-          <li>— Paid is the artifact and the backup. The engine stays local-first.</li>
-          <li>— Billing is not wired yet. This page is the contract with the user.</li>
+          <li>— ICP: people who interview, ship, raise, or report and cannot afford a fake history.</li>
+          <li>— Free loop: first claim → first fill → first receipt → a stranger verifies it.</li>
+          <li>— Paid loop: weekly pack you can send, and a book that survives a new machine.</li>
+          <li>— The allocator never leaves the device. We do not sell your titles. Billing is not wired yet — this page is the contract.</li>
         </ul>
-        <a className="btn-gold mt-6 inline-flex" href="mailto:hello@hypotrophy.app?subject=Studio%20waitlist">
+        <a className="btn-gold mt-6 inline-flex" href="mailto:hello@hypotrophy.app?subject=Studio%20desk">
           Join the waitlist
         </a>
       </section>

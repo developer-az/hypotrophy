@@ -23,7 +23,7 @@ export interface UserProgress {
 
 export interface AIInsight {
   id: string
-  type: 'suggestion' | 'analysis' | 'encouragement' | 'warning'
+  type: 'suggestion' | 'analysis' | 'encouragement' | 'warning' | 'memo'
   title: string
   content: string
   category?: string

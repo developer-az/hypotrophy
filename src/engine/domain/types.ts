@@ -27,6 +27,8 @@ export interface Goal {
   priority: Priority
   dependsOn: string[]
   estimatedMinutes: number
+  /** Optional dollar claim on this position, integer cents. Absent = unpriced. */
+  stakeCents?: number
   createdAt: number
   completedAt?: number
   abandonedAt?: number
@@ -35,7 +37,7 @@ export interface Goal {
 
 export interface Insight {
   id: string
-  kind: 'suggestion' | 'analysis' | 'encouragement' | 'warning'
+  kind: 'suggestion' | 'analysis' | 'encouragement' | 'warning' | 'memo'
   title: string
   content: string
   domain?: Domain
@@ -60,6 +62,7 @@ export interface GoalCreatedPayload {
   priority: Priority
   dependsOn: string[]
   estimatedMinutes: number
+  stakeCents?: number
 }
 
 export interface GoalIdPayload {

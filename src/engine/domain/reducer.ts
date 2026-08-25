@@ -72,6 +72,8 @@ function applyCreated(state: Projection, entry: ChainEntry): Projection {
     createdAt: entry.ts,
     status: 'open',
   }
+  const stake = int(p.stakeCents, -1)
+  if (stake >= 0 && stake <= 50_000_000) goal.stakeCents = stake
   state.goals[id] = goal
   state.createdCount += 1
   return state
@@ -136,7 +138,8 @@ function applyInsight(state: Projection, entry: ChainEntry): Projection {
     kind !== 'suggestion' &&
     kind !== 'analysis' &&
     kind !== 'encouragement' &&
-    kind !== 'warning'
+    kind !== 'warning' &&
+    kind !== 'memo'
   ) {
     return state
   }

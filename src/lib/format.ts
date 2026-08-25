@@ -63,3 +63,17 @@ export function formatDuration(ms: number | null): string {
 export function bpsPct(bps: number): string {
   return `${(bps / 100).toFixed(1)}%`
 }
+
+export function formatHbar(n: number): string {
+  if (n >= 10_000) return `${(n / 1000).toFixed(1)}k ħ`
+  return `${n.toLocaleString('en-US')} ħ`
+}
+
+export function formatUsd(cents: number): string {
+  if (cents <= 0) return '—'
+  return `$${(cents / 100).toLocaleString('en-US', { maximumFractionDigits: 0 })}`
+}
+
+export function formatPct(p: number): string {
+  return `${Math.round(p * 100)}%`
+}

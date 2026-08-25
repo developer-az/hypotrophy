@@ -15,6 +15,7 @@ interface GoalComposerProps {
     priority: Priority
     dependsOn?: string[]
     estimatedMinutes?: number
+    stakeCents?: number
   }) => Promise<unknown>
 }
 
@@ -22,6 +23,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
   const toast = useToast()
   const [input, setInput] = useState('')
   const [minutes, setMinutes] = useState(30)
+  const [stake, setStake] = useState('')
   const [dependsOn, setDependsOn] = useState('')
   const [busy, setBusy] = useState(false)
   const [overrideDomain, setOverrideDomain] = useState<Domain | ''>('')
@@ -37,6 +39,11 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
     setBusy(true)
     try {
       const { title, description } = splitTitle(input.trim())
+      const dollars = stake.trim() === '' ? undefined : Number(stake)
+      const stakeCents =
+        dollars != null && Number.isFinite(dollars) && dollars >= 0
+          ? Math.round(dollars * 100)
+          : undefined
       await onCreate({
         title,
         description,
@@ -44,9 +51,11 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
         priority: previewPriority,
         estimatedMinutes: minutes,
         dependsOn: dependsOn ? [dependsOn] : [],
+        stakeCents,
       })
       setInput('')
       setDependsOn('')
+      setStake('')
       setOverrideDomain('')
       setOverridePriority('')
       toast('On the ledger')
@@ -59,8 +68,8 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
     <form onSubmit={submit} className="panel p-6">
       <div className="mb-5 flex items-end justify-between gap-4">
         <div>
-          <div className="kicker">Add to the book</div>
-          <h2 className="font-display text-2xl text-[var(--paper)]">New goal</h2>
+          <div className="kicker">Open a position</div>
+          <h2 className="font-display text-2xl text-[var(--paper)]">New claim</h2>
         </div>
         <div className="flex gap-2">
           <span className="chip">{DOMAIN_META[previewDomain].label}</span>
@@ -71,12 +80,12 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="Ship the verifier. Make a stranger able to check it without an account."
+        placeholder="Close the Series A intro. Claim is the raise, not the coffee."
         className="field min-h-[108px] resize-none"
         disabled={busy}
       />
 
-      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-5">
         <label className="block">
           <span className="kicker mb-1 block">Domain</span>
           <select
@@ -118,6 +127,18 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
           />
         </label>
         <label className="block">
+          <span className="kicker mb-1 block">Claim $</span>
+          <input
+            type="number"
+            min={0}
+            step={1}
+            className="field"
+            placeholder="optional"
+            value={stake}
+            onChange={(e) => setStake(e.target.value)}
+          />
+        </label>
+        <label className="block">
           <span className="kicker mb-1 block">Depends on</span>
           <select className="field" value={dependsOn} onChange={(e) => setDependsOn(e.target.value)}>
             <option value="">none</option>
@@ -131,7 +152,7 @@ export default function GoalComposer({ goals, onCreate }: GoalComposerProps) {
       </div>
 
       <button type="submit" disabled={!input.trim() || busy} className="btn-gold mt-5 w-full">
-        {busy ? 'Writing…' : 'Add to ledger'}
+        {busy ? 'Writing…' : 'Book the position'}
       </button>
     </form>
   )

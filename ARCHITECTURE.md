@@ -7,7 +7,7 @@ src/engine/
   crypto/     bytes, canonical JSON, SHA-256, chain, merkle, identity, receipt
   domain/     types, reducer, stats, migrate
   graph/      DAG: cycles, Kahn, longest path
-  quant/      bandit, kelly, survival, allocator
+  quant/      bandit, kelly, survival, allocator, wealth (ħ), forward book, CIO memo
   demo/       deterministic six-week fixture
   commands.ts write-side validation
   index.ts    public API
@@ -41,8 +41,9 @@ Genesis `prevHash` is 32 zero bytes. `verifyChain` checks seq, link, and hash.
 goals → buildGraph → eligible set
      → kellyPlan (bps by domain)
      → thompsonSelect (θ by domain, seeded)
-     → score = θ · (0.35 + kelly) · criticalPathBoost · priority · age · feasible
+     → score = θ · (0.35 + kelly) · criticalPathBoost · priority · age · feasible · log(1+ħ)
      → next = max score among unblocked
+     → forecast: replay allocator on N paths with a capacity budget → P(fill by T)
 ```
 
 ## Receipt

@@ -72,6 +72,28 @@ body > * {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
 }
 
+.ticket {
+  background: linear-gradient(180deg, rgba(24, 20, 14, 0.98), rgba(11, 10, 8, 0.94));
+  border: 1px solid rgba(212, 160, 84, 0.35);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+}
+
+.tape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  border-top: 1px solid var(--line);
+  padding: 0.45rem 1.25rem 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(212, 160, 84, 0.04);
+}
+
 .kicker {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;

@@ -3,6 +3,7 @@ import { buildGraph, eligibleGoalIds } from '../graph/dag'
 import { mulberry32, thompsonSelect, type BanditArm } from './bandit'
 import { kellyPlan, type KellySlice } from './kelly'
 import { kaplanMeier, type SurvivalCurve } from './survival'
+import { hbarOf } from './wealth'
 
 export interface NextAction {
   goalId: string
@@ -14,6 +15,8 @@ export interface NextAction {
   kellyBps: number
   onCriticalPath: boolean
   blocked: boolean
+  hbar: number
+  stakeCents: number
 }
 
 export interface AllocationPlan {
@@ -61,12 +64,16 @@ export function allocate(goals: Goal[], now: number, seed = now): AllocationPlan
       const ageDays = Math.max(0, (now - goal.createdAt) / 86_400_000)
       const age = 1 + Math.min(ageDays, 21) / 42
       const feasible = eligible.has(n.id) ? 1 : 0.05
-      const score = t * (0.35 + k / 10000) * crit * pri * age * feasible
+      const hbar = hbarOf(goal, n.onCriticalPath)
+      const wealth = 1 + Math.log1p(hbar) / 8
+      const score = t * (0.35 + k / 10000) * crit * pri * age * feasible * wealth
       const reasons: string[] = []
       if (n.onCriticalPath) reasons.push('on the critical path')
       if (k >= 2000) reasons.push(`Kelly over-weights ${n.domain}`)
       if (t > 0.6) reasons.push('Thompson sample likes this domain today')
       if (goal.priority === 'high') reasons.push('high stated priority')
+      if (hbar >= 800) reasons.push(`ħ${hbar} — dense human capital`)
+      if ((goal.stakeCents ?? 0) > 0) reasons.push(`claimed $${Math.round((goal.stakeCents ?? 0) / 100)}`)
       if (n.blocked) reasons.push('blocked on unfinished prerequisites')
       if (!n.blocked && eligible.has(n.id)) reasons.push('prerequisites clear')
       return {
@@ -79,6 +86,8 @@ export function allocate(goals: Goal[], now: number, seed = now): AllocationPlan
         kellyBps: k,
         onCriticalPath: n.onCriticalPath,
         blocked: n.blocked,
+        hbar,
+        stakeCents: goal.stakeCents ?? 0,
       }
     })
     .sort((a, b) => b.score - a.score)

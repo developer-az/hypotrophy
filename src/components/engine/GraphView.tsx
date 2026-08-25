@@ -3,10 +3,12 @@
 import { useMemo } from 'react'
 import type { HypotrophyEngine } from '@/hooks/useEngine'
 import { DOMAIN_META } from '@/lib/format'
+import { hbarOf } from '@/engine'
 
 export default function GraphView({ engine }: { engine: HypotrophyEngine }) {
-  const { graph } = engine
+  const { graph, goals } = engine
   const layout = useMemo(() => layoutGraph(graph), [graph])
+  const byId = useMemo(() => Object.fromEntries(goals.map((g) => [g.id, g])), [goals])
 
   if (Object.keys(graph.nodes).length === 0) {
     return (
@@ -23,7 +25,7 @@ export default function GraphView({ engine }: { engine: HypotrophyEngine }) {
         <h2 className="font-display text-3xl text-[var(--paper)]">What is on the critical path</h2>
         <p className="mt-2 max-w-2xl text-sm text-[var(--mute)]">
           {graph.criticalPathMinutes} minutes on the longest remaining path. Gold is the bottleneck.
-          Blocked work cannot be “next.”
+          Blocked work cannot be next. ħ on a node is the human-capital price of that fill.
         </p>
       </section>
       <div className="panel overflow-x-auto p-4">
@@ -71,7 +73,8 @@ export default function GraphView({ engine }: { engine: HypotrophyEngine }) {
                 fontSize="9"
                 fontFamily="IBM Plex Mono, monospace"
               >
-                {DOMAIN_META[n.domain].label} · gen {n.generation}
+                {DOMAIN_META[n.domain].label} · ħ
+                {byId[n.id] ? hbarOf(byId[n.id], n.onCriticalPath) : 0}
                 {n.blocked ? ' · blocked' : ''}
               </text>
             </g>

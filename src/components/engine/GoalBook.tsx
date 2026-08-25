@@ -1,14 +1,15 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import type { Goal } from '@/engine'
-import { DOMAIN_META } from '@/lib/format'
+import type { Goal, PricedGoal } from '@/engine'
+import { DOMAIN_META, formatHbar, formatUsd } from '@/lib/format'
 import { useToast } from '../Toast'
 
 interface GoalBookProps {
   goals: Goal[]
   criticalPath: string[]
   blockedIds: Set<string>
+  priced?: PricedGoal[]
   onComplete: (id: string) => void | Promise<unknown>
   onAbandon: (id: string) => void | Promise<unknown>
   onDelete: (id: string) => void | Promise<unknown>
@@ -20,6 +21,7 @@ export default function GoalBook({
   goals,
   criticalPath,
   blockedIds,
+  priced = [],
   onComplete,
   onAbandon,
   onDelete,
@@ -64,6 +66,7 @@ export default function GoalBook({
         <p className="panel p-6 text-sm text-[var(--mute)]">Nothing in this filter.</p>
       )}
       {visible.map((goal) => {
+        const quote = priced.find((p) => p.goalId === goal.id)
         const blocked = blockedIds.has(goal.id)
         return (
           <article key={goal.id} className="panel p-5">
@@ -86,8 +89,11 @@ export default function GoalBook({
                 </h3>
                 {goal.description && <p className="mt-1 text-sm text-[var(--mute)]">{goal.description}</p>}
                 <p className="mt-2 font-mono text-[11px] text-[var(--mute)]">
-                  {goal.estimatedMinutes}m · {new Date(goal.createdAt).toLocaleDateString()}
+                  {goal.estimatedMinutes}m
+                  {quote ? ` · ${formatHbar(quote.hbar)}` : ''}
+                  {goal.stakeCents ? ` · ${formatUsd(goal.stakeCents)} claimed` : ''}
                   {goal.dependsOn.length > 0 ? ` · ${goal.dependsOn.length} deps` : ''}
+                  {` · ${new Date(goal.createdAt).toLocaleDateString()}`}
                 </p>
               </div>
               {goal.status === 'open' && (

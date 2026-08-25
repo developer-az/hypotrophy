@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   const type = body.type
-  if (type !== 'progress' && type !== 'task' && type !== 'suggestions') {
+  if (type !== 'progress' && type !== 'task' && type !== 'suggestions' && type !== 'cio') {
     return jsonError('invalid request type', 400)
   }
 
@@ -81,6 +81,21 @@ export async function POST(request: NextRequest) {
         category: task.category,
         createdAt: new Date().toISOString(),
         relevantTasks: [task.id],
+      })
+    }
+
+    if (type === 'cio') {
+      const briefing = body.briefing
+      const prompt = cioPrompt(briefing)
+      const text = (await model.generateContent(prompt)).response.text()
+      logger.info('ai.cio')
+      return NextResponse.json({
+        id: crypto.randomUUID(),
+        type: 'memo',
+        title: 'CIO memo',
+        content: text.trim(),
+        createdAt: new Date().toISOString(),
+        relevantTasks: [],
       })
     }
 
@@ -127,4 +142,13 @@ function biscuitSuggestPrompt(category: string, history: Task[]) {
     .slice(0, 5)
     .map((t) => t.title)
     .join('; ') || 'none'}. One line each.`
+}
+
+function cioPrompt(briefing: unknown) {
+  return `You are the CIO of a single-life fund. One LP: the person who wrote this ledger.
+
+You are given computed numbers (JSON). You MUST NOT invent probabilities, dollar returns, or market calls. You MAY interpret concentration, leaks, and the next legal fill. Four sentences: (1) where capital is compounding, (2) the expensive leak, (3) the 7-day trade, (4) the 90-day position. No wellness voice. Never say you are an AI.
+
+BOOK:
+${JSON.stringify(briefing)}`
 }

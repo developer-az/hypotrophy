@@ -22,6 +22,10 @@ import {
   type Identity,
   type LegacyTask,
   type Priority,
+  priceBook,
+  forecast,
+  draftMemo,
+  cioPayload,
 } from '@/engine'
 import {
   loadChain,
@@ -34,7 +38,7 @@ import {
   wipeEngineStorage,
 } from '@/lib/storage'
 
-export type ViewId = 'today' | 'map' | 'capital' | 'proof' | 'biscuit'
+export type ViewId = 'floor' | 'book' | 'map' | 'proof' | 'cio'
 
 export function useEngine() {
   const [chain, setChain] = useState<ChainEntry[]>([])
@@ -92,6 +96,13 @@ export function useEngine() {
     () => allocate(goals, now, chain[0]?.ts ?? 1),
     [goals, now, chain]
   )
+  const book = useMemo(() => priceBook(goals, graph), [goals, graph])
+  const forward = useMemo(
+    () => forecast(goals, now, chain[0]?.ts ?? 1),
+    [goals, now, chain]
+  )
+  const memo = useMemo(() => draftMemo({ plan, book, forward }), [plan, book, forward])
+  const briefing = useMemo(() => cioPayload({ plan, book, forward }), [plan, book, forward])
   const [integrity, setIntegrity] = useState<ChainVerifyResult>({
     ok: true,
     head: '',
@@ -127,6 +138,7 @@ export function useEngine() {
       priority: Priority
       dependsOn?: string[]
       estimatedMinutes?: number
+      stakeCents?: number
     }) => append((c) => createGoal(c, input, Date.now())),
     [append]
   )
@@ -144,7 +156,7 @@ export function useEngine() {
   const note = useCallback(
     (input: {
       id: string
-      kind: 'suggestion' | 'analysis' | 'encouragement' | 'warning'
+      kind: 'suggestion' | 'analysis' | 'encouragement' | 'warning' | 'memo'
       title: string
       content: string
       domain?: Domain
@@ -225,6 +237,10 @@ export function useEngine() {
     goals,
     graph,
     plan,
+    book,
+    forward,
+    memo,
+    briefing,
     integrity,
     identity,
     receipt,

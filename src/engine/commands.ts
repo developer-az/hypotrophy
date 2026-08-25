@@ -36,6 +36,7 @@ export async function createGoal(
     priority: Priority
     dependsOn?: string[]
     estimatedMinutes?: number
+    stakeCents?: number
     id?: string
   },
   ts: number
@@ -57,6 +58,12 @@ export async function createGoal(
     priority: input.priority,
     dependsOn: input.dependsOn ?? [],
     estimatedMinutes,
+  }
+  if (input.stakeCents != null) {
+    if (!Number.isInteger(input.stakeCents) || input.stakeCents < 0 || input.stakeCents > 50_000_000) {
+      throw new CommandError('stakeCents must be an integer between 0 and 50000000')
+    }
+    payload.stakeCents = input.stakeCents
   }
   return appendEntry(chain, 'goal.created', payload, ts)
 }

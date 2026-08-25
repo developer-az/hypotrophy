@@ -15,6 +15,7 @@ interface DemoGoal {
   createdOffsetDays: number
   outcome: 'open' | 'completed' | 'abandoned'
   settleOffsetDays?: number
+  stakeCents?: number
 }
 
 /**
@@ -94,6 +95,7 @@ export function demoScript(): DemoGoal[] {
       estimatedMinutes: 240,
       createdOffsetDays: -17,
       outcome: 'open',
+      stakeCents: 800_000,
     },
     {
       id: 'g-resume',
@@ -105,6 +107,7 @@ export function demoScript(): DemoGoal[] {
       estimatedMinutes: 120,
       createdOffsetDays: -8,
       outcome: 'open',
+      stakeCents: 2_500_000,
     },
     {
       id: 'g-run',
@@ -152,6 +155,7 @@ export function demoScript(): DemoGoal[] {
       estimatedMinutes: 90,
       createdOffsetDays: -24,
       outcome: 'open',
+      stakeCents: 500_000,
     },
     {
       id: 'g-write',
@@ -226,6 +230,7 @@ export async function buildDemoLedger(now: number, seed = 20250814): Promise<Cha
           priority: goal.priority,
           dependsOn: goal.dependsOn,
           estimatedMinutes: goal.estimatedMinutes,
+          ...(goal.stakeCents != null ? { stakeCents: goal.stakeCents } : {}),
         },
         createdAt
       )
@@ -258,10 +263,10 @@ export async function buildDemoLedger(now: number, seed = 20250814): Promise<Cha
       'insight.recorded',
       {
         id: 'ins-demo',
-        kind: 'analysis',
-        title: 'Demo ledger loaded',
+        kind: 'memo',
+        title: 'Opening CIO memo',
         content:
-          'This history is synthetic but internally consistent: a career/learning critical path, a health abandonment, and a finance dependency. Use it to exercise the allocator, then replace it with your own chain.',
+          'This book is synthetic and internally consistent: a career/learning critical path, a health abandonment (the leak), and a finance dependency with a declared stake. The forward book prices whether you fill — not the market. Replace it with your chain.',
         relevantGoalIds: ['g-allocator', 'g-resume'],
       },
       now - DAY
