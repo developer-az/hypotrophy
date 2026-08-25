@@ -29,7 +29,7 @@ test('capture product surfaces', async ({ page }) => {
   await page.screenshot({ path: `${out}/05-proof.png`, fullPage: true })
 
   await page.goto('/studio')
-  await page.getByRole('heading', { name: 'Studio' }).waitFor()
+  await page.getByRole('heading', { name: 'Studio', level: 1 }).waitFor()
   await page.screenshot({ path: `${out}/06-studio.png`, fullPage: true })
 
   await page.goto('/verify')
