@@ -20,6 +20,9 @@ describe('growth receipts', () => {
     expect(receipt.eventCount).toBe(chain.length)
     expect(receipt.subject).toBe(identity.publicKeyHex)
     expect(receipt.stats.created).toBeGreaterThan(0)
+    expect(receipt.stats.netWorthCents).toBeGreaterThan(0)
+    expect(JSON.stringify(receipt.stats)).not.toMatch(/Ship the next-action ranker/)
+    expect(JSON.stringify(receipt.stats)).not.toMatch(/paycheck/)
     expect(receipt.sampleProofs.length).toBeGreaterThan(0)
 
     const ok = await verifyReceipt(

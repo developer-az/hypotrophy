@@ -124,7 +124,11 @@ export default function AppShell({ engine }: { engine: HypotrophyEngine }) {
             <span>Net worth {formatUsd(engine.pnl.netWorthCents)}</span>
             <span>Bills {formatUsd(engine.pnl.burnCentsPerMonth)}/mo</span>
             <span>Rate {formatUsd(engine.pnl.blendedRateCentsPerHour)}/hr</span>
-            <span>90d {formatUsd(engine.pnl.expectedProfit90dCents)}</span>
+            <span>
+              {engine.pnl.runwayDays != null
+                ? `Runway ${engine.pnl.runwayDays}d`
+                : `90d ${formatUsd(engine.pnl.expectedProfit90dCents)}`}
+            </span>
           </div>
         )}
       </header>

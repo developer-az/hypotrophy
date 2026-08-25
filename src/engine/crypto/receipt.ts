@@ -6,6 +6,8 @@ import type { ChainEntry } from './chain'
 import type { Projection } from '../domain/types'
 import { domainStats } from '../domain/stats'
 import { allocate } from '../quant/allocator'
+import { forecast } from '../quant/forward'
+import { buildPnl } from '../quant/pnl'
 import { kaplanMeier, medianSurvival } from '../quant/survival'
 
 /**
@@ -15,6 +17,9 @@ import { kaplanMeier, medianSurvival } from '../quant/survival'
  * It is intentionally NOT a token and NOT an on-chain NFT. The capital is
  * the cryptographic commitment to a real history — the thing an interviewer
  * or employer can verify without seeing task titles.
+ *
+ * Optional book fields are declared cents from the issuer's local ledger,
+ * not a bank statement. Titles never appear.
  */
 
 export interface ReceiptStats {
@@ -24,6 +29,12 @@ export interface ReceiptStats {
   domains: Record<string, { completed: number; created: number }>
   allocationBps: { domain: string; bps: number }[]
   medianCompletionMs: number | null
+  netWorthCents?: number
+  burnCentsPerMonth?: number
+  rateCentsPerHour?: number
+  claimedCents?: number
+  expectedProfit90dCents?: number
+  runwayDays?: number | null
 }
 
 export interface GrowthReceipt {
@@ -75,7 +86,7 @@ export async function issueReceipt(args: {
   const indexes = args.sampleIndexes ?? pickSampleIndexes(chain.length)
   const sampleProofs = await Promise.all(indexes.map((i) => proveInclusionHex(leafHexes, i)))
 
-  const stats = buildStats(projection, now)
+  const stats = buildStats(projection, now, chain[0]?.ts ?? now)
   const unsigned: Omit<GrowthReceipt, 'signature'> = {
     v: 1,
     alg: identity.alg,
@@ -136,11 +147,14 @@ function pickSampleIndexes(n: number): number[] {
   return [0, Math.floor((n - 1) / 2), n - 1]
 }
 
-function buildStats(projection: Projection, now: number): ReceiptStats {
+function buildStats(projection: Projection, now: number, seed: number): ReceiptStats {
   const goals = Object.values(projection.goals)
+  const skills = Object.values(projection.skills)
   const domains = domainStats(goals)
   const km = kaplanMeier(goals, now)
-  const plan = allocate(goals, now)
+  const plan = allocate(goals, now, seed, skills)
+  const forward = forecast(goals, now, seed, { paths: 8, skills })
+  const pnl = buildPnl(projection, forward, now)
 
   return {
     completed: goals.filter((g) => g.status === 'completed').length,
@@ -149,5 +163,11 @@ function buildStats(projection: Projection, now: number): ReceiptStats {
     domains,
     allocationBps: plan.kelly.map((k) => ({ domain: k.domain, bps: k.bps })),
     medianCompletionMs: medianSurvival(km),
+    netWorthCents: pnl.netWorthCents,
+    burnCentsPerMonth: pnl.burnCentsPerMonth,
+    rateCentsPerHour: pnl.blendedRateCentsPerHour,
+    claimedCents: pnl.claimedCents,
+    expectedProfit90dCents: pnl.expectedProfit90dCents,
+    runwayDays: pnl.runwayDays,
   }
 }

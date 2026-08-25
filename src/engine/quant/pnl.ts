@@ -13,6 +13,10 @@ export interface PersonalPnl {
   claimedCents: number
   expectedProfit90dCents: number
   expectedHours90: number
+  /** Floor of cash / daily bills. Null if bills are zero. Not a forecast. */
+  runwayDays: number | null
+  /** Ceiling of monthly bills / blended rate. Null if rate or bills are zero. */
+  hoursToCoverBills: number | null
 }
 
 /**
@@ -54,6 +58,12 @@ export function buildPnl(
   }
   const expectedProfit90dCents =
     expectedFromClaims + Math.round(blendedRateCentsPerHour * expectedHours90)
+  const runwayDays =
+    burnCentsPerMonth > 0 ? Math.floor((cashCents * 30) / burnCentsPerMonth) : null
+  const hoursToCoverBills =
+    burnCentsPerMonth > 0 && blendedRateCentsPerHour > 0
+      ? Math.max(1, Math.ceil(burnCentsPerMonth / blendedRateCentsPerHour))
+      : null
 
   return {
     netWorthCents,
@@ -64,6 +74,8 @@ export function buildPnl(
     claimedCents,
     expectedProfit90dCents,
     expectedHours90,
+    runwayDays,
+    hoursToCoverBills,
   }
 }
 

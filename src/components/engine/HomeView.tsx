@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import type { HypotrophyEngine } from '@/hooks/useEngine'
-import { formatUsd, formatUsdRate } from '@/lib/format'
+import { formatHours, formatPct, formatUsd, formatUsdRate } from '@/lib/format'
 import { aiService } from '@/lib/aiService'
 import { useToast } from '../Toast'
 
@@ -16,7 +16,8 @@ export default function HomeView({
   onMoney: () => void
 }) {
   const toast = useToast()
-  const { plan, pnl, impactCents, memo, briefing, complete, logMoney, accounts } = engine
+  const { plan, horizon, pnl, impactCents, memo, briefing, complete, logMoney, accounts, forward } =
+    engine
   const [brief, setBrief] = useState(memo)
 
   useEffect(() => {
@@ -33,6 +34,8 @@ export default function HomeView({
   const cash = accounts.find((a) => a.kind === 'cash') ?? accounts[0]
   const [amount, setAmount] = useState('')
   const [busy, setBusy] = useState(false)
+  const nextP = next ? forward.goals.find((g) => g.goalId === next.goalId) : undefined
+  const later = horizon.filter((h) => h.goalId !== next?.goalId)
 
   const log = async (kind: 'income' | 'expense') => {
     if (!cash || busy) return
@@ -54,8 +57,8 @@ export default function HomeView({
         <div className="kicker">Home</div>
         <h1 className="font-display text-4xl text-[var(--paper)]">Your money, skills, and next hour</h1>
         <p className="mt-2 max-w-2xl text-[var(--mute)]">
-          One book on this device. Net worth is what you typed. The next action is the work most
-          likely to raise 90-day profit if you actually finish it.
+          One book on this device. Net worth is what you typed. The next action is the work with the
+          highest expected dollars per hour — from your own finish rate, not a market call.
         </p>
       </section>
 
@@ -65,6 +68,14 @@ export default function HomeView({
         <Stat label="Your rate" value={formatUsdRate(pnl.blendedRateCentsPerHour)} />
         <Stat label="90-day expected" value={formatUsd(pnl.expectedProfit90dCents)} />
       </dl>
+      {(pnl.runwayDays != null || pnl.hoursToCoverBills != null) && (
+        <p className="text-sm text-[var(--mute)]">
+          {pnl.runwayDays != null ? `Cash covers about ${pnl.runwayDays} days of bills.` : ''}
+          {pnl.hoursToCoverBills != null
+            ? ` ${pnl.hoursToCoverBills} billed hours a month at your rate covers bills.`
+            : ''}
+        </p>
+      )}
 
       {next ? (
         <section className="ticket overflow-hidden">
@@ -74,9 +85,18 @@ export default function HomeView({
               {next.title}
             </h2>
             <p className="mt-2 text-[var(--mute)]">
-              If you finish, that is about {formatUsd(impactCents)}. Ready to start
-              {next.reasons.includes('ready to start') ? '.' : ' after blockers.'}
+              If you finish, that is about {formatUsd(impactCents)}
+              {next.optionCents > 0
+                ? `, and it unlocks about ${formatUsd(next.optionCents)} you cannot start yet`
+                : ''}
+              . Takes {formatHours(next.estimatedMinutes)}.
             </p>
+            {nextP && (
+              <p className="mt-2 text-sm text-[var(--mute)]">
+                From your own history, finishing this in a week is about {formatPct(nextP.p7)}; in 90
+                days, {formatPct(nextP.p90)}. That is you, not the market.
+              </p>
+            )}
           </div>
           <div className="flex flex-col gap-3 px-6 py-5 sm:flex-row sm:items-center">
             <button
@@ -93,6 +113,19 @@ export default function HomeView({
               See all work
             </button>
           </div>
+          {later.length > 0 && (
+            <div className="border-t border-[var(--line)] px-6 py-4">
+              <div className="kicker">If you only have two hours</div>
+              <ol className="mt-2 space-y-1 text-sm text-[var(--paper)]">
+                {horizon.map((step, i) => (
+                  <li key={step.goalId}>
+                    {i + 1}. {step.title} · {formatHours(step.estimatedMinutes)} ·{' '}
+                    {formatUsd(step.impactCents)}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </section>
       ) : (
         <section className="panel p-8">

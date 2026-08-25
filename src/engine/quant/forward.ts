@@ -1,5 +1,6 @@
-import type { Goal } from '../domain/types'
+import type { Goal, Skill } from '../domain/types'
 import { allocate } from './allocator'
+import { dollarImpact } from './pnl'
 import { hbarOf } from './wealth'
 
 export const DEFAULT_CAPACITY_MINUTES_PER_DAY = 150
@@ -15,6 +16,7 @@ export interface GoalForecast {
   p90: number
   expectedHbar7: number
   expectedHbar30: number
+  expectedCents90: number
 }
 
 export interface ForwardBook {
@@ -42,10 +44,11 @@ export function forecast(
   goals: Goal[],
   now: number,
   seed: number,
-  opts?: { paths?: number; capacityMinutesPerDay?: number }
+  opts?: { paths?: number; capacityMinutesPerDay?: number; skills?: Skill[] }
 ): ForwardBook {
   const paths = Math.max(4, Math.min(64, opts?.paths ?? DEFAULT_PATHS))
   const capacity = Math.max(30, opts?.capacityMinutesPerDay ?? DEFAULT_CAPACITY_MINUTES_PER_DAY)
+  const skills = opts?.skills ?? []
   const open = goals.filter((g) => g.status === 'open')
   const tallies: Record<string, { c7: number; c30: number; c90: number }> = {}
   for (const g of open) tallies[g.id] = { c7: 0, c30: 0, c90: 0 }
@@ -62,9 +65,9 @@ export function forecast(
 
   for (let i = 0; i < paths; i++) {
     const s = (seed + i * 9973) >>> 0
-    const r7 = simulate(goals, now, s, capacity * 7)
-    const r30 = simulate(goals, now, s + 1, capacity * 30)
-    const r90 = simulate(goals, now, s + 2, capacity * 90)
+    const r7 = simulate(goals, now, s, capacity * 7, skills)
+    const r30 = simulate(goals, now, s + 1, capacity * 30, skills)
+    const r90 = simulate(goals, now, s + 2, capacity * 90, skills)
     min7 += r7.minutes
     min30 += r30.minutes
     min90 += r90.minutes
@@ -94,6 +97,7 @@ export function forecast(
       p90: t.c90 / paths,
       expectedHbar7: Math.round(hbar * p7),
       expectedHbar30: Math.round(hbar * p30),
+      expectedCents90: Math.round(dollarImpact(g, skills) * (t.c90 / paths)),
     }
   })
 
@@ -123,7 +127,8 @@ function simulate(
   goals: Goal[],
   now: number,
   seed: number,
-  budget: number
+  budget: number,
+  skills: Skill[]
 ): { filled: Set<string>; minutes: number; hbar: number } {
   const live: Goal[] = goals.map((g) => ({ ...g, dependsOn: g.dependsOn.slice() }))
   const filled = new Set<string>()
@@ -134,7 +139,7 @@ function simulate(
 
   while (clock < budget && steps < cap) {
     steps += 1
-    const plan = allocate(live, now, (seed + steps * 13) >>> 0)
+    const plan = allocate(live, now, (seed + steps * 13) >>> 0, skills)
     const pick = plan.ranked.find((row) => {
       if (row.blocked) return false
       const g = live.find((x) => x.id === row.goalId)

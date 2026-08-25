@@ -83,3 +83,17 @@ export function formatUsdRate(centsPerHour: number): string {
 export function formatPct(p: number): string {
   return `${Math.round(p * 100)}%`
 }
+
+export function formatHours(minutes: number): string {
+  const h = minutes / 60
+  if (h < 1) return `${minutes}m`
+  const rounded = Math.round(h * 10) / 10
+  return `${rounded}h`
+}
+
+export function formatRunway(days: number | null): string {
+  if (days == null) return '—'
+  if (days > 3650) return 'years of bills in cash'
+  if (days >= 365) return `${Math.round(days / 365)}y of bills in cash`
+  return `${days} days of bills in cash`
+}

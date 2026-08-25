@@ -19,11 +19,13 @@ import {
   issueReceipt,
   linkGoal,
   migrateLegacyTasks,
+  nextHours,
   openAccount,
   postMoney,
   recordInsight,
   recordIntel,
   setAccountBalance,
+  TWO_HOUR_MINUTES,
   upsertSkill,
   verifyChain,
   type AccountKind,
@@ -108,8 +110,12 @@ export function useEngine() {
     [goals, now, chain, skills]
   )
   const forward = useMemo(
-    () => forecast(goals, now, chain[0]?.ts ?? 1),
-    [goals, now, chain]
+    () => forecast(goals, now, chain[0]?.ts ?? 1, { skills }),
+    [goals, now, chain, skills]
+  )
+  const horizon = useMemo(
+    () => nextHours(goals, now, chain[0]?.ts ?? 1, skills, TWO_HOUR_MINUTES),
+    [goals, now, chain, skills]
   )
   const pnl = useMemo(() => buildPnl(projection, forward, now), [projection, forward, now])
   const impactCents = useMemo(
@@ -361,6 +367,7 @@ export function useEngine() {
     accounts,
     graph,
     plan,
+    horizon,
     forward,
     pnl,
     impactCents,

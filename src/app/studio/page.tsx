@@ -22,8 +22,9 @@ export default function StudioPage() {
       </div>
 
       <p className="mt-8 max-w-2xl text-lg text-[var(--mute)]">
-        Free Hypotrophy is cash, skills, and ranked work on this device. Studio is the weekly
-        net-worth + receipt pack — still no titles leaked — and backup when the machine dies.
+        Free Hypotrophy is cash, skills, and ranked work on this device. Proof already issues this
+        week’s net-worth + receipt pack. Studio is continuity — encrypted backup when the machine
+        dies — still no titles leaked.
       </p>
 
       <div className="mt-10 grid gap-5 md:grid-cols-2">

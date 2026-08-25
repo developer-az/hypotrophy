@@ -9,7 +9,7 @@ import {
   setAccountBalance,
   upsertSkill,
 } from '../commands'
-import { allocate } from '../quant/allocator'
+import { allocate, nextHours } from '../quant/allocator'
 import { forecast } from '../quant/forward'
 import { BILLS_INTEL_ID, buildPnl, dollarImpact } from '../quant/pnl'
 import { buildDemoLedger } from '../demo/fixture'
@@ -49,6 +49,24 @@ describe('money ledger', () => {
     ]
     const pnl = buildPnl(fold(chain), forecast([], ts, 1, { paths: 4 }), ts)
     expect(pnl.burnCentsPerMonth).toBe(320_000)
+  })
+
+  it('computes runway days and hours to cover bills', async () => {
+    const ts = 1_700_000_000_000
+    let chain = [await genesis([], ts)]
+    chain = [...chain, await openAccount(chain, { id: 'cash', name: 'Cash', kind: 'cash' }, ts + 1)]
+    chain = [...chain, await setAccountBalance(chain, 'cash', 1_200_000, ts + 2)]
+    chain = [
+      ...chain,
+      await recordIntel(chain, { id: BILLS_INTEL_ID, title: 'Monthly bills', cents: 300_000 }, ts + 3),
+    ]
+    chain = [
+      ...chain,
+      await upsertSkill(chain, { id: 'dev', name: 'Dev', domain: 'career', rateCentsPerHour: 10_000 }, ts + 4),
+    ]
+    const pnl = buildPnl(fold(chain), forecast([], ts, 1, { paths: 4 }), ts)
+    expect(pnl.runwayDays).toBe(120)
+    expect(pnl.hoursToCoverBills).toBe(30)
   })
 })
 
@@ -158,6 +176,85 @@ describe('dollar impact and allocator', () => {
     ])
     expect(plan.next?.goalId).toBe('root')
     expect(plan.ranked.find((r) => r.goalId === 'child')?.blocked).toBe(true)
+    expect(plan.next?.optionCents).toBeGreaterThan(0)
+  })
+
+  it('ranks a short high-claim hour above a long low-claim hour', () => {
+    const goals: Goal[] = [
+      {
+        id: 'slow',
+        title: 'Slow',
+        domain: 'career',
+        priority: 'high',
+        dependsOn: [],
+        estimatedMinutes: 240,
+        stakeCents: 40_000,
+        createdAt: 0,
+        status: 'open',
+      },
+      {
+        id: 'quick',
+        title: 'Quick',
+        domain: 'career',
+        priority: 'high',
+        dependsOn: [],
+        estimatedMinutes: 30,
+        stakeCents: 50_000,
+        createdAt: 0,
+        status: 'open',
+      },
+    ]
+    const plan = allocate(goals, 50, 1)
+    expect(plan.next?.goalId).toBe('quick')
+    expect(plan.next!.centsPerHour).toBeGreaterThan(
+      plan.ranked.find((r) => r.goalId === 'slow')!.centsPerHour
+    )
+  })
+
+  it('never puts blocked work in the two-hour sequence', () => {
+    const goals: Goal[] = [
+      {
+        id: 'a',
+        title: 'A',
+        domain: 'career',
+        priority: 'high',
+        dependsOn: [],
+        estimatedMinutes: 30,
+        createdAt: 0,
+        status: 'open',
+      },
+      {
+        id: 'b',
+        title: 'B',
+        domain: 'career',
+        priority: 'high',
+        dependsOn: [],
+        estimatedMinutes: 30,
+        createdAt: 1,
+        status: 'open',
+      },
+      {
+        id: 'c',
+        title: 'C',
+        domain: 'career',
+        priority: 'high',
+        dependsOn: ['a'],
+        estimatedMinutes: 30,
+        stakeCents: 9_000_000,
+        createdAt: 2,
+        status: 'open',
+      },
+    ]
+    const seq = nextHours(goals, 50, 1, [], 60)
+    expect(seq[0]?.goalId).not.toBe('c')
+    expect(seq.reduce((n, s) => n + s.estimatedMinutes, 0)).toBeLessThanOrEqual(60)
+    expect(seq.length).toBeGreaterThan(0)
+    const aIdx = seq.findIndex((s) => s.goalId === 'a')
+    const cIdx = seq.findIndex((s) => s.goalId === 'c')
+    if (cIdx >= 0) {
+      expect(aIdx).toBeGreaterThanOrEqual(0)
+      expect(aIdx).toBeLessThan(cIdx)
+    }
   })
 })
 

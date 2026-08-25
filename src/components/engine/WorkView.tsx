@@ -6,7 +6,7 @@ import GoalComposer from './GoalComposer'
 import GoalBook from './GoalBook'
 import GraphView from './GraphView'
 import CapitalRose from './CapitalRose'
-import { formatUsd } from '@/lib/format'
+import { formatHours, formatUsd, formatUsdRate } from '@/lib/format'
 import { useToast } from '../Toast'
 
 export default function WorkView({ engine }: { engine: HypotrophyEngine }) {
@@ -19,6 +19,7 @@ export default function WorkView({ engine }: { engine: HypotrophyEngine }) {
       .map((n) => n.id)
   )
   const next = plan.next
+  const feasible = plan.ranked.filter((r) => !r.blocked)
 
   return (
     <div className="space-y-6">
@@ -26,8 +27,8 @@ export default function WorkView({ engine }: { engine: HypotrophyEngine }) {
         <div className="kicker">Work</div>
         <h1 className="font-display text-3xl text-[var(--paper)]">Ranked, feasible work</h1>
         <p className="mt-2 max-w-2xl text-sm text-[var(--mute)]">
-          Blocked items cannot be next. Dollars you claimed and your skill rate change the ranking.
-          The map is optional.
+          Blocked items cannot be next. Ranked by expected dollars per hour: your finish rate times
+          the claim, the skill time, and what finishing unlocks.
         </p>
       </section>
 
@@ -36,7 +37,9 @@ export default function WorkView({ engine }: { engine: HypotrophyEngine }) {
           <div className="kicker">Up next</div>
           <h2 className="mt-1 font-display text-2xl text-[var(--paper)]">{next.title}</h2>
           <p className="mt-1 text-sm text-[var(--mute)]">
-            About {formatUsd(impactCents)} if you finish.
+            About {formatUsd(impactCents)} if you finish
+            {next.optionCents > 0 ? ` · unlocks ${formatUsd(next.optionCents)}` : ''} ·{' '}
+            {formatUsdRate(next.centsPerHour)} expected.
           </p>
           <ul className="mt-3 space-y-1 text-sm text-[var(--mute)]">
             {next.reasons.map((r) => (
@@ -57,9 +60,8 @@ export default function WorkView({ engine }: { engine: HypotrophyEngine }) {
             <details className="quant">
               <summary>How this was ranked</summary>
               <p className="mt-2 max-w-lg text-sm text-[var(--mute)]">
-                Feasible set first. Then track record in that area, how hot the open work is, whether
-                it sits on the longest path, and expected dollars if you finish. Score{' '}
-                {next.score.toFixed(3)}.
+                Feasible set first. Then expected dollars per hour = P(you finish this kind of work)
+                × (claim + skill time + unlocked children). Score {next.score.toFixed(3)}.
               </p>
               <div className="mt-4 max-w-xs">
                 <CapitalRose kelly={plan.kelly} />
@@ -69,6 +71,29 @@ export default function WorkView({ engine }: { engine: HypotrophyEngine }) {
         </section>
       ) : (
         <p className="panel p-6 text-[var(--mute)]">No ready work. Add some below.</p>
+      )}
+
+      {feasible.length > 1 && (
+        <section className="panel overflow-hidden">
+          <div className="border-b border-[var(--line)] px-5 py-4">
+            <div className="kicker">By expected dollars / hour</div>
+          </div>
+          <ol>
+            {feasible.slice(0, 8).map((row, i) => (
+              <li
+                key={row.goalId}
+                className="flex flex-wrap items-baseline justify-between gap-2 border-t border-[var(--line)] px-5 py-3 text-sm"
+              >
+                <span>
+                  {i + 1}. {row.title}
+                </span>
+                <span className="font-mono text-[var(--gold)]">
+                  {formatUsdRate(row.centsPerHour)} · {formatHours(row.estimatedMinutes)}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
       )}
 
       <GoalComposer goals={goals} onCreate={create} />

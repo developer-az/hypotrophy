@@ -26,7 +26,7 @@ export {
   type Identity,
   type SignatureAlg,
 } from './crypto/identity'
-export { issueReceipt, verifyReceipt, type GrowthReceipt } from './crypto/receipt'
+export { issueReceipt, verifyReceipt, type GrowthReceipt, type ReceiptStats } from './crypto/receipt'
 export {
   DOMAINS,
   PRIORITY_WEIGHT,
@@ -54,7 +54,7 @@ export { buildGraph, eligibleGoalIds, type GoalGraph, type GraphNode } from './g
 export { thompsonSelect, mulberry32, type BanditArm } from './quant/bandit'
 export { kellyPlan, type KellySlice } from './quant/kelly'
 export { kaplanMeier, medianSurvival, survivalAt, type SurvivalCurve } from './quant/survival'
-export { allocate, type AllocationPlan, type NextAction } from './quant/allocator'
+export { allocate, nextHours, TWO_HOUR_MINUTES, type AllocationPlan, type NextAction } from './quant/allocator'
 export { hbarOf, priceBook, COMPOUND_BPS, type CapitalBook, type PricedGoal } from './quant/wealth'
 export {
   forecast,

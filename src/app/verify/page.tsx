@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { verifyReceipt, type GrowthReceipt } from '@/engine'
 import { BiscuitMark } from '@/components/BiscuitMark'
+import { formatUsd } from '@/lib/format'
 
 export default function VerifyPage() {
   const [raw, setRaw] = useState('')
@@ -92,6 +93,21 @@ export default function VerifyPage() {
           <p className="mt-3 font-display text-2xl text-[var(--paper)]">
             {ok ? 'Signature and root check out.' : 'This receipt failed verification.'}
           </p>
+          {ok && (() => {
+            try {
+              const r = JSON.parse(raw) as GrowthReceipt
+              if (r.stats?.netWorthCents == null) return null
+              return (
+                <p className="mt-3 text-sm text-[var(--mute)]">
+                  Issuer declared net worth {formatUsd(r.stats.netWorthCents)}
+                  {r.stats.runwayDays != null ? ` · ${r.stats.runwayDays} days of bills in cash` : ''}.
+                  Declared, not a bank statement. No titles in this file.
+                </p>
+              )
+            } catch {
+              return null
+            }
+          })()}
           <details className="quant mt-4">
             <summary>Machine report</summary>
             <pre className="mt-3 overflow-auto font-mono text-xs text-[var(--mute)]">{detail}</pre>

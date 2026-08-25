@@ -112,6 +112,8 @@ describe('CIO memo', () => {
       claimedCents: 0,
       expectedProfit90dCents: 0,
       expectedHours90: 0,
+      runwayDays: null,
+      hoursToCoverBills: null,
     }
     expect(draftMemo({ plan, pnl, forward, impactCents: 0 })).toMatch(/nothing is ready/i)
   })
