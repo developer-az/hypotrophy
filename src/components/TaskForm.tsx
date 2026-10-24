@@ -166,15 +166,12 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
   return (
     <div className="relative">
       {/* Premium Task Input */}
-      <div className="modern-card p-8">
-        <div className="flex items-center space-x-4 mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/20">
-            <span className="text-white text-2xl drop-shadow-sm">🎯</span>
-          </div>
-          <div className="flex-1">
-            <h2 className="text-3xl font-bold text-white drop-shadow-sm">Create Your Goal</h2>
-            <p className="text-white/80 text-lg">Transform your dreams into achievements</p>
-          </div>
+      <div className="modern-card p-6 sm:p-7">
+        <div className="flex items-start justify-between gap-3 mb-5">
+          <div><p className="eyebrow">START WITH WHAT’S ON YOUR MIND</p>
+            <h2 className="text-3xl font-bold text-white drop-shadow-sm mt-1">Make it a practice.</h2>
+            <p className="text-white/80 text-sm mt-1">Big or small, it starts with showing up.</p></div>
+          <span aria-hidden="true" className="hidden sm:grid place-items-center rounded-full text-xl" style={{ width: 43, height: 43, background: '#f7ebe5', color: '#c45a3c' }}>↗</span>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -184,7 +181,8 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
               <textarea
                 value={input}
                 onChange={(e) => handleInputChange(e.target.value)}
-                placeholder="I want to master a new skill, build a healthy habit, or achieve something meaningful..."
+                aria-label="Describe a promise you want to keep to yourself"
+                placeholder="Something you’ve been meaning to do, learn, or make time for…"
                 className="glass-input w-full px-6 py-4 text-lg rounded-2xl resize-none min-h-[120px] leading-relaxed"
                 disabled={isProcessing}
               />
@@ -211,7 +209,8 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
           <button
             type="submit"
             disabled={!input.trim() || isProcessing}
-            className="premium-button w-full relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group"
+            aria-label="Add this practice"
+            className="premium-button w-full relative overflow-hidden disabled:cursor-not-allowed disabled:transform-none group"
           >
             <span className="relative z-10 flex items-center justify-center space-x-3 text-lg">
               {isProcessing ? (
@@ -221,9 +220,8 @@ export default function TaskForm({ onAddTask, userTasks = [] }: TaskFormProps) {
                 </>
               ) : (
                 <>
-                  <span className="text-xl">✨</span>
-                  <span>Create Goal</span>
-                  <span className="text-xl group-hover:animate-bounce">🚀</span>
+                  <span>Add to my practice</span>
+                  <span aria-hidden="true" className="text-xl group-hover:translate-x-1 transition-transform">→</span>
                 </>
               )}
             </span>

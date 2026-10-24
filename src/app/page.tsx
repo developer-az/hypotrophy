@@ -153,125 +153,65 @@ export default function Home() {
     }
   }
 
-  // Show loading state during hydration
-  if (!isTasksClient || !isInsightsClient) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <header className="text-center mb-12">
-          <div className="animate-float">
-            <h1 className="text-6xl font-black hypotrophy-gradient mb-4 tracking-tight">
-              Hypotrophy
-            </h1>
-            <p className="text-xl text-neutral-600 font-medium">Your AI-Powered Personal Growth Assistant</p>
-          </div>
-        </header>
-        <div className="flex justify-center items-center h-64">
-          <div className="relative">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-200"></div>
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-500 border-t-transparent absolute top-0 left-0"></div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  const completedCount = tasks.filter(task => task.completed).length
+  const remainingCount = tasks.length - completedCount
+  const today = new Intl.DateTimeFormat('en', {
+    weekday: 'long', month: 'long', day: 'numeric'
+  }).format(new Date())
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
-      {/* Premium Background with Animated Particles */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800"></div>
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMSIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
-      
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-        <header className="text-center mb-12 max-w-4xl mx-auto">
-          <div className="animate-fade-in">
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-8">
-              <div className="relative">
-                <img
-                  src="/biscuit.png"
-                  alt="Biscuit the Hamster"
-                  className="w-20 h-20 rounded-full border-4 border-white/30 animate-float shadow-2xl backdrop-blur-sm"
-                />
-                <div className="absolute -inset-1 bg-gradient-to-r from-white/20 to-white/10 rounded-full blur-md"></div>
-              </div>
-              <div className="text-center sm:text-left">
-                <h1 className="text-5xl sm:text-6xl font-black hypotrophy-gradient tracking-tight mb-2">
-                  Hypotrophy
-                </h1>
-                <div className="h-1 w-32 bg-gradient-to-r from-white/60 to-white/20 rounded-full mx-auto sm:mx-0"></div>
-              </div>
-            </div>
-            <p className="text-xl text-white/90 font-medium mb-6 max-w-2xl mx-auto drop-shadow-sm">
-              Your AI-Powered Personal Growth Companion 🐹
-            </p>
+    <main className="studio">
+      <header className="topbar">
+        <a className="wordmark" href="#home" aria-label="Hypotrophy home">
+          <span className="wordmark-icon">h.</span>
+          <span>the good practice</span>
+        </a>
+        <span className="topbar-note"><span className="status-dot" /> YOUR PRIVATE GROWTH SPACE</span>
+      </header>
+
+      <div className="workspace" id="home">
+        <section className="page-intro" aria-label="Welcome">
+          <div>
+            <p className="eyebrow"><span className="eyebrow-rule" /> A LITTLE BETTER, EVERY DAY</p>
+            <h1>A life, built <span>by showing up.</span></h1>
+            <p className="intro-description">Small promises to yourself. Kept, one at a time.</p>
           </div>
-        </header>
+          <div className="today-note"><span className="today-label">YOUR DAY, AT YOUR PACE</span><time>{isTasksClient ? today : 'Take a breath. Begin here.'}</time></div>
+        </section>
 
-        <div className="max-w-7xl mx-auto">
-          <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
+        <nav className="workspace-nav" aria-label="Your workspace">
+          <button aria-current={activeTab === 'tasks' ? 'page' : undefined} className={`nav-tab ${activeTab === 'tasks' ? 'nav-tab-active' : ''}`} onClick={() => setActiveTab('tasks')}>
+            <span>01</span> The practice <span className="nav-count">{remainingCount}</span>
+          </button>
+          <button aria-current={activeTab === 'insights' ? 'page' : undefined} className={`nav-tab ${activeTab === 'insights' ? 'nav-tab-active' : ''}`} onClick={() => setActiveTab('insights')}>
+            <span>02</span> Field notes <span className="nav-count">{insights.length}</span>
+          </button>
+          <span className="nav-caption">A QUIETER KIND OF PROGRESS</span>
+        </nav>
 
-          <div className="flex justify-center mb-10">
-            <div className="modern-card p-3 inline-flex">
-              <button
-                onClick={() => setActiveTab('tasks')}
-                className={`px-8 py-4 rounded-2xl font-semibold transition-all duration-300 ${
-                  activeTab === 'tasks'
-                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/30'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <span className="flex items-center space-x-3">
-                  <span className="text-xl">🎯</span>
-                  <span>Goals</span>
-                </span>
-              </button>
-              <button
-                onClick={() => setActiveTab('insights')}
-                className={`px-8 py-4 rounded-2xl font-semibold transition-all duration-300 ${
-                  activeTab === 'insights'
-                    ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm border border-white/30'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <span className="flex items-center space-x-3">
-                  <span className="text-xl">🐹</span>
-                  <span>Insights</span>
-                </span>
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-            <div className="xl:col-span-3 space-y-8">
-              {activeTab === 'tasks' && (
-                <>
-                  <div className="animate-slide-up">
-                    <TaskForm onAddTask={addTask} userTasks={tasks} />
-                  </div>
-                  <div className="animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                    <TaskList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
-                  </div>
-                </>
-              )}
-              {activeTab === 'insights' && (
-                <div className="animate-fade-in">
-                  <AIInsights insights={insights} />
-                </div>
-              )}
-            </div>
-
-            <div className="xl:col-span-1 space-y-8">
-              <div className="animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                <BiscuitConversation
-                  aiResponse={latestInsight}
-                  onResponseComplete={() => setLatestInsight('')}
-                  onTypingStart={() => setIsBiscuitTyping(true)}
-                  onTypingEnd={() => setIsBiscuitTyping(false)}
-                />
+        <div className="workspace-grid">
+          <section className="main-column" aria-label={activeTab === 'tasks' ? 'Your goals' : 'Your insights'}>
+            {activeTab === 'tasks' ? <>
+              <TaskForm onAddTask={addTask} userTasks={tasks} />
+              <div className="list-heading">
+                <div><p className="eyebrow">THOUGHTS BECOME THINGS</p><h2>Your practice<span className="list-count">{isTasksClient ? String(tasks.length).padStart(2, '0') : '—'}</span></h2></div>
+                <p className="list-summary">{remainingCount === 0 ? 'Room for something new.' : `${remainingCount} ${remainingCount === 1 ? 'promise' : 'promises'} still in motion`}</p>
               </div>
-            </div>
-          </div>
+              <TaskList tasks={tasks} onToggleTask={toggleTask} onDeleteTask={deleteTask} />
+            </> : <div className="insights-view"><p className="eyebrow">LOOKING BACK, TO MOVE FORWARD</p><h2>Field notes</h2><AIInsights insights={insights} /></div>}
+          </section>
+
+          <aside className="side-column" aria-label="Your progress and companion">
+            <div className="side-heading"><p className="eyebrow">THE LONG VIEW</p><span>01 / 03</span></div>
+            <ProgressDashboard tasks={tasks} onGenerateInsight={generateProgressInsight} isAnalyzing={isBiscuitTyping} />
+            <div className="aside-divider"><span>✳</span> A NOTE FROM A FRIEND <span>✳</span></div>
+            <BiscuitConversation aiResponse={latestInsight} onResponseComplete={() => setLatestInsight('')} onTypingStart={() => setIsBiscuitTyping(true)} onTypingEnd={() => setIsBiscuitTyping(false)} />
+            <p className="privacy-note"><span>↗</span> Your reflections stay yours. Saved only on this device.</p>
+          </aside>
         </div>
+
+        <footer className="page-footer"><span>MADE FOR THE WORK THAT HAPPENS SLOWLY.</span><span>ONE SMALL PROMISE AT A TIME <span className="footer-star">✳</span></span></footer>
       </div>
-    </div>
+    </main>
   )
 }

@@ -6,6 +6,8 @@
 
 # Testing
 /coverage
+/test-results/
+/playwright-report/
 
 # Next.js
 /.next/
@@ -54,3 +56,7 @@ next-env.d.ts
 
 # Backup files
 README_backup.md
+
+# Impeccable per-developer consent and config
+.impeccable/config.local.json
+.impeccable/hook.cache.json

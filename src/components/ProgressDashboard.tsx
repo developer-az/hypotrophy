@@ -59,54 +59,48 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
 
   if (totalTasks === 0) {
     return (
-      <div className="modern-card p-12 text-center mb-8">
-        <div className="text-6xl mb-6 animate-float drop-shadow-sm">📊</div>
-        <h2 className="text-2xl font-bold text-white drop-shadow-sm mb-4">Your Progress Hub</h2>
-        <p className="text-white/80 mb-6">Create your first goal to start tracking progress!</p>
+      <div className="modern-card p-5 text-center mb-8">
+        <div className="text-3xl mb-2 animate-float">↗</div>
+        <h2 className="text-xl font-bold text-white mb-2" style={{ fontFamily: 'var(--serif)' }}>The long view</h2>
+        <p className="text-white/80 text-xs">Your progress takes shape with practice.</p>
       </div>
     )
   }
 
   return (
-    <div className="modern-card p-8 mb-8">
+      <div className="modern-card p-5 mb-5">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-        <div className="flex items-center space-x-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/20">
-            <span className="text-white text-2xl drop-shadow-sm">📊</span>
-          </div>
-          <h2 className="text-3xl font-bold text-white drop-shadow-sm">Progress Hub</h2>
-        </div>
+          <h2 className="text-3xl font-bold text-white" style={{ fontFamily: 'var(--serif)' }}>Little by little.</h2>
         {onGenerateInsight && totalTasks > 0 && (
           <button
             onClick={isAnalyzing ? undefined : onGenerateInsight}
             disabled={isAnalyzing}
-            className={`premium-button text-sm px-6 py-3 ${
+            className={`premium-button text-xs px-4 py-2 ${
               isAnalyzing
                 ? 'opacity-50 cursor-not-allowed'
                 : ''
             }`}
           >
             <span className="flex items-center space-x-2">
-              <span>{isAnalyzing ? '💭' : '🐹'}</span>
-              <span>{isAnalyzing ? 'Analyzing...' : 'Ask Biscuit'}</span>
+              <span>{isAnalyzing ? 'Thinking…' : 'Ask Biscuit'} <span aria-hidden="true">→</span></span>
             </span>
           </button>
         )}
       </div>
 
       {/* Premium Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-5">
         <div className="stats-card">
-          <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{completedTasks}</div>
-          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Completed</div>
+          <div className="text-4xl font-bold text-white mb-2">{completedTasks}</div>
+          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Kept</div>
         </div>
         <div className="stats-card">
           <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{totalTasks}</div>
-          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Total</div>
+          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Planned</div>
         </div>
         <div className="stats-card">
           <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{completionRate}%</div>
-          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Success</div>
+          <div className="text-sm font-medium text-white/80 uppercase tracking-wide">Complete</div>
         </div>
         <div className="stats-card">
           <div className="text-4xl font-bold text-white mb-2 drop-shadow-sm">{streak}</div>
@@ -121,7 +115,7 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
             <span className="text-lg font-semibold text-white drop-shadow-sm">Overall Progress</span>
             <span className="text-2xl font-bold text-white drop-shadow-sm">{completionRate}%</span>
           </div>
-          <div className="relative w-full h-4 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/20">
+          <div role="progressbar" aria-label="Overall completion" aria-valuenow={completionRate} aria-valuemin={0} aria-valuemax={100} className="relative w-full h-4 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/20">
             <div
               className="h-full bg-gradient-to-r from-white/80 to-white/60 rounded-full transition-all duration-500 shadow-inner"
               style={{ width: `${completionRate}%` }}
@@ -145,10 +139,10 @@ export default function ProgressDashboard({ tasks, onGenerateInsight, isAnalyzin
                   </div>
                   <span className="text-xs font-bold text-white/80">{completed}/{total}</span>
                 </div>
-                <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div role="progressbar" aria-label={`${category} completion`} aria-valuenow={rate} aria-valuemin={0} aria-valuemax={100} className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-white/60 to-white/40 rounded-full transition-all duration-300"
-                    style={{ width: `${rate}%` }}
+                    style={{ width: `${rate}%`, background: 'var(--accent)' }}
                   ></div>
                 </div>
                 <div className="text-xs text-white/70 mt-1">{rate}%</div>
