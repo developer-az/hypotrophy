@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import Image from 'next/image'
 import TypingAnimation from './TypingAnimation'
-import { BiscuitMark } from './BiscuitMark'
 
 interface Message {
   id: string
@@ -22,49 +22,52 @@ export default function BiscuitConversation({
   aiResponse,
   onResponseComplete,
   onTypingStart,
-  onTypingEnd,
+  onTypingEnd
 }: BiscuitConversationProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
-      text: "I'm Biscuit. I don't cheer empty motion. Write a goal, close it, and I'll underwrite the book.",
+      text: "Hey there! I'm Biscuit 🐹 Your personal growth companion. Ready to turn your dreams into achievements?",
       isUser: false,
-      timestamp: new Date(),
-    },
+      timestamp: new Date()
+    }
   ])
   const [currentlyTyping, setCurrentlyTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const characterCount = useRef(0)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
 
+  // Auto-scroll when messages change
   useEffect(() => {
     scrollToBottom()
   }, [messages])
 
+  // Auto-scroll during typing animation (throttled for performance)
   const handleTypingProgress = () => {
     characterCount.current += 1
+    // Scroll every 10 characters to follow the text smoothly
     if (characterCount.current % 10 === 0) {
-      setTimeout(() => scrollToBottom(), 10)
+      setTimeout(() => {
+        scrollToBottom()
+      }, 10)
     }
   }
 
   useEffect(() => {
     if (aiResponse && !currentlyTyping) {
       setCurrentlyTyping(true)
-      characterCount.current = 0
+      characterCount.current = 0 // Reset character count for new message
       onTypingStart?.()
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          text: aiResponse,
-          isUser: false,
-          timestamp: new Date(),
-        },
-      ])
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        text: aiResponse,
+        isUser: false,
+        timestamp: new Date()
+      }
+      setMessages(prev => [...prev, newMessage])
     }
   }, [aiResponse, currentlyTyping, onTypingStart])
 
@@ -74,39 +77,66 @@ export default function BiscuitConversation({
     onResponseComplete?.()
   }
 
+  const getBiscuitExpression = () => {
+    if (currentlyTyping) return '💭'
+    const expressions = ['😊', '🤗', '😄', '🎉', '💪', '✨', '🌟', '🚀', '💝', '🐹']
+    return expressions[Math.floor(Math.random() * expressions.length)]
+  }
+
   return (
-    <div className="panel flex max-h-[520px] flex-col overflow-hidden">
-      <div className="flex items-center gap-3 border-b border-[var(--line)] px-5 py-4">
+    <div className="modern-card p-6 max-h-[450px] overflow-hidden flex flex-col">
+      <div className="flex items-center space-x-3 mb-4">
         <div className="relative">
-          <BiscuitMark size={44} className={currentlyTyping ? 'animate-pulse' : ''} />
-          <span
-            className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border border-[var(--ink)] ${
-              currentlyTyping ? 'bg-[var(--gold)]' : 'bg-emerald-400'
-            }`}
+          <Image
+            src="/biscuit.png"
+            alt="Biscuit the Hamster"
+            width={52}
+            height={52}
+            className={`rounded-full border-2 border-white/30 shadow-lg drop-shadow-sm ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
           />
+          <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${currentlyTyping ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'} rounded-full border-2 border-white shadow-sm`}></div>
         </div>
         <div>
-          <div className="font-display text-lg text-[var(--paper)]">Biscuit</div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--mute)]">
-            {currentlyTyping ? 'underwriting' : 'desk companion'}
-          </div>
+          <h3 className="font-bold text-lg text-white drop-shadow-sm flex items-center">
+            Biscuit {getBiscuitExpression()}
+          </h3>
+          <p className="text-xs text-white/80">
+            {currentlyTyping ? 'Thinking...' : 'Growth Companion'}
+          </p>
         </div>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto px-5 py-4">
+      <div className="flex-1 overflow-y-auto space-y-3 mb-4 max-h-72">
         {messages.map((message, index) => (
-          <div key={message.id} className="flex items-start gap-3">
-            {!message.isUser && <BiscuitMark size={22} />}
-            <div className="max-w-[92%] rounded-2xl border border-[var(--line)] bg-[var(--ink-2)] px-3.5 py-2.5 text-sm leading-relaxed text-[var(--paper)]">
+          <div key={message.id} className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              {!message.isUser && (
+                <Image
+                  src="/biscuit.png"
+                  alt="Biscuit"
+                  width={28}
+                  height={28}
+                  className="rounded-full border border-white/20 shadow-sm"
+                />
+              )}
+            </div>
+            <div
+              className={`max-w-[90%] p-3 rounded-2xl backdrop-blur-sm ${
+                message.isUser
+                  ? 'bg-white/20 text-white ml-auto rounded-br-md border border-white/30'
+                  : 'bg-white/15 text-white rounded-bl-md border border-white/20'
+              }`}
+            >
               {index === messages.length - 1 && !message.isUser && currentlyTyping ? (
                 <TypingAnimation
                   text={message.text}
-                  speed={18}
+                  speed={25}
                   onComplete={handleTypingComplete}
                   onProgress={handleTypingProgress}
+                  className="text-sm"
                 />
               ) : (
-                <p>{message.text}</p>
+                <p className="text-sm leading-relaxed">{message.text}</p>
               )}
             </div>
           </div>

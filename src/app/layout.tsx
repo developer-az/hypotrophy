@@ -1,56 +1,27 @@
-import type { Metadata, Viewport } from 'next'
-import localFont from 'next/font/local'
+import type { Metadata } from 'next'
 import './globals.css'
 
-const display = localFont({
-  src: './fonts/fraunces-variable.woff2',
-  variable: '--font-display',
-  display: 'swap',
-  weight: '100 900',
-})
-
-const sans = localFont({
-  src: [
-    { path: './fonts/ibm-plex-sans-400.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/ibm-plex-sans-500.woff2', weight: '500', style: 'normal' },
-    { path: './fonts/ibm-plex-sans-600.woff2', weight: '600', style: 'normal' },
-  ],
-  variable: '--font-sans',
-  display: 'swap',
-})
-
-const mono = localFont({
-  src: [
-    { path: './fonts/ibm-plex-mono-400.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/ibm-plex-mono-500.woff2', weight: '500', style: 'normal' },
-  ],
-  variable: '--font-mono',
-  display: 'swap',
-})
-
 export const metadata: Metadata = {
-  title: {
-    default: 'Hypotrophy — Human Capital Engine',
-    template: '%s · Hypotrophy',
-  },
-  description:
-    'Cash, skills, and ranked work on one local ledger. Net worth you typed. Next hour priced in dollars.',
-  applicationName: 'Hypotrophy',
-  keywords: ['personal growth', 'event sourcing', 'merkle', 'local-first', 'productivity'],
+  title: 'Hypotrophy - AI-Powered Personal Growth',
+  description: 'Transform your basic to-do lists into intelligent self-improvement tracking with AI insights',
 }
 
-export const viewport: Viewport = {
-  themeColor: '#0b0a08',
-  width: 'device-width',
-  initialScale: 1,
-  viewportFit: 'cover',
-}
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en" className={`scroll-smooth ${display.variable} ${sans.variable} ${mono.variable}`}>
-      <body className="antialiased" suppressHydrationWarning>
-        {children}
+    <html lang="en" className="scroll-smooth">
+      <body className="font-sans antialiased" suppressHydrationWarning={true}>
+        <div className="min-h-screen gradient-bg">
+          <div className="absolute inset-0 opacity-40" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f1f5f9' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }}></div>
+          <div className="relative z-10">
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   )
