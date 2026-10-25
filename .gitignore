@@ -60,3 +60,4 @@ README_backup.md
 # Impeccable per-developer consent and config
 .impeccable/config.local.json
 .impeccable/hook.cache.json
+.env*

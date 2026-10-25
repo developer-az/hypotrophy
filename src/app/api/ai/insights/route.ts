@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Initialize AI service with validated key
     const genAI = new GoogleGenerativeAI(API_KEY)
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
     const { type, tasks, task, category, userHistory } = await request.json()
 
