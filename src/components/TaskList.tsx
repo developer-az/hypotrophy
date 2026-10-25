@@ -73,13 +73,11 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   if (tasks.length === 0) {
     return (
-      <div className="modern-card p-12 text-center">
-        <div className="text-6xl mb-6 animate-float drop-shadow-sm">🌱</div>
-        <h3 className="text-2xl font-bold text-white drop-shadow-sm mb-4">
-          Ready for Growth?
-        </h3>
-        <p className="text-white/80 mb-6 max-w-md mx-auto">
-          Your first goal is waiting to be created above!
+      <div className="modern-card p-10 text-center">
+        <div aria-hidden="true" className="text-4xl mb-3 animate-float">✳</div>
+        <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: 'var(--serif)' }}>A little room to begin.</h3>
+        <p className="text-white/80 max-w-sm mx-auto text-sm">
+          Your practice takes shape above, one small promise at a time.
         </p>
       </div>
     )
@@ -87,20 +85,12 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-lg border border-white/20">
-          <span className="text-white text-xl drop-shadow-sm">🎯</span>
-        </div>
-        <h2 className="text-2xl font-bold text-white drop-shadow-sm">Active Goals</h2>
-        <span className="bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-xl text-sm font-semibold border border-white/30">
-          {tasks.length}
-        </span>
-      </div>
+        <div className="sr-only"><h2>Your practice</h2></div>
       <div className="space-y-4">
         {sortedTasks.map((task) => (
           <div
             key={task.id}
-            className={`group modern-card p-6 border-2 ${
+            className={`group modern-card p-5 border-2 ${
               task.completed
                 ? 'border-green-400/50 bg-green-500/10'
                 : getPriorityColor(task.priority)
@@ -109,6 +99,9 @@ export default function TaskList({ tasks, onToggleTask, onDeleteTask }: TaskList
             <div className="flex items-start space-x-4">
               <button
                 onClick={() => onToggleTask(task.id)}
+                type="button"
+                aria-label={`${task.completed ? 'Reopen' : 'Complete'} ${task.title}`}
+                aria-pressed={task.completed}
                 className={`mt-1 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300 hover:scale-110 ${
                   task.completed
                     ? 'bg-green-500 border-green-400 text-white shadow-lg'

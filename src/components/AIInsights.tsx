@@ -31,10 +31,10 @@ export default function AIInsights({ insights, compact = false }: AIInsightsProp
   if (insights.length === 0) {
     return (
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300 ease-out">
-        <h2 className="text-xl font-semibold mb-4">Biscuit's Insights</h2>
+        <h2 className="text-xl font-semibold mb-4" style={{ fontFamily: 'var(--serif)' }}>Room for a reflection.</h2>
         <div className="text-center py-8">
-          <div className="text-4xl mb-2">🐹</div>
-          <p className="text-gray-500">Complete some tasks and goals to get personalized insights from Biscuit!</p>
+          <div className="text-4xl mb-2" aria-hidden="true">✳</div>
+          <p className="text-gray-500">As you make time for what matters, Biscuit will leave a few kind words here.</p>
         </div>
       </div>
     )
@@ -43,19 +43,19 @@ export default function AIInsights({ insights, compact = false }: AIInsightsProp
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 hover:shadow-xl transition-all duration-300 ease-out">
       <h2 className="text-xl font-semibold mb-4">
-        {compact ? 'Recent Insights' : 'Biscuit\'s Insights'}
+        {compact ? 'Recent reflections' : 'Notes from Biscuit'}
       </h2>
 
       <div className="space-y-4">
         {insights.map((insight) => (
           <div
             key={insight.id}
-            className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out animate-slide-up p-6 bg-gradient-to-br from-primary-50/50 to-secondary-50/50 border-l-4 border-primary-400 hover:border-secondary-400 ${getInsightColor(insight.type)}`}
+            className={`bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300 ease-out animate-slide-up p-5 bg-gradient-to-br from-primary-50/50 to-secondary-50/50 ${getInsightColor(insight.type)}`}
           >
             <div className="flex items-start space-x-3">
               <span className="text-2xl">{getInsightIcon(insight.type)}</span>
               <div className="flex-1">
-                <h3 className="font-medium text-gray-900 mb-1">
+                <h3 className="font-medium text-gray-900 mb-1" style={{ fontFamily: 'var(--serif)', fontSize: 18 }}>
                   {insight.title}
                 </h3>
                 <p className="text-sm text-gray-700 mb-2">

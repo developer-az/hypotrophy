@@ -39,7 +39,7 @@ Expected response should show:
 4. Click **Add New**
 5. Set:
    - **Name**: `GEMINI_API_KEY`
-   - **Value**: `AIzaSyDdl33nc5BXTdg-gZghU5n3B0l8-pP2C84`
+   - **Value**: your Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey) (never commit or paste keys into the repo)
    - **Environments**: ✅ Production ✅ Preview ✅ Development
 6. Click **Save**
 7. Go to **Deployments** tab and click **Redeploy** on the latest deployment
@@ -47,10 +47,10 @@ Expected response should show:
 #### Option B: Vercel CLI
 ```bash
 npx vercel env add GEMINI_API_KEY production
-# Paste: AIzaSyDdl33nc5BXTdg-gZghU5n3B0l8-pP2C84
+# Paste your key when prompted (do not store it in git)
 
 npx vercel env add GEMINI_API_KEY preview
-# Paste: AIzaSyDdl33nc5BXTdg-gZghU5n3B0l8-pP2C84
+# Paste your key when prompted (do not store it in git)
 
 npx vercel --prod
 ```
@@ -88,7 +88,7 @@ curl -X POST https://your-app.vercel.app/api/ai/insights \
 #### Issue: "keyLength": 0 but "envKeysFound": 1
 **Solution**: Environment variable exists but empty
 - Check the value in Vercel dashboard
-- Re-enter the API key: `AIzaSyDdl33nc5BXTdg-gZghU5n3B0l8-pP2C84`
+- Re-enter a valid API key in the Vercel dashboard (rotate the key if it was ever exposed in git or docs)
 
 #### Issue: Works in Preview but not Production
 **Solution**: Environment variable not enabled for Production

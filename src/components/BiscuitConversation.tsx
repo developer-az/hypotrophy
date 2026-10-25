@@ -84,24 +84,24 @@ export default function BiscuitConversation({
   }
 
   return (
-    <div className="modern-card p-6 max-h-[450px] overflow-hidden flex flex-col">
-      <div className="flex items-center space-x-3 mb-4">
+    <div className="modern-card p-4 max-h-[450px] overflow-hidden flex flex-col">
+      <div className="flex items-center space-x-3 mb-3">
         <div className="relative">
           <Image
             src="/biscuit.png"
             alt="Biscuit the Hamster"
             width={52}
             height={52}
-            className={`rounded-full border-2 border-white/30 shadow-lg drop-shadow-sm ${currentlyTyping ? 'animate-bounce-gentle' : 'animate-float'}`}
+            className="rounded-full border-2 border-white/30 shadow-lg drop-shadow-sm"
           />
           <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${currentlyTyping ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'} rounded-full border-2 border-white shadow-sm`}></div>
         </div>
         <div>
-          <h3 className="font-bold text-lg text-white drop-shadow-sm flex items-center">
-            Biscuit {getBiscuitExpression()}
+          <h3 className="font-bold text-lg text-white flex items-center">
+            Biscuit <span aria-hidden="true" className="ml-1">{getBiscuitExpression()}</span>
           </h3>
           <p className="text-xs text-white/80">
-            {currentlyTyping ? 'Thinking...' : 'Growth Companion'}
+            {currentlyTyping ? 'Finding the right words…' : 'Here for your little wins'}
           </p>
         </div>
       </div>
@@ -120,8 +120,8 @@ export default function BiscuitConversation({
                 />
               )}
             </div>
-            <div
-              className={`max-w-[90%] p-3 rounded-2xl backdrop-blur-sm ${
+              <div
+                className={`max-w-[90%] p-3 rounded-2xl ${
                 message.isUser
                   ? 'bg-white/20 text-white ml-auto rounded-br-md border border-white/30'
                   : 'bg-white/15 text-white rounded-bl-md border border-white/20'
